@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"../../../../tools/docbook-dtd/docbookx.dtd">
+<book id="fbdevgd30">
+  <bookinfo>
+    <title>Firebird 3.0 Developer's Guide PRE-BETA</title>
+    <subtitle>Release 0.1</subtitle>
+    <edition>3 November 2017, document version 0.101</edition>
+    <authorgroup>
+      <author>
+        <firstname>Denis</firstname>
+        <surname>Simonov</surname>
+      </author>
+      <othercredit class="translator">
+        <firstname>Dimitry</firstname>
+        <surname>Borodin</surname>
+        <contrib>Megatranslations Ltd, translation of text from the
+        original Russian to English</contrib>
+      </othercredit>
+      <othercredit role="editor">
+        <firstname>Helen</firstname>
+        <surname>Borrie</surname>
+        <contrib>Editor of the translated text</contrib>
+      </othercredit>
+    </authorgroup>
+    <publisher>
+      <publishername>Firebird Project</publishername>
+    </publisher>
+    <copyright>
+      <year>2017</year>
+      <holder>Firebird Project and all contributing authors, under the
+      <ulink url="http://www.firebirdsql.org/manual/pdl.html">Public Documentation License 
+      Version 1.0</ulink>. Please refer to the <link linkend="fbdevgd30-license">License Notice
+      </link>.
+      </holder>
+    </copyright>
+    <abstract>
+      <para>...</para>
+    </abstract>
+
+  </bookinfo>
+
+  <xi:include href="fbdevgd30-intro.xml" xpointer="element(/1)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+  <xi:include href="fbdevgd30-FireDac.xml" xpointer="element(/1)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+  <xi:include href="fbdevgd30-EFW.xml" xpointer="element(/1)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+  <xi:include href="fbdevgd30-license.xml" xpointer="element(/1)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+</book>
