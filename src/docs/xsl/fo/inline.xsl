@@ -24,6 +24,12 @@
     <fo:inline font-size="0.9em"><xsl:call-template name="inline.charseq"/></fo:inline>
   </xsl:template>
 
+  <xsl:template match="classname">
+    <fo:inline font-family="DejaVu Sans, sans-serif" 
+               font-size="0.9em"
+               font-weight="400"
+               font-style="oblique"><xsl:call-template name="inline.charseq"/></fo:inline>
+  </xsl:template>
 
 
   <!-- Renders the current node as versioninfo: -->
