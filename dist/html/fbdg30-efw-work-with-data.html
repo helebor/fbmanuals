@@ -1,0 +1,506 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Working with Data</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-efw.html" title="Chapter 3: Developing Firebird Applications with Microsoft Entity Framework">
+      <link rel="prev" href="fbdg30-efw-vs-crt-gui.html" title="Creating a User Interface">
+      <link rel="next" href="fbdg30-efw-secondary-modules.html" title="Secondary Modules">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-efw.html">Developing Firebird Applications with Microsoft Entity Framework</a> &rarr; Working with Data
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdg30-efw-vs-crt-gui.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Creating a User Interface" alt="Prev: Creating a User Interface"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-efw.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications with Microsoft Entity Framework" alt="Up: Developing Firebird Applications with Microsoft Entity Framework"></a><a href="fbdg30-efw-secondary-modules.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Secondary Modules" alt="Next: Secondary Modules"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdg30-efw-work-with-data"></a>Working with Data
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdg30-efw-work-with-data.html#fbdg30-efw-linq">LINQ Extension Methods</a></span></dt>
+            </dl>
+         </div>
+         <p>The entities in the model definition contain no data. The easiest way to to
+                load data is to call the <code class="classname">Load</code> method.   For example,
+                  
+         </p><pre class="programlisting">
+private void LoadCustomersData()
+{
+    dbContext.CUSTOMERS.Load();
+    var customers = dbContext.CUSTOMERS.Local;
+    bindingSource.DataSource = customers.ToBindingList();
+}
+
+private void CustomerForm_Load(object sender, EventArgs e)
+{
+    LoadCustomersData();
+    dataGridView.DataSource = bindingSource;
+    dataGridView.Columns["CUSTOMER_ID"].Visible = false;
+}
+      </pre><p>
+                
+         </p>
+         <p>However, this approach has a few drawbacks:
+                  
+         </p>
+         <div class="orderedlist">
+            <ol type="1">
+               <li>The <code class="classname">Load</code> method loads all data from the CUSTOMER table
+                          to memory at once
+               </li>
+               <li>Although lazy properties (INVOICES) are not loaded immediately, but only once they
+                          are accessed, they will be loaded anyway when the records are shown in the grid and it will
+                          happen each time a group of records is shown
+               </li>
+               <li>Record ordering is not defined</li>
+            </ol>
+         </div>
+         <p>
+                
+         </p>
+         <p>To get around these drawbacks, we will use a feature of the LINQ (Language Integrated
+                Query) technology, <em class="firstterm">LINQ to Entities</em>. LINQ to Entities offers a simple
+                and intuitive approach to getting data using C# statements that are syntactically similar
+                to SQL query statements. You can read about the LINQ syntax in
+                <a xmlns:xlink="http://www.w3.org/1999/xlink" href="https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/ef/language-reference/linq-to-entities" target="_top">LINQ
+                   to Entities</a>.
+                
+         </p>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-efw-linq"></a>LINQ Extension Methods
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <div class="toc">
+               <p><b>Table of Contents</b></p>
+               <dl>
+                  <dt><span class="section"><a href="fbdg30-efw-work-with-data.html#fbdg30-efw-linq-bindinglist">IQueryable and BindingList</a></span></dt>
+                  <dt><span class="section"><a href="fbdg30-efw-work-with-data.html#fbdg30-efw-linq-other-extensions">Other Extensions</a></span></dt>
+                  <dt><span class="section"><a href="fbdg30-efw-work-with-data.html#fbdg30-efw-linq-load-code">Code for Loading the Data</a></span></dt>
+               </dl>
+            </div>
+            <p>The LINQ extension methods can return two objects: <code class="classname">IEnumerable</code>
+                     and <code class="classname">IQueryable</code>. The <code class="classname">IQueryable</code> interface
+                     is inherited from <code class="classname">IEnumerable</code> so, theoretically, an
+                     <code class="classname">IQueryable</code> object is also an <code class="classname">IEnumerable</code>.
+                     In reality, they are distinctly different.
+            </p>
+            <p>The <code class="classname">IEnumerable</code> interface is in the
+                     <code class="classname">System.Collections</code> namespace. An <code class="classname">IEnumerable</code>
+                     object is a collection of data in memory that can be addressed only in a forward
+                     direction. During the query execution, <code class="classname">IEnumerable</code> loads
+                     all data.  Filtering, if required, is done on the client side.
+            </p>
+            <p>The <code class="classname">IQueryable</code> interface is in the
+                     <code class="classname">System.Linq</code> namespace. It provides remote access to the database
+                     and movement through the data can be bi-directional. During the process of creating a query
+                     that returns an <code class="classname">IQueryable</code> object, the query is optimized to
+                     minimise memory usage and network bandwidth.
+            </p>
+            <p>The <code class="classname">Local</code> property returns the IEnumerable interface,
+                     through which we can create LINQ queries.
+                       
+            </p><pre class="programlisting">
+private void LoadCustomersData()
+{
+    var dbContext = AppVariables.getDbContext();
+    dbContext.CUSTOMERS.Load();
+    var customers =
+        from customer in dbContext.CUSTOMERS.Local
+        orderby customer.NAME
+        select new customer;
+    bindingSource.DataSource = customers.ToBindingList();
+}
+        </pre><p>
+                     
+            </p>
+            <p>However, as this query will be executed on the data in memory, it is really
+                     useful only for small tables that do not need to be filtered beforehand.
+            </p>
+            <p>For a LINQ query to be converted into SQL and executed on the server, we
+                     need to access the dbContext.CUSTOMERS directly instead of accessing the
+                     <code class="classname">dbContext.CUSTOMERS.Local</code> property in the LINQ query.
+                     The prior call to <code class="classname">dbContext.CUSTOMERS.Load();</code> to load the
+                     collection to memory is not required.
+            </p>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-efw-linq-bindinglist"></a>IQueryable and BindingList
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p><code class="classname">IQueryable</code> objects present a small problem:
+                          they cannot return BindingList. <code class="classname">BindingList</code> is a base
+                          class for creating a two-way data-binding mechanism. We can use the
+                          <code class="classname">IQueryable</code> interface to get a regular list by calling
+                          <code class="classname">ToList</code> but, this way, we lose handy features
+                          such as sorting in the grid and several more. The deficiency was fixed
+                          in .NET Framework 5 by creating a special extension. To do the same thing
+                          in FW4, we will create our own solution.
+                            
+               </p><pre class="programlisting">
+public static class DbExtensions
+{
+    // Internal class for map generator values to it
+    private class IdResult
+    {
+        public int Id { get; set; }
+    }
+
+    // Cast IQueryable to BindingList
+    public static BindingList&lt;T&gt; ToBindingList&lt;T&gt;
+       (this IQueryable&lt;T&gt; source) where T : class
+    {
+        return (new ObservableCollection&lt;T&gt;(source)).ToBindingList();
+    }
+
+    // Get the next value of the sequence
+    public static int NextValueFor(this DbModel dbContext, string genName)
+    {
+        string sql = String.Format(
+          "SELECT NEXT VALUE FOR {0} AS Id FROM RDB$DATABASE", genName);
+        return dbContext.Database.SqlQuery&lt;IdResult&gt;(sql).First().Id;
+    }
+
+    // Disconnect all objects from the DbSet collection from the context
+    // Useful for updating the cache
+    public static void DetachAll&lt;T&gt;(this DbModel dbContext, DbSet&lt;T&gt; dbSet)
+       where T : class
+    {
+        foreach (var obj in dbSet.Local.ToList())
+        {
+            dbContext.Entry(obj).State = EntityState.Detached;
+        }
+    }
+
+    // Update all changed objects in the collection
+    public static void Refresh(this DbModel dbContext, RefreshMode mode,
+        IEnumerable collection)
+    {
+        var objectContext = ((IObjectContextAdapter)dbContext).ObjectContext;
+        objectContext.Refresh(mode, collection);
+    }
+
+    // Update the object
+    public static void Refresh(this DbModel dbContext, RefreshMode mode,
+        object entity)
+    {
+        var objectContext = ((IObjectContextAdapter)dbContext).ObjectContext;
+        objectContext.Refresh(mode, entity);
+    }
+}
+          </pre><p>
+                          
+               </p>
+            </div>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-efw-linq-other-extensions"></a>Other Extensions
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>There are several more extensions in the <code class="classname">iQueryable</code> interface:
+                            
+               </p>
+               <div class="variablelist">
+                  <dl>
+                     <dt><span class="term">NextValueFor</span></dt>
+                     <dd>is used to get the next value from the generator.</dd>
+                     <dt><span class="term">dbContext.Database.SqlQuery</span></dt>
+                     <dd>
+                                      allows SQL queries to be executed directly and their results to be displayed
+                                      on some entity (projection). 
+                     </dd>
+                     <dt><span class="term">DetachAll</span></dt>
+                     <dd>is used to detach all objects of the DBSet collection from the context.
+                                      It is necessary to update the internal cache, because all retrieved data are cached
+                                      and are not retrieved from the database again. However, that is not always useful
+                                      because it makes it more difficult to get the latest version of  records that were
+                                      modified in another context.
+                                          
+                        <div class="note">
+                           <h3 class="title">Note</h3>
+                           <p>In web applications, a context usually exists for a very short period.
+                                                  A new context has an empty cache.
+                           </p>
+                        </div>
+                     </dd>
+                     <dt><span class="term">Refresh</span></dt>
+                     <dd>is used to update the properties of an entity object. It is useful
+                                      for updating the properties of an object after it has been edited or added.
+                     </dd>
+                  </dl>
+               </div>
+               <p>
+                          
+               </p>
+            </div>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-efw-linq-load-code"></a>Code for Loading the Data
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>Our code for loading data will look like this:
+                            
+               </p><pre class="programlisting">
+private void LoadCustomersData()
+{
+    var dbContext = AppVariables.getDbContext();
+    // disconnect all loaded objects
+    // this is necessary to update the internal cache
+    // for the second and subsequent calls of this method
+    dbContext.DetachAll(dbContext.CUSTOMERS);
+    var customers =
+        from customer in dbContext.CUSTOMERS
+        orderby customer.NAME
+        select customer;
+    bindingSource.DataSource = customers.ToBindingList();
+}
+
+private void CustomerForm_Load(object sender, EventArgs e)
+{
+    LoadCustomersData();
+    dataGridView.DataSource = bindingSource;
+    dataGridView.Columns["INVOICES"].Visible = false;
+    dataGridView.Columns["CUSTOMER_ID"].Visible = false;
+    dataGridView.Columns["NAME"].HeaderText = "Name";
+    dataGridView.Columns["ADDRESS"].HeaderText = "Address";
+    dataGridView.Columns["ZIPCODE"].HeaderText = "ZipCode";
+    dataGridView.Columns["PHONE"].HeaderText = "Phone";
+}
+          </pre><p>
+                          
+               </p>
+               <div class="section" lang="en">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h5 class="title"><a name="fbdg30-efw-addcustomer"></a>Adding a Customer
+                           </h5>
+                        </div>
+                     </div>
+                  </div>
+                  <p>This is the code of the event handler for clicking the Add button:
+                                 
+                  </p><pre class="programlisting">
+private void btnAdd_Click(object sender, EventArgs e) {
+  var dbContext = AppVariables.getDbContext();
+  // creating a new entity instance
+  var customer = (CUSTOMER)bindingSource.AddNew();
+  // create an editing form
+  using (CustomerEditorForm editor = new CustomerEditorForm()) {
+    editor.Text = "Add customer";
+    editor.Customer = customer;
+    // Form Close Handler
+    editor.FormClosing += delegate (object fSender,
+      FormClosingEventArgs fe) {
+      if (editor.DialogResult == DialogResult.OK) {
+        try {
+          // get next sequence value
+          // and assign it
+          customer.CUSTOMER_ID = dbContext.NextValueFor("GEN_CUSTOMER_ID");
+          // add a new customer
+          dbContext.CUSTOMERS.Add(customer);
+          // trying to save the changes
+          dbContext.SaveChanges();
+          // and update the current record
+          dbContext.Refresh(RefreshMode.StoreWins, customer);
+        }
+        catch (Exception ex) {
+          // display error
+          MessageBox.Show(ex.Message, "Error");
+          // Do not close the form to correct the error
+          fe.Cancel = true;
+        }
+      }
+      else
+        bindingSource.CancelEdit();
+    };
+    // show the modal form
+    editor.ShowDialog(this);
+  }
+}
+            </pre><p>
+                     
+                               While adding the new record, we used the generator to get the value of the
+                               next identifier. We could have done it without applying the value of the
+                               identifier, leaving the BEFORE INSERT trigger to fetch the next value of the
+                               generator and apply it. However, that would leave us unable to update the
+                               added record.
+                               
+                  </p>
+               </div>
+               <div class="section" lang="en">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h5 class="title"><a name="fbdg30-efw-editcustomer"></a>Editing a Customer
+                           </h5>
+                        </div>
+                     </div>
+                  </div>
+                  <p>The code of the event handler for clicking the Edit button is
+                               as follows:
+                                 
+                  </p><pre class="programlisting">
+private void btnEdit_Click(object sender, EventArgs e) {
+  var dbContext = AppVariables.getDbContext();
+  // get instance
+  var customer = (CUSTOMER)bindingSource.Current;
+  // create an editing form
+  using (CustomerEditorForm editor = new CustomerEditorForm()) {
+    editor.Text = "Edit customer";
+    editor.Customer = customer;
+    // Form Close Handler
+    editor.FormClosing += delegate (object fSender, FormClosingEventArgs fe) {
+      if (editor.DialogResult == DialogResult.OK) {
+        try {
+          // trying to save the changes
+          dbContext.SaveChanges();
+          dbContext.Refresh(RefreshMode.StoreWins, customer);
+          // update all related controls
+          bindingSource.ResetCurrentItem();
+        }
+        catch (Exception ex) {
+          // display error
+          MessageBox.Show(ex.Message, "Error");
+          // Do not close the form to correct the error
+          fe.Cancel = true;
+        }
+      }
+      else
+        bindingSource.CancelEdit();
+    };
+    // show the modal form
+    editor.ShowDialog(this);
+  }
+}
+            </pre><p>
+                               The form for editing the customer looks like this:
+                                 
+                  </p>
+                  <div class="figure"><a name="efw-cust-edit-form"></a><p class="title"><b>Figure&nbsp;3.15.&nbsp;Customer edit form</b></p>
+                     <div class="figure-contents">
+                        <div class="mediaobject" align="center">
+                           <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="308">
+                              <tr style="height: 249px">
+                                 <td align="center"><img src="images/fbdevgd30_efw_015_en.png" align="middle" width="308" alt="Customer edit form"></td>
+                              </tr>
+                           </table>
+                        </div>
+                     </div>
+                     <p></p>
+                  </div>
+                  <p><br class="figure-break">
+                               
+                  </p>
+                  <p>The code for binding to data is very simple.
+                                 
+                  </p><pre class="programlisting">
+public CUSTOMER Customer { get; set; }
+
+private void CustomerEditorForm_Load(object sender, EventArgs e)
+{
+    edtName.DataBindings.Add("Text", this.Customer, "NAME");
+    edtAddress.DataBindings.Add("Text", this.Customer, "ADDRESS");
+    edtZipCode.DataBindings.Add("Text", this.Customer, "ZIPCODE");
+    edtPhone.DataBindings.Add("Text", this.Customer, "PHONE");
+}
+            </pre><p>
+                               
+                  </p>
+               </div>
+               <div class="section" lang="en">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h5 class="title"><a name="fbdg30-efw-dltcustomer"></a>Deleting a Customer
+                           </h5>
+                        </div>
+                     </div>
+                  </div>
+                  <p>The code of the event handler for clicking the Delete button
+                               is as follows:
+                                 
+                  </p><pre class="programlisting">
+private void btnDelete_Click(object sender, EventArgs e) {
+  var dbContext = AppVariables.getDbContext();
+  var result = MessageBox.Show("Are you sure you want to delete the customer?",
+    "Confirmation",
+    MessageBoxButtons.YesNo,
+    MessageBoxIcon.Question);
+  if (result == DialogResult.Yes) {
+    // get the entity
+    var customer = (CUSTOMER)bindingSource.Current;
+    try {
+      dbContext.CUSTOMERS.Remove(customer);
+      // trying to save the changes
+      dbContext.SaveChanges();
+      // remove from the linked list
+      bindingSource.RemoveCurrent();
+    }
+    catch (Exception ex) {
+      // display error
+      MessageBox.Show(ex.Message, "Error");
+    }
+  }
+}
+            </pre><p>
+                               
+                  </p>
+               </div>
+            </div>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdg30-efw-vs-crt-gui.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Creating a User Interface" alt="Prev: Creating a User Interface"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-efw.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications with Microsoft Entity Framework" alt="Up: Developing Firebird Applications with Microsoft Entity Framework"></a><a href="fbdg30-efw-secondary-modules.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Secondary Modules" alt="Next: Secondary Modules"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-efw.html">Developing Firebird Applications with Microsoft Entity Framework</a> &rarr; Working with Data
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

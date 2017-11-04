@@ -1,0 +1,115 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Conclusion</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-firedac.html" title="Chapter 2: Developing Firebird Applications in Delphi">
+      <link rel="prev" href="fbdg30-firedac-proj-result.html" title="The Result">
+      <link rel="next" href="fbdevgd30-downloads.html" title="Downloads">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-firedac.html">Developing Firebird Applications in Delphi</a> &rarr; Conclusion
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdg30-firedac-proj-result.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: The Result" alt="Prev: The Result"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-firedac.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications in Delphi" alt="Up: Developing Firebird Applications in Delphi"></a><a href="fbdevgd30-downloads.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Downloads" alt="Next: Downloads"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdg30-firedac-conclusion"></a>Conclusion
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <p>FireDac&#8482; is a standard set of data-access and data-aware visual components
+            for developing with various database systems, including Firebird, starting from Delphi&#8482;
+            XE3. FireDac&#8482; ships with the higher-end versions of Delphi. Many independent sets of
+            data access and data-aware visual components are available for working with Firebird, 
+            some commercial, others distributed under a variety of licences, including open source 
+            and freeware. They include FibPlus, IBObjects, UIB, UniDAC, IBDac, Interbase Express (IBX) 
+                and more.  The principles for developing Firebird applications in Delphi&#8482; are the same,
+                regardless of the components you choose.
+         </p>
+         <p> All queries to a database are executed within a transaction. To guarantee that 
+                applications will work correctly and efficiently with Firebird databases, it is advisable
+                to manage transactions manually, by explicit calls to the 
+                <code class="classname">StartTransaction, Commit</code> and <code class="classname">Rollback</code> 
+                methods of the <code class="classname">TFDTransaction</code> component. Transactions should be 
+                as short as possible and you can use as many as the logic of your application requires.
+         </p>
+         <p>The recommended configuration for a long-running, read-only transaction to view
+                datasets is to use READ_COMMITTED isolation with REC_VERSION for conflict resolution.
+                An application can run many datasets in one such transaction or one for each dataset,
+                according to the requirements of the design.
+         </p>
+         <p>To avoid holding an uncommitted transaction during an editing session, either
+                use visual components that are not data-aware or use the <code class="classname">CachedUpdates</code> 
+                mode. With <code class="classname">CachedUpdates</code> you can restrict writes to short 
+                bursts of activity, keeping the read/write transaction active only for as long as 
+                it takes to post the most recent changes to the database.
+         </p>
+         <p>The <code class="classname">TFDUpdateSQL</code> component is necessary for editing most 
+                datasets.  Update queries are governed by its <code class="classname">InsertSQL, ModifySQL, DeleteSQL</code>
+                and <code class="classname">FetchRowSQL</code> properties. The queries for those properties can 
+                be generated automatically by a wizard but manual corrections or adjustments are 
+                often required.
+         </p>
+         <p>Acquiring values for auto-incrementing primary keys can be handled in one
+                of two ways:
+                  
+         </p>
+         <div class="itemizedlist">
+            <ul type="disc">
+               <li>Getting the value from the generator beforehand by specifying the
+                          <code class="classname">UpdateOptions.GeneratorName</code> and 
+                          <code class="classname">UpdateOptions.AutoIncFields</code> properties for the <code class="classname">TFDQuery</code> 
+                          component.  This method cannot be used for auto-incrementing fields of the IDENTITY 
+                          type that was introduced in Firebird 3.
+               </li>
+               <li>Getting the value by adding a RETURNING clause to the InsertSQL
+                          query. For this method you need to specify <code class="classname">Required=False</code> 
+                          and <code class="classname">ReadOnly=True</code> for the field because the value is not 
+                          entered directly.
+               </li>
+            </ul>
+         </div>
+         <p>
+                
+         </p>
+         <p>It is convenient and sometimes necessary to implement more complex business
+                logic with stored procedures. Using the <code class="classname">TFDCommand</code> component 
+                to execute stored procedures that do not return data reduces resource consumption
+         </p>.
+           
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdg30-firedac-proj-result.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: The Result" alt="Prev: The Result"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-firedac.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications in Delphi" alt="Up: Developing Firebird Applications in Delphi"></a><a href="fbdevgd30-downloads.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Downloads" alt="Next: Downloads"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-firedac.html">Developing Firebird Applications in Delphi</a> &rarr; Conclusion
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

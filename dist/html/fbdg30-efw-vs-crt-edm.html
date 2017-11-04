@@ -1,0 +1,461 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Creating an Entity Data Model (EDM)</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-efw.html" title="Chapter 3: Developing Firebird Applications with Microsoft Entity Framework">
+      <link rel="prev" href="fbdg30-efw-vs-crtproject.html" title="Creating a Project">
+      <link rel="next" href="fbdg30-efw-vs-crt-gui.html" title="Creating a User Interface">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-efw.html">Developing Firebird Applications with Microsoft Entity Framework</a> &rarr; Creating an Entity Data Model (EDM)
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdg30-efw-vs-crtproject.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Creating a Project" alt="Prev: Creating a Project"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-efw.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications with Microsoft Entity Framework" alt="Up: Developing Firebird Applications with Microsoft Entity Framework"></a><a href="fbdg30-efw-vs-crt-gui.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Creating a User Interface" alt="Next: Creating a User Interface"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdg30-efw-vs-crt-edm"></a>Creating an Entity Data Model (EDM)
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdg30-efw-vs-crt-edm.html#fbdg30-efw-vs-crt-edm-files">The EDM Files</a></span></dt>
+            </dl>
+         </div>
+         <p>In our application, we will use the <code class="classname">Code First</code> approach.
+         </p>
+         <p>To create an EDM, right-click the project name in Solution Explorer and select
+                <code class="classname">Add&#8212;&gt;New Item</code> from the menu.
+            
+                  
+         </p>
+         <div class="figure"><a name="efw-add-new-item"></a><p class="title"><b>Figure&nbsp;3.6.&nbsp;Solution Explorer - Add&#8212;&gt;New Item</b></p>
+            <div class="figure-contents">
+               <div class="mediaobject" align="center">
+                  <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="496">
+                     <tr style="height: 503px">
+                        <td align="center"><img src="images/fbdevgd30_efw_006_en.png" align="middle" width="496" alt="Solution Explorer - Add&#8212;&gt;New Item"></td>
+                     </tr>
+                  </table>
+               </div>
+            </div>
+            <p></p>
+         </div>
+         <p><br class="figure-break">
+                
+         </p>
+         <p>Next, in the <code class="classname">Add New Item</code> wizard, select <code class="classname">ADO.NET Entity
+                   Data Model</code>.
+                  
+         </p>
+         <div class="figure"><a name="efw-select-ado-net"></a><p class="title"><b>Figure&nbsp;3.7.&nbsp;Add New Item wizard - select ADO.NET Entity Data Model</b></p>
+            <div class="figure-contents">
+               <div class="mediaobject" align="center">
+                  <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="499">
+                     <tr style="height: 257px">
+                        <td align="center"><img src="images/fbdevgd30_efw_007_en.png" align="middle" height="257" alt="Add New Item wizard - select ADO.NET Entity Data Model"></td>
+                     </tr>
+                  </table>
+               </div>
+            </div>
+            <p></p>
+         </div>
+         <p><br class="figure-break">
+                
+         </p>
+         <p>Since we already have a database, we will generate the EDM from the database. Select the
+                icon captioned <code class="classname">Code First from database</code>.
+                  
+         </p>
+         <div class="figure"><a name="efw-select-code-first"></a><p class="title"><b>Figure&nbsp;3.8.&nbsp;Add New Item wizard - select 'Code First from database'</b></p>
+            <div class="figure-contents">
+               <div class="mediaobject" align="center">
+                  <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="499">
+                     <tr style="height: 323px">
+                        <td align="center"><img src="images/fbdevgd30_efw_008_en.png" align="middle" height="323" alt="Add New Item wizard - select 'Code First from database'"></td>
+                     </tr>
+                  </table>
+               </div>
+            </div>
+            <p></p>
+         </div>
+         <p><br class="figure-break">
+                
+         </p>
+         <p>Now we need to to select the connection the model will be created from. If the
+                connection does not exist, it will have to be created.
+                  
+         </p>
+         <div class="figure"><a name="efw-choose-connection"></a><p class="title"><b>Figure&nbsp;3.9.&nbsp;Add New Item wizard - choose Connection</b></p>
+            <div class="figure-contents">
+               <div class="mediaobject" align="center">
+                  <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="494">
+                     <tr style="height: 448px">
+                        <td align="center"><img src="images/fbdevgd30_efw_009_en.png" align="middle" width="494" alt="Add New Item wizard - choose Connection"></td>
+                     </tr>
+                  </table>
+               </div>
+            </div>
+            <p></p>
+         </div>
+         <p><br class="figure-break">
+                
+         </p>
+         <p>You might need to specify some advanced properties in addition to the main
+                connection properties. You might want to set the transaction isolation, for example,
+                to a level different from the default <code class="classname">Read Committed</code>, or to
+                specify connection pooling, or something else that differs from defaults.
+                  
+         </p>
+         <div class="figure"><a name="efw-conn-properties"></a><p class="title"><b>Figure&nbsp;3.10.&nbsp;Add Connection wizard - Connection properties</b></p>
+            <div class="figure-contents">
+               <div class="mediaobject" align="center">
+                  <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="458">
+                     <tr style="height: 386px">
+                        <td align="center"><img src="images/fbdevgd30_efw_010_en.png" align="middle" width="458" alt="Add Connection wizard - Connection properties"></td>
+                     </tr>
+                  </table>
+               </div>
+            </div>
+            <p></p>
+         </div>
+         <p><br class="figure-break">
+                
+         </p>
+         <p>
+                  
+         </p>
+         <div class="figure"><a name="efw-adv-conn-props"></a><p class="title"><b>Figure&nbsp;3.11.&nbsp;Add Connection wizard - Advanced connection properties</b></p>
+            <div class="figure-contents">
+               <div class="mediaobject" align="center">
+                  <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="232">
+                     <tr style="height: 277px">
+                        <td align="center"><img src="images/fbdevgd30_efw_011_en.png" align="middle" width="232" alt="Add Connection wizard - Advanced connection properties"></td>
+                     </tr>
+                  </table>
+               </div>
+            </div>
+            <p></p>
+         </div>
+         <p><br class="figure-break">
+                  
+         </p>
+         <div class="tip">
+            <h3 class="title">Tip</h3>
+            <p>Snapshot is the recommended isolation level because Entity Framework and
+                       ADO.NET both use disconnected data access&#8212;where each connection and each
+                       transaction is active only for a very short time.
+            </p>
+         </div>
+         <p>
+                
+         </p>
+         <p>Next, the Entity Data Model wizard will ask you how to store the connection string.
+                  
+         </p>
+         <div class="figure"><a name="efw-conn-str-storage"></a><p class="title"><b>Figure&nbsp;3.12.&nbsp;EDM wizard - connection string storage</b></p>
+            <div class="figure-contents">
+               <div class="mediaobject" align="center">
+                  <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="494">
+                     <tr style="height: 447px">
+                        <td align="center"><img src="images/fbdevgd30_efw_012_en.png" align="middle" width="494" alt="EDM wizard - connection string storage"></td>
+                     </tr>
+                  </table>
+               </div>
+            </div>
+            <p></p>
+         </div>
+         <p><br class="figure-break">
+                
+         </p>
+         <p>For a web application or another three-tier architecture, where all users
+                will be working with the database using a single account, select <span><strong class="command">Yes</strong></span>.
+                If your application is going to request authentication for connecting to the database,
+                select <span><strong class="command">No</strong></span>.
+                  
+         </p>
+         <div class="tip">
+            <h3 class="title">Tip</h3>
+            <p>It is much more convenient to work with wizards if you select Yes for each
+                       property. You can always change the isolation level in the application when it is
+                       ready for testing and deployment by just editing the connection string in the
+                       <code class="filename">&lt;AppName&gt;.exe.conf</code> application configuration file.
+                       The connection string will be stored in the <code class="classname">connectionStrings</code>
+                       section and will look approximately like this:
+                         
+            </p><pre class="literallayout">
+&lt;add name="DbModel"
+  connectionString="character set=UTF8; data source=localhost;
+  initial catalog=examples; port number=3050;
+  user id=sysdba; dialect=3; isolationlevel=Snapshot;
+  pooling=True; password=masterkey;"
+  providerName="FirebirdSql.Data.FirebirdClient" /&gt;
+          </pre><p>
+                       
+            </p>
+            <p>For the configuration file to stop storing the confidential information,
+                       just delete this parameter from the connection string:
+                       <code class="filename">password=masterkey;</code>
+                       
+            </p>
+         </div>
+         <p>
+                
+         </p>
+         <div class="important">
+            <h3 class="title">Firebird 3.0 Notes</h3>
+            <p>Unfortunately, the current ADO.Net provider for Firebird (version 5.9.0.0) does not
+                     support network traffic encryption, which is enabled by default in Firebird 3.0 and higher
+                     versions. If you want to work with Firebird 3.0, you need to change some settings in
+                     <code class="filename">firebird.conf</code> (or in <code class="filename">databases.conf</code> for a
+                     specific database) to make Firebird to work without trying to use network encryption.
+            </p>
+            <p>To do it, change the setting from the default
+                       
+            </p><pre class="literallayout">
+ # WireCrypt = Enabled
+        </pre><p>
+                       to
+                       
+            </p><pre class="literallayout">
+ WireCrypt = Disabled
+        </pre><p>
+                     making sure to delete the '#' comment marker.  Remember that you must restart the server
+                     for configuration changes to take effect.
+                     
+            </p>
+         </div>
+         <p>Next, you will be asked which tables and views should be included in the model.
+                   
+         </p>
+         <div class="figure"><a name="d0e160099"></a><p class="title"><b>Figure&nbsp;3.13.&nbsp;EDM wizard - select tables and views</b></p>
+            <div class="figure-contents">
+               <div class="mediaobject" align="center">
+                  <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="494">
+                     <tr style="height: 447px">
+                        <td align="center"><img src="images/fbdevgd30_efw_013_en.png" align="middle" width="494" alt="EDM wizard - select tables and views"></td>
+                     </tr>
+                  </table>
+               </div>
+            </div>
+            <p></p>
+         </div>
+         <p><br class="figure-break">
+                
+         </p>
+         <p>For our project, select the four tables that are checked in the screenshot.
+                
+         </p>
+         <p>The basic EDM is now ready.</p>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-efw-vs-crt-edm-files"></a>The EDM Files
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <div class="toc">
+               <p><b>Table of Contents</b></p>
+               <dl>
+                  <dt><span class="section"><a href="fbdg30-efw-vs-crt-edm.html#fbdg30-efw-vs-crt-edm-entityfile">An Entity File</a></span></dt>
+                  <dt><span class="section"><a href="fbdg30-efw-vs-crt-edm.html#fbdg30-efw-vs-crt-edm-dbmodelfile">The DbModel File</a></span></dt>
+               </dl>
+            </div>
+            <p>When the wizard's work is finished, you should have five new files: a model
+                     file and four files each describing an entity in the model.
+            </p>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-efw-vs-crt-edm-entityfile"></a>An Entity File
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>Let's take a look at the generated file describing the INVOICE entity:
+                            
+               </p><pre class="programlisting">
+[Table("Firebird.INVOICE")]
+public partial class INVOICE
+{
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage",
+"CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public INVOICE()
+    {
+      INVOICE_LINES = new HashSet&lt;INVOICE_LINE&gt;();
+    }
+
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.None)]
+    public int INVOICE_ID { get; set; }
+
+    public int CUSTOMER_ID { get; set; }
+
+    public DateTime? INVOICE_DATE { get; set; }
+
+    public decimal? TOTAL_SALE { get; set; }
+
+    public short PAYED { get; set; }
+
+    public virtual CUSTOMER CUSTOMER { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage",
+"CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection&lt;INVOICE_LINE&gt; INVOICE_LINES { get; set; }
+}
+          </pre><p>
+                          The class contains properties for each field of the INVOICE table. Each of these
+                          properties has attributes that describe constraints. You can study the details of the
+                          various attributes in the Microsoft document,
+                          <a xmlns:xlink="http://www.w3.org/1999/xlink" href="https://msdn.microsoft.com/en-us/data/jj591583" target="_top">Code First Data Annotations</a>.
+                          
+               </p>
+               <div class="section" lang="en">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h5 class="title"><a name="fbdg30-efw-vs-edm-files-navig"></a>Navigation Properties and &#8220;<span class="quote">Lazy Loading</span>&#8221;
+                           </h5>
+                        </div>
+                     </div>
+                  </div>
+                  <p>Two navigation properties are generated: CUSTOMER and INVOICE_LINES. The first
+                               one contains a reference to the customer entity. The second contains a collection of
+                               invoice lines. It is generated because the INVOICE_LINE table has a foreign key to the
+                               INVOICE table. Of course, you can remove this property from the INVOICE entity, but
+                               it is not really necessary. The CUSTOMER and INVOICE_LINES properties use
+                               &#8220;<span class="quote">lazy loading</span>&#8221; which means that loading is not performed until the
+                               first access to an object.  That way, the loading of related data is avoided unless
+                               it is actually needed. Once the data are accessed via the navigation property, they will
+                               be loaded from the database automatically. 
+                  </p>
+                  <div class="important">
+                     <h3 class="title">Important</h3>
+                     <p>If lazy loading is in effect, classes that use it must be public and their
+                                    properties must have the keywords <code class="code">public</code>
+                                    and <code class="code">virtual</code>.
+                     </p>
+                  </div>
+               </div>
+            </div>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-efw-vs-crt-edm-dbmodelfile"></a>The DbModel File
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>Next, we examine the <code class="filename">DbModel.cs</code> file that describes
+                          the overall model.
+                            
+               </p><pre class="programlisting">
+    public partial class DbModel : DbContext
+    {
+        public DbModel()
+            : base("name=DbModel")
+        {
+        }
+
+        public virtual DbSet&lt;CUSTOMER&gt; CUSTOMERS { get; set; }
+        public virtual DbSet&lt;INVOICE&gt; INVOICES { get; set; }
+        public virtual DbSet&lt;INVOICE_LINE&gt; INVOICE_LINES { get; set; }
+        public virtual DbSet&lt;PRODUCT&gt; PRODUCTS { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity&lt;CUSTOMER&gt;()
+                .Property(e =&gt; e.ZIPCODE)
+                .IsFixedLength();
+
+            modelBuilder.Entity&lt;CUSTOMER&gt;()
+                .HasMany(e =&gt; e.INVOICES)
+                .WithRequired(e =&gt; e.CUSTOMER)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity&lt;PRODUCT&gt;()
+                .HasMany(e =&gt; e.INVOICE_LINES)
+                .WithRequired(e =&gt; e.PRODUCT)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity&lt;INVOICE&gt;()
+                .HasMany(e =&gt; e.INVOICE_LINES)
+                .WithRequired(e =&gt; e.INVOICE)
+                .WillCascadeOnDelete(false);
+
+        }
+    }
+          </pre><p>
+                          
+               </p>
+               <p>The properties coded here describe a dataset for each entity, along with advanced
+                          properties that are specified for creating a model with Fluent API. A complete description
+                          of the Fluent API can be found in the Microsoft document entitled
+                          <a xmlns:xlink="http://www.w3.org/1999/xlink" href="https://msdn.microsoft.com/en-us/data/jj591617.aspx" target="_top">Configuring/Mapping
+                             Properties and Types with the Fluent API</a>.
+               </p>
+               <p>We will use the Fluent API to specify precision and scale for properties of
+                          type DECIMAL in the <code class="classname">OnModelCreating</code> method, by adding the
+                          following lines:
+                            
+               </p><pre class="programlisting">
+            modelBuilder.Entity&lt;PRODUCT&gt;()
+                .Property(p =&gt; p.PRICE)
+                .HasPrecision(15, 2);
+            modelBuilder.Entity&lt;INVOICE&gt;()
+                .Property(p =&gt; p.TOTAL_SALE)
+                .HasPrecision(15, 2);
+
+            modelBuilder.Entity&lt;INVOICE_LINE&gt;()
+                .Property(p =&gt; p.SALE_PRICE)
+                .HasPrecision(15, 2);
+
+            modelBuilder.Entity&lt;INVOICE_LINE&gt;()
+                .Property(p =&gt; p.QUANTITY)
+                .HasPrecision(15, 0);
+          </pre><p>
+                          
+               </p>
+            </div>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdg30-efw-vs-crtproject.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Creating a Project" alt="Prev: Creating a Project"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-efw.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications with Microsoft Entity Framework" alt="Up: Developing Firebird Applications with Microsoft Entity Framework"></a><a href="fbdg30-efw-vs-crt-gui.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Creating a User Interface" alt="Next: Creating a User Interface"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-efw.html">Developing Firebird Applications with Microsoft Entity Framework</a> &rarr; Creating an Entity Data Model (EDM)
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

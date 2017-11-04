@@ -1,0 +1,592 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Creating the Primary Modules</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-firedac.html" title="Chapter 2: Developing Firebird Applications in Delphi">
+      <link rel="prev" href="fbdg30-firedac-tfdcommand.html" title="TFDCommand component">
+      <link rel="next" href="fbdg30-firedac-secondary-modules.html" title="Creating a Secondary Module">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-firedac.html">Developing Firebird Applications in Delphi</a> &rarr; Creating the Primary Modules
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdg30-firedac-tfdcommand.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: TFDCommand component" alt="Prev: TFDCommand component"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-firedac.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications in Delphi" alt="Up: Developing Firebird Applications in Delphi"></a><a href="fbdg30-firedac-secondary-modules.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Creating a Secondary Module" alt="Next: Creating a Secondary Module"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdg30-firedac-primary-modules"></a>Creating the Primary Modules
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdg30-firedac-primary-modules.html#fbdg30-firedac-modules-readtransaction">The Read-only Transaction</a></span></dt>
+               <dt><span class="section"><a href="fbdg30-firedac-primary-modules.html#fbdg30-firedac-modules-writetransaction">The Read/Write Transaction</a></span></dt>
+               <dt><span class="section"><a href="fbdg30-firedac-primary-modules.html#fbdg30-firedac-modules-customer-config">Configuring the Customer Module for Editing</a></span></dt>
+               <dt><span class="section"><a href="fbdg30-firedac-primary-modules.html#fbdg30-firedac-modules-customer-impl">Implementing the Customer Module</a></span></dt>
+               <dt><span class="section"><a href="fbdg30-firedac-primary-modules.html#fbdg30-firedac-modules-returningclause">Using a RETURNING Clause to Acquire an Autoinc Value</a></span></dt>
+            </dl>
+         </div>
+         <p>We will create two  primary modules in our application: a product module 
+                and a customer module. Each primary dataset is displayed on a form by means of 
+                a <code class="classname">TDBGrid</code> grid and a toolbar with buttons. The business 
+                logic of working with the dataset will be located in a separate DataModule that 
+                contains a <code class="classname">TDataSource</code> data source, a <code class="classname">TFDQuery</code> 
+                dataset, and two <code class="classname">TFDTransaction</code> transactions, one read-only 
+                and one read/write.
+         </p>
+         <p>As our model for creating datasets, we will create the Customer dataset on the
+                dCustomers datamodule:
+                  
+         </p>
+         <div class="figure"><a name="dcust-datamodule"></a><p class="title"><b>Figure&nbsp;2.4.&nbsp;dCustomers datamodule</b></p>
+            <div class="figure-contents">
+               <div class="mediaobject" align="center">
+                  <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="435">
+                     <tr style="height: 311px">
+                        <td align="center"><img src="images/fbdevgd30_delphi_004.png" align="middle" width="435" alt="dCustomers datamodule"></td>
+                     </tr>
+                  </table>
+               </div>
+            </div>
+            <p></p>
+         </div>
+         <p><br class="figure-break">
+                On tabbing to the Customers form, this is the initial view. The DataSource component
+                is not visible on the form because it is located in the dCustomers datamodule.
+         </p>
+         <div class="figure"><a name="cust-form-init"></a><p class="title"><b>Figure&nbsp;2.5.&nbsp;Customers form, initial view</b></p>
+            <div class="figure-contents">
+               <div class="mediaobject" align="center">
+                  <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="492">
+                     <tr style="height: 319px">
+                        <td align="center"><img src="images/fbdevgd30_delphi_005.png" align="middle" height="319" alt="Customers form, initial view"></td>
+                     </tr>
+                  </table>
+               </div>
+            </div>
+            <p></p>
+         </div><br class="figure-break"><p>We have placed the <code class="classname">TFDQuery</code> component in the dCustomers datamodule and named
+                it qryCustomers. This dataset will be referred to in the <code class="classname">DataSet</code> property of the
+                DataSource data source in DCustomers. We specify the read-only transaction trRead 
+                in the <code class="classname">Transaction</code> property, the trWritetransaction in the 
+                <code class="classname">UpdateTransaction</code> property and, for the <code class="classname">Connection</code> 
+                property, the connection located in the main data module. We populate the <code class="classname">SQL</code> 
+                property with the following query:
+                  
+         </p><pre class="programlisting">
+SELECT
+  customer_id,
+  name,
+  address,
+  zipcode,
+  phone
+FROM
+  customer
+ORDER BY name
+      </pre><p>
+                
+         </p>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-firedac-modules-readtransaction"></a>The Read-only Transaction
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <p>The trRead read transaction is started when the dataset form is displayed
+                     (the <code class="classname">OnActivate</code> event) and is ended when the form is closed. 
+                     READ COMMITTED isolation level (<code class="classname">Options.Isolation = xiReadCommitted</code>) 
+                     is usually used to show data in grids because it allows the transaction to see 
+                     changes committed in the database by other users by just repeating queries (rereading data) 
+                     without the transaction being restarted.
+            </p>
+            <p>Since this transaction is used only to read data, we set the 
+                     <code class="classname">Options.ReadOnly</code> property to True. Thus, our transaction will 
+                     have the following parameters:
+                     read read_committed rec_version.
+            </p>
+            <div class="note">
+               <h3 class="title">Why?</h3>
+               <p>A transaction with exactly these parameters can remain open in Firebird as long
+                            as necessary (days, weeks,  months) without locking other transactions or affecting the
+                            accumulation of garbage in the database because, with these parameters, a transaction
+                            is started on the server as committed.
+               </p>
+            </div>
+            <p>
+                     We set the property <code class="classname">Options.DisconnectAction</code> to <code class="classname">xdCommit</code>,
+                     which perfectly fits a read-only transaction. Finally, the read transaction will have 
+                     the following properties:
+                       
+            </p><pre class="literallayout">
+  Options.AutoStart = False
+  Options.AutoCommit = False
+  Options.AutoStop = False
+  Options.DisconnectAction = xdCommit
+  Options.Isolations = xiReadCommitted
+  Options.ReadOnly = True
+        </pre><p>
+                     
+            </p>
+            <div class="important">
+               <h3 class="title">Important</h3>
+               <p>Although we do not discuss reporting in this manual, be aware that you should not
+                          use such a transaction for reports, especially if they use several queries in sequence.
+                          A transaction with READ COMMITTED isolation will see all new committed changes when
+                          rereading data.  The recommended configuration for reports is a short read-only transaction
+                          with SNAPSHOT isolation 
+                          (<code class="classname">Options.Isolation = xiSnapshot and Options.ReadOnly= True</code>).
+               </p>
+            </div>
+         </div>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-firedac-modules-writetransaction"></a>The Read/Write Transaction
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <div class="toc">
+               <p><b>Table of Contents</b></p>
+               <dl>
+                  <dt><span class="section"><a href="fbdg30-firedac-primary-modules.html#fbdg30-firedac-modules-whichlevel">SNAPSHOT vs READ COMMITTED Isolation</a></span></dt>
+               </dl>
+            </div>
+            <p>The write transaction trWrite that we use for our <code class="classname">FDUpdateSQL</code> 
+                     object must be as short as possible to prevent the oldest active transaction from getting 
+                     &#8220;<span class="quote">stuck</span>&#8221; and inhibiting garbage collection.  High levels of uncollected garbage 
+                     will lead to lower performance. Since the write transaction is very short, we can use the 
+                     SNAPSHOT isolation level. The default value of the 
+                     <code class="classname">Options.DisconnectAction</code> property, <code class="classname">xdCommit</code>, 
+                     is not appropriate for write transactions, so it should be set to <code class="classname">xdRollback</code>. 
+                     We will not rely on starting and ending transactions automatically. Instead, we will 
+                     start and end a transaction explicitly. Thus, our transaction should have the following properties:
+               
+                       
+            </p><pre class="literallayout">
+  Options.AutoStart = False
+  Options.AutoCommit = False
+  Options.AutoStop = False
+  Options.DisconnectAction = xdRollback
+  Options.Isolations = xiSnapshot
+  Options.ReadOnly = False
+        </pre><p>
+                     
+            </p>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-firedac-modules-whichlevel"></a>SNAPSHOT vs READ COMMITTED Isolation
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>It is not absolutely necessary to specify SNAPSHOT isolation for simple
+                          INSERT/UPDATE/DELETE operations. However, if a table has complex triggers
+                          or a stored procedure is executed instead of a simple INSERT/UPDATE/DELETE query,
+                          it is advisable to use SNAPSHOT.  The reason is that READ COMMITTED isolation
+                          does not ensure the read consistency of the statement within one transaction,
+                          since the SELECT statement in this isolation can return data that were
+                          committed to the database after the transaction began. In principle, SNAPSHOT
+                          isolation is recommended  for short-running transactions. 
+               </p>
+            </div>
+         </div>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-firedac-modules-customer-config"></a>Configuring the Customer Module for Editing
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <div class="toc">
+               <p><b>Table of Contents</b></p>
+               <dl>
+                  <dt><span class="section"><a href="fbdg30-firedac-primary-modules.html#fbdg30-firedac-modules-editing">The TFDUpdateSQL Settings</a></span></dt>
+                  <dt><span class="section"><a href="fbdg30-firedac-primary-modules.html#fbdg30-firedac-modules-getgenerator">Getting a Generator Value</a></span></dt>
+               </dl>
+            </div>
+            <p>In this section, we will configure some properties in the 
+                     <code class="classname">qryCustomer</code> and <code class="classname">FDUpdateCustomer</code>
+                      objects to make the Customer dataset editable.
+            </p>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-firedac-modules-editing"></a>The TFDUpdateSQL Settings
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>To make the dataset editable, the <code class="classname">InsertSQL, ModifySQL, 
+                             DeleteSQL</code> and <code class="classname">FetchRowSQL</code> properties 
+                          should be specified in the <code class="classname">FDUpdateSQL</code> object that 
+                          is linked to the dataset. The wizard can generate these statements but it 
+                          may be necessary to correct some things afterwards. For example, you can 
+                          add a RETURNING clause, remove some columns from the update list or cancel 
+                          an automatically generated stored procedure call entirely.
+               </p>
+               <div class="section" lang="en">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h5 class="title"><a name="fbdg30-firedac-modules-insertsql"></a>InsertSQL
+                           </h5>
+                        </div>
+                     </div>
+                  </div><pre class="programlisting">
+INSERT INTO customer (
+  customer_id,
+  name,
+  address,
+  zipcode,
+  phone)
+VALUES (:new_customer_id,
+  :new_name,
+  :new_address,
+  :new_zipcode,
+  :new_phone)
+          </pre></div>
+               <div class="section" lang="en">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h5 class="title"><a name="fbdg30-firedac-modules-modifysql"></a>ModifySQL
+                           </h5>
+                        </div>
+                     </div>
+                  </div><pre class="programlisting">
+UPDATE customer
+SET name = :new_name,
+    address = :new_address,
+    zipcode = :new_zipcode,
+    phone = :new_phone
+WHERE (customer_id = :old_customer_id)
+          </pre></div>
+               <div class="section" lang="en">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h5 class="title"><a name="fbdg30-firedac-modules-deletesql"></a>DeleteSQL
+                           </h5>
+                        </div>
+                     </div>
+                  </div><pre class="programlisting">
+DELETE FROM customer
+WHERE (customer_id = :old_customer_id)
+          </pre></div>
+               <div class="section" lang="en">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h5 class="title"><a name="fbdg30-firedac-modules-fetchrowsql"></a>FetchRowSQL
+                           </h5>
+                        </div>
+                     </div>
+                  </div><pre class="programlisting">
+SELECT
+  customer_id,
+  name,
+  address,
+  zipcode,
+  phone
+FROM
+  customer
+WHERE customer_id = :old_customer_id
+          </pre></div>
+            </div>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-firedac-modules-getgenerator"></a>Getting a Generator Value
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>In this project, we will get the value from the generator before
+                          making an insert into the table. To enable that, specify the following
+                          values for the properties of the <code class="classname">TFDQuery</code> component:
+                            
+               </p><pre class="literallayout">
+  UpdateOptions.GeneratorName = GEN_CUSTOMER_ID
+     and
+  UpdateOptions.AutoIncFields = CUSTOMER_ID
+
+          </pre><p>
+                            
+               </p>
+               <div class="note">
+                  <h3 class="title">Note</h3>
+                  <p>This method works only for autoinc fields that are populated by
+                                 explicit generators (sequences).  It is not applicable to the IDENTITY 
+                                 type of autoinc key introduced in Firebird 3.0.
+                  </p>
+               </div>
+               <p>
+                          
+               </p>
+               <p>Another way to get the value from the generator is to return it after the 
+                          INSERT is executed by means of a RETURNING clause.  This method, which works 
+                          for IDENTITY fields as well, will be shown later, in the topic
+                          <a href="fbdg30-firedac-primary-modules.html#fbdg30-firedac-modules-returningclause" title="Using a RETURNING Clause to Acquire an Autoinc Value">Using a RETURNING 
+                             Clause to Acquire an Autoinc Value</a>.
+                          
+               </p>
+            </div>
+         </div>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-firedac-modules-customer-impl"></a>Implementing the Customer Module
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <p>Modal forms are often used to add a new record or to edit an existing 
+                     one. Once the modal form is closed by the mrOK result, the changes are posted 
+                     to the database. Database-aware visual components are usually used to create 
+                     this kind of form. These components enable you to display the values of some 
+                     fields from the current record and immediately accept the user's changes in 
+                     the corresponding fields if the dataset is in the Insert/Edit mode, i.e. before 
+                     Post.
+            </p>
+            <p>The only way to switch the dataset to Insert/Edit mode is by starting a write
+                     transaction. So, if somebody opens a form for adding a new record and leaves
+                     for a lunch break, we will have an active transaction hanging until the user
+                     comes back from lunch and closes the form.  This uncommitted edit can inhibit
+                     garbage collection, which will reduce performance. There are two ways to solve
+                     this problem:
+                       
+            </p>
+            <div class="orderedlist">
+               <ol type="1">
+                  <li>Use the <code class="classname">CachedUpdates</code> mode, which enables the 
+                               transaction to be active just for a very short period (to be exact, just for the
+                               time it takes for the changes to be applied to the database).
+                  </li>
+                  <li>Give up using visual components that are data-aware. This approach
+                               requires some additional effort from you to activate the data source and pass 
+                               user input to it.
+                  </li>
+               </ol>
+            </div>
+            <p>
+                     
+            </p>
+            <p>We will show how both methods are implemented. The first method is much 
+                     more convenient to use. Let's examine the code for editing a customer record:
+                       
+            </p><pre class="programlisting">
+procedure TCustomerForm.actEditRecordExecute(Sender: TObject); 
+var 
+  xEditorForm: TEditCustomerForm; 
+begin 
+  xEditorForm := TEditCustomerForm.Create(Self); 
+  try 
+    xEditorForm.OnClose := CustomerEditorClose; 
+    xEditorForm.DataSource := Customers.DataSource;
+    xEditorForm.Caption := 'Edit customer'; 
+    Customers.Edit; 
+    xEditorForm.ShowModal; 
+  finally 
+    xEditorForm.Free; 
+  end; 
+end;
+The Customers property is initiated in the <code class="classname">OnCreate</code> event:
+procedure TCustomerForm.FormCreate(Sender: TObject); 
+begin 
+  FCustomers := TDMCustomers.Create(Self); 
+  DBGrid.DataSource := Customers.DataSource; 
+end;
+        </pre><p>
+                     
+            </p>
+            <p>We set the <code class="classname">CachedUpdates</code> mode for the dataset in 
+                     the Edit method of the dCustomers module before switching it to the edit mode:
+                       
+            </p><pre class="programlisting">
+procedure TdmCustomers.Edit; 
+begin 
+  qryCustomer.CachedUpdates := True; 
+  qryCustomer.Edit; 
+end;
+        </pre><p>
+                     
+            </p>
+            <p>The logic of handling the process of editing and adding a record is 
+                     implemented in the <code class="classname">OnClose</code> event handler for the modal edit form:
+                       
+            </p><pre class="programlisting">
+procedure TCustomerForm.CustomerEditorClose(Sender: TObject; 
+  var Action: TCloseAction); 
+begin 
+  if TEditCustomerForm(Sender).ModalResult &lt;&gt; mrOK then
+  begin 
+    Customers.Cancel; 
+    Action := caFree; 
+    Exit; 
+  end; 
+  try 
+    Customers.Post; 
+    Customers.Save; 
+    Action := caFree; 
+  except 
+    on E: Exception do 
+    begin 
+      Application.ShowException(E); 
+      // It does not close the window give the user correct the error 
+      Action := caNone; 
+    end; 
+  end;
+end;
+        </pre><p>
+                     To understand the internal processes, we can study the code
+                     for the <code class="classname">Cancel, Post</code> and <code class="classname">Save</code> 
+                     methods of the dCustomer data module:
+                       
+            </p><pre class="programlisting">
+procedure TdmCustomers.Cancel; 
+begin 
+  qryCustomer.Cancel; 
+  qryCustomer.CancelUpdates; 
+  qryCustomer.CachedUpdates := False; 
+end;
+
+procedure TdmCustomers.Post; 
+begin 
+  qryCustomer.Post; 
+end;
+ 
+procedure TdmCustomers.Save; 
+begin 
+  // We do everything in a short transaction 
+  // In CachedUpdates mode an error does not interrupt the running code. 
+  // The ApplyUpdates method returns the number of errors. 
+  // The error can be obtained from the property RowError 
+  try 
+    trWrite.StartTransaction; 
+    if (qryCustomer.ApplyUpdates = 0) then 
+    begin 
+      qryCustomer.CommitUpdates; 
+      trWrite.Commit; 
+    end 
+    else 
+      raise Exception.Create(qryCustomer.RowError.Message); 
+    qryCustomer.CachedUpdates := False; 
+  except 
+    on E: Exception do 
+    begin 
+      if trWrite.Active then 
+        trWrite.Rollback; 
+      raise; 
+    end; 
+  end; 
+end;
+        </pre><p>
+                     Observe that the write transaction is not started at all
+                     until the OK button is clicked. Thus, the write transaction is 
+                     active only while the data are being transferred from the dataset 
+                     buffer to the database. Since we access not more than one record 
+                     in the buffer, the transaction will be active for a very short 
+                     time, which is exactly what we want.
+            </p>
+         </div>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-firedac-modules-returningclause"></a>Using a RETURNING Clause to Acquire an Autoinc Value
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <p>Creating the product is similar to creating the customer
+                     one. We will use it to demonstrate the method of getting an
+                     auto-incremented value by means of a RETURNING clause.
+            </p>
+            <p>The main query:
+                       
+            </p><pre class="programlisting">
+SELECT
+  product_id,
+  name,
+  price,
+  description
+FROM product
+ORDER BY name
+        </pre><p>
+                     
+            </p>
+            <p>The <code class="classname">TFDUpdateSQL.InsertSQL</code> property will contain the following
+                     statement:
+                       
+            </p><pre class="programlisting">
+INSERT INTO PRODUCT (NAME, PRICE, DESCRIPTION)
+VALUES (:NEW_NAME, :NEW_PRICE, :NEW_DESCRIPTION)
+RETURNING PRODUCT_ID
+        </pre><p>
+                     The RETURNING clause in this statement will return the value of the
+                     PRODUCT_ID field after it has been populated by the BEFORE INSERT trigger.
+                     The client side in this case has no need to know the name of the generator, since
+                     it all happens on the server. Leave the <code class="classname">UpdateOptions.GeneratorName</code> 
+                     property as nil. 
+            </p>
+            <p>To acquire the autoinc value by this method also requires filling a couple
+                     of properties for the PRODUCT_ID field because the value is being entered indirectly:
+                       
+            </p><pre class="literallayout">
+  Required = False
+     and
+  ReadOnly = True
+        </pre><p>
+                     Everything else is set up similarly to the way it was done for the Customer
+                     module.
+            </p>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdg30-firedac-tfdcommand.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: TFDCommand component" alt="Prev: TFDCommand component"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-firedac.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications in Delphi" alt="Up: Developing Firebird Applications in Delphi"></a><a href="fbdg30-firedac-secondary-modules.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Creating a Secondary Module" alt="Next: Creating a Secondary Module"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-firedac.html">Developing Firebird Applications in Delphi</a> &rarr; Creating the Primary Modules
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

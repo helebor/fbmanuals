@@ -1,0 +1,702 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Secondary Modules</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-efw.html" title="Chapter 3: Developing Firebird Applications with Microsoft Entity Framework">
+      <link rel="prev" href="fbdg30-efw-work-with-data.html" title="Working with Data">
+      <link rel="next" href="fbdg30-efw-transactions.html" title="Working with Transactions">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-efw.html">Developing Firebird Applications with Microsoft Entity Framework</a> &rarr; Secondary Modules
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdg30-efw-work-with-data.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Working with Data" alt="Prev: Working with Data"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-efw.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications with Microsoft Entity Framework" alt="Up: Developing Firebird Applications with Microsoft Entity Framework"></a><a href="fbdg30-efw-transactions.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Working with Transactions" alt="Next: Working with Transactions"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdg30-efw-secondary-modules"></a>Secondary Modules
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdg30-efw-secondary-modules.html#fbdg30-efw-filtering-data">Filtering Data</a></span></dt>
+               <dt><span class="section"><a href="fbdg30-efw-secondary-modules.html#fbdg30-efw-loading-inv-data">Loading the Invoice Data</a></span></dt>
+               <dt><span class="section"><a href="fbdg30-efw-secondary-modules.html#fbdg30-efw-showinvoicelines">Showing the Invoice Lines</a></span></dt>
+               <dt><span class="section"><a href="fbdg30-efw-secondary-modules.html#fbdg30-efw-stored-procs">Working with Stored Procedures</a></span></dt>
+               <dt><span class="section"><a href="fbdg30-efw-secondary-modules.html#fbdg30-efw-showing-products">Showing Products for Selection</a></span></dt>
+            </dl>
+         </div>
+         <p>Our application will have only one secondary module, named &#8220;<span class="quote">Invoices</span>&#8221;.
+                Secondary modules typically  contain larger numbers of records than primary ones
+                and new records are added to them frequently.
+         </p>
+         <p>An invoice consists of a title where some general attributes are described (number, date,
+                customer &#8230;) and invoice lines with the list of products, their quantities, prices, etc.
+                It is convenient to have two grids for such documents: the main one showing the invoice header
+                data and the detail one for the list of products sold. We will need one DataGridView component
+                for each entity on the document form, binding the appropriate BindingSource to each.
+            
+                  
+         </p>
+         <div class="figure"><a name="efw-inv-form"></a><p class="title"><b>Figure&nbsp;3.16.&nbsp;Invoice form</b></p>
+            <div class="figure-contents">
+               <div class="mediaobject" align="center">
+                  <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="554">
+                     <tr style="height: 370px">
+                        <td align="center"><img src="images/fbdevgd30_efw_016_en.png" align="middle" width="554" alt="Invoice form"></td>
+                     </tr>
+                  </table>
+               </div>
+            </div>
+            <p></p>
+         </div>
+         <p><br class="figure-break">
+                
+         </p>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-efw-filtering-data"></a>Filtering Data
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <p>Most secondary entities contain a field with the document creation date. To reduce
+                     the amount of retrieved data, the concept of a work period is usually introduced to filter
+                     the data sent to the client. A work period is a range of dates for which the records
+                     are required. Since the application can have more than one secondary entity, it makes sense
+                     to add variables containing the start and end dates of a work period to the global
+                     <code class="classname">AppVariables</code> data module (see
+                     <a href="fbdg30-efw-vs-crt-gui.html#fbdg30-efw-vs-context" title="Getting a Context">Getting a Context</a> that is used by all modules
+                     working with the database in one way or another. Once the application is started, the work
+                     period is usually defined by the dates when the current quarter starts and ends, although
+                     of course, other options are possible. While working with the application, the user can
+                     change the work period.
+            </p>
+            <p>Since the most recent records are the most requested, it makes sense to sort them by
+                     date in reverse order. As with the primary modules, we will use LINQ to retrieve data.
+                     
+            </p>
+         </div>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-efw-loading-inv-data"></a>Loading the Invoice Data
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <div class="toc">
+               <p><b>Table of Contents</b></p>
+               <dl>
+                  <dt><span class="section"><a href="fbdg30-efw-secondary-modules.html#fbdg30-efw-invoicepay">Paying an Invoice</a></span></dt>
+               </dl>
+            </div>
+            <p>The following method loads the invoice headers:
+                       
+            </p><pre class="programlisting">
+public void LoadInvoicesData() {
+    var dbContext = AppVariables.getDbContext();
+
+    var invoices =
+        from invoice in dbContext.INVOICES
+        where (invoice.INVOICE_DATE &gt;= AppVariables.StartDate) &amp;&amp;
+              (invoice.INVOICE_DATE &lt;= AppVariables.FinishDate)
+        orderby invoice.INVOICE_DATE descending
+        select new InvoiceView
+        {
+            Id = invoice.INVOICE_ID,
+            Cusomer_Id = invoice.CUSTOMER_ID,
+            Customer = invoice.CUSTOMER.NAME,
+            Date = invoice.INVOICE_DATE,
+            Amount = invoice.TOTAL_SALE,
+            Payed = (invoice.PAYED == 1) ? "Yes" : "No"
+        };
+    masterBinding.DataSource = invoices.ToBindingList();
+}
+        </pre><p>
+                     
+            </p>
+            <p>To simplify type casting, we define an <code class="classname">InvoiceView</code> class, rather
+                     than use some anonymous type.  The definition is as follows:
+                       
+            </p><pre class="programlisting">
+public class InvoiceView {
+    public int Id { get; set; }
+
+    public int Cusomer_Id { get; set; }
+
+    public string Customer { get; set; }
+
+    public DateTime? Date { get; set; }
+
+    public decimal? Amount { get; set; }
+
+    public string Payed { get; set; }
+
+    public void Load(int Id) {
+        var dbContext = AppVariables.getDbContext();
+        var invoices =
+            from invoice in dbContext.INVOICES
+            where invoice.INVOICE_ID == Id
+            select new InvoiceView
+            {
+                Id = invoice.INVOICE_ID,
+                Cusomer_Id = invoice.CUSTOMER_ID,
+                Customer = invoice.CUSTOMER.NAME,
+                Date = invoice.INVOICE_DATE,
+                Amount = invoice.TOTAL_SALE,
+                Payed = (invoice.PAYED == 1) ? "Yes" : "No"
+            };
+
+        InvoiceView invoiceView = invoices.ToList().First();
+        this.Id = invoiceView.Id;
+        this.Cusomer_Id = invoiceView.Cusomer_Id;
+        this.Customer = invoiceView.Customer;
+        this.Date = invoiceView.Date;
+        this.Amount = invoiceView.Amount;
+        this.Payed = invoiceView.Payed;
+    }
+}
+        </pre><p>
+                     The <code class="classname">Load</code> method allows us to update one added or
+                     updated record in the grid quickly, instead of completely reloading
+                     all records. Here is the code of the event handler for clicking the Add button:
+                       
+            </p><pre class="programlisting">
+private void btnAddInvoice_Click(object sender, EventArgs e) {
+  var dbContext = AppVariables.getDbContext();
+  var invoice = dbContext.INVOICES.Create();
+  using (InvoiceEditorForm editor = new InvoiceEditorForm()) {
+    editor.Text = "Add invoice";
+    editor.Invoice = invoice;
+    // Form Close Handler
+    editor.FormClosing += delegate (object fSender, FormClosingEventArgs fe) {
+      if (editor.DialogResult == DialogResult.OK) {
+        try {
+          // get next sequence value
+          invoice.INVOICE_ID = dbContext.NextValueFor("GEN_INVOICE_ID");
+          // add a record
+          dbContext.INVOICES.Add(invoice);
+          // trying to save the changes
+          dbContext.SaveChanges();
+          // add the projection to the grid list
+          ((InvoiceView)masterBinding.AddNew()).Load(invoice.INVOICE_ID);
+        }
+        catch (Exception ex) {
+          // display error
+          MessageBox.Show(ex.Message, "Error");
+          // Do not close the form to correct the error
+          fe.Cancel = true;
+        }
+      }
+    };
+    // show the modal form
+    editor.ShowDialog(this);
+  }
+}
+        </pre><p>
+                     
+            </p>
+            <p>In our primary modules, the similarly-named method called dbContext.Refresh
+                     but, here, a record is updated by by calling the <code class="classname">Load</code>
+                     method of the <code class="classname">InvoiceView</code> class. The reason for the difference
+                     is that <code class="classname">dbContext.Refresh</code> is used to update entity objects,
+                     not the objects that can be produced by complex LINQ queries.
+            </p>
+            <p>The code of the event handler for clicking the Edit button:
+                       
+            </p><pre class="programlisting">
+private void btnEditInvoice_Click(object sender, EventArgs e) {
+  var dbContext = AppVariables.getDbContext();
+  // find entity by id
+  var invoice = dbContext.INVOICES.Find(this.CurrentInvoice.Id);
+  if (invoice.PAYED == 1) {
+    MessageBox.Show("The change is not possible, the invoice has already been paid.",
+                    "Error");
+    return;
+  }
+  using (InvoiceEditorForm editor = new InvoiceEditorForm()) {
+    editor.Text = "Edit invoice";
+    editor.Invoice = invoice;
+    // Form Close Handler
+    editor.FormClosing += delegate (object fSender, FormClosingEventArgs fe) {
+      if (editor.DialogResult == DialogResult.OK) {
+        try {
+          // trying to save the changes
+          dbContext.SaveChanges();
+          // refresh
+          CurrentInvoice.Load(invoice.INVOICE_ID);
+          masterBinding.ResetCurrentItem();
+        }
+        catch (Exception ex) {
+          // display error
+          MessageBox.Show(ex.Message, "Error");
+          // Do not close the form to correct the error
+          fe.Cancel = true;
+        }
+      }
+    };
+    editor.ShowDialog(this);
+  }
+}
+        </pre><p>
+                     Here we needed to find an entity by the identifier provided
+                     in the current record. The CurrentInvoice is used to retrieve the invoice
+                     selected in the grid. This is how we code it:
+                       
+            </p><pre class="programlisting">
+public InvoiceView CurrentInvoice {
+    get {
+        return (InvoiceView)masterBinding.Current;
+    }
+}
+        </pre><p>
+                     
+            </p>
+            <p>Using the same approach, you can implement deleting the invoice
+                       header yourself.
+            </p>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-efw-invoicepay"></a>Paying an Invoice
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>Besides adding, editing and deleting, we want one more operation for
+                          invoices: payment. Here is code for a method implementing this operation:
+                            
+               </p><pre class="programlisting">
+private void btnInvoicePay_Click(object sender, EventArgs e) {
+  var dbContext = AppVariables.getDbContext();
+  var invoice = dbContext.INVOICES.Find(this.CurrentInvoice.Id);
+  try {
+    if (invoice.PAYED == 1)
+      throw new Exception("The change is not possible, the invoice has already been paid.");
+    invoice.PAYED = 1;
+    // trying to save the changes
+    dbContext.SaveChanges();
+    // refresh record
+    CurrentInvoice.Load(invoice.INVOICE_ID);
+    masterBinding.ResetCurrentItem();
+  }
+  catch (Exception ex) {
+    // display error
+    MessageBox.Show(ex.Message, "Error");
+  }
+}
+          </pre><p>
+                          
+               </p>
+            </div>
+         </div>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-efw-showinvoicelines"></a>Showing the Invoice Lines
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <p>We have two choices for displaying the invoice lines:
+                       
+            </p>
+            <div class="orderedlist">
+               <ol type="1">
+                  <li>Getting data for each invoice from the INVOICE_LINE navigation property
+                               and displaying the contents of this complex property in the detail grid,
+                               probably with LINQ transformations
+                  </li>
+                  <li>Getting the data for each invoice with a separate LINQ query that will be
+                               re-executed when the cursor moves to another record in the master grid
+                  </li>
+               </ol>
+            </div>
+            <p>
+                     
+            </p>
+            <p>Either way has its advantages and drawbacks.</p>
+            <p>The first one assumes that we want to retrieve all invoices at once for the
+                     specified period together with the bound data from the invoice lines
+                     when the invoice form is opened. Although it is done with one SQL query,
+                     it may take quite a while and requires a large amount of random-access memory.
+                     It is better suited to web applications where records are usually displayed
+                     page by page.
+            </p>
+            <p>The second one is a bit more difficult to implement, but it allows the
+                     invoice form to be opened quickly and requires less resource. However, each time
+                     the cursor in the master grid moves, an SQL query will be executed, generating
+                     network traffic, albeit with only a small volume of data.
+            </p>
+            <p>For our application we will use the second approach. We need an event
+                     handler for the BindingSource component for editing the current record:
+                       
+            </p><pre class="programlisting">
+private void masterBinding_CurrentChanged(object sender, EventArgs e) {
+    LoadInvoiceLineData(this.CurrentInvoice.Id);
+    detailGridView.DataSource = detailBinding;
+}
+        </pre><p>
+                     
+            </p>
+            <p>Now, the method for loading the invoice data:
+                       
+            </p><pre class="programlisting">
+private void LoadInvoiceLineData(int? id) {
+  var dbContext = AppVariables.getDbContext();
+  var lines =
+      from line in dbContext.INVOICE_LINES
+      where line.INVOICE_ID == id
+      select new InvoiceLineView
+      {
+          Id = line.INVOICE_LINE_ID,
+          Invoice_Id = line.INVOICE_ID,
+          Product_Id = line.PRODUCT_ID,
+          Product = line.PRODUCT.NAME,
+          Quantity = line.QUANTITY,
+          Price = line.SALE_PRICE,
+          Total = Math.Round(line.QUANTITY * line.SALE_PRICE, 2)
+      };
+  detailBinding.DataSource = lines.ToBindingList();
+}
+        </pre><p>
+                     
+            </p>
+            <p>We use the InvoiceLineView class as an extension:
+                       
+            </p><pre class="programlisting">
+public class InvoiceLineView {
+    public int Id { get; set; }
+    public int Invoice_Id { get; set; }
+    public int Product_Id { get; set; }
+    public string Product { get; set; }
+    public decimal Quantity { get; set; }
+    public decimal Price { get; set; }
+    public decimal Total { get; set; }
+}
+        </pre><p>
+                       
+            </p>
+            <div class="note">
+               <h3 class="title">Note</h3>
+               <p>Unlike the InvoiceView class, this one has no method for
+                            loading one current record. In our example, the speed of reloading
+                            the detail grid it is not crucial, because one document does not
+                            contain thousands of items. Implementing this method is optional.
+               </p>
+            </div>
+            <p>
+                     
+            </p>
+            <p>Now we will add a special property for retrieving the current line
+                     of the document selected in the detail grid.
+                       
+            </p><pre class="programlisting">
+public InvoiceLineView CurrentInvoiceLine {
+    get {
+        return (InvoiceLineView)detailBinding.Current;
+    }
+}
+        </pre><p>
+                     
+            </p>
+         </div>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-efw-stored-procs"></a>Working with Stored Procedures
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <div class="toc">
+               <p><b>Table of Contents</b></p>
+               <dl>
+                  <dt><span class="section"><a href="fbdg30-efw-secondary-modules.html#fbdg30-efw-dltinvoice">Deleting an Invoice Detail Line</a></span></dt>
+               </dl>
+            </div>
+            <p>The methods we will use for adding, editing and deleting illustrate
+                     how to work with stored procedures in Entity Framework. As an example, this
+                     is the method for adding a new record:
+                       
+            </p><pre class="programlisting">
+private void btnAddInvoiceLine_Click(object sender, EventArgs e) {
+  var dbContext = AppVariables.getDbContext();
+  // get current invoice
+  var invoice = dbContext.INVOICES.Find(this.CurrentInvoice.Id);
+  if (invoice.PAYED == 1) {
+    MessageBox.Show("The change is not possible, the invoice has already been paid.", "Error");
+    return;
+  }
+  // create invoice position
+  var invoiceLine = dbContext.INVOICE_LINES.Create();
+  invoiceLine.INVOICE_ID = invoice.INVOICE_ID;
+  // create the position editor of the invoice
+  using (InvoiceLineEditorForm editor = new InvoiceLineEditorForm()) {
+    editor.Text = "Add invoice line";
+    editor.InvoiceLine = invoiceLine;
+    // Form Close Handler
+    editor.FormClosing += delegate (object fSender, FormClosingEventArgs fe) {
+      if (editor.DialogResult == DialogResult.OK) {
+        try {
+          // create SP parameters
+          var invoiceIdParam = new FbParameter("INVOICE_ID",
+                                               FbDbType.Integer);
+          var productIdParam = new FbParameter("PRODUCT_ID",
+                                               FbDbType.Integer);
+          var quantityParam = new FbParameter("QUANTITY", FbDbType.Integer);
+          // initial parameters values
+          invoiceIdParam.Value = invoiceLine.INVOICE_ID;
+          productIdParam.Value = invoiceLine.PRODUCT_ID;
+          quantityParam.Value = invoiceLine.QUANTITY;
+          // execute stored procedure
+          dbContext.Database.ExecuteSqlCommand(
+            "EXECUTE PROCEDURE SP_ADD_INVOICE_LINE("
+          + "@INVOICE_ID, @PRODUCT_ID, @QUANTITY)",
+             invoiceIdParam,
+             productIdParam,
+             quantityParam);
+          // refresh grids
+          // reload current invoice record
+          CurrentInvoice.Load(invoice.INVOICE_ID);
+          // reload all record in detail grid
+          LoadInvoiceLineData(invoice.INVOICE_ID);
+          // refresh all related data
+          masterBinding.ResetCurrentItem();
+        }
+        catch (Exception ex) {
+          // display error
+          MessageBox.Show(ex.Message, "Error");
+          // Do not close the form to correct the error
+          fe.Cancel = true;
+        }
+      }
+    };
+    editor.ShowDialog(this);
+  }
+}
+        </pre><p>
+                     
+            </p>
+            <p>With our example, an update of the master grid record will
+                     be needed because one of its fields (TotalSale) contains aggregated information
+                     derived from the detail lines of the document. This is how we do that:
+                       
+            </p><pre class="programlisting">
+private void btnEditInvoiceLine_Click(object sender, EventArgs e) {
+  var dbContext = AppVariables.getDbContext();
+  // get current invoice
+  var invoice = dbContext.INVOICES.Find(this.CurrentInvoice.Id);
+  if (invoice.PAYED == 1) {
+    MessageBox.Show("The change is not possible, the invoice has already been paid.",
+                    "Error");
+    return;
+  }
+  // get current invoice position
+  var invoiceLine = invoice.INVOICE_LINES
+         .Where(p =&gt; p.INVOICE_LINE_ID == this.CurrentInvoiceLine.Id)
+         .First();
+  // create invoice position editor
+  using (InvoiceLineEditorForm editor = new InvoiceLineEditorForm()) {
+    editor.Text = "Edit invoice line";
+    editor.InvoiceLine = invoiceLine;
+    // form close handler
+    editor.FormClosing += delegate (object fSender, FormClosingEventArgs fe) {
+      if (editor.DialogResult == DialogResult.OK) {
+        try {
+          // create parameters
+          var idParam = new FbParameter("INVOICE_LINE_ID", FbDbType.Integer);
+          var quantityParam = new FbParameter("QUANTITY", FbDbType.Integer);
+          // initial parameters values
+          idParam.Value = invoiceLine.INVOICE_LINE_ID;
+          quantityParam.Value = invoiceLine.QUANTITY;
+          // execute stored procedure
+          dbContext.Database.ExecuteSqlCommand(
+              "EXECUTE PROCEDURE SP_EDIT_INVOICE_LINE("
+            + "@INVOICE_LINE_ID, @QUANTITY)",
+              idParam,
+              quantityParam);
+          // refresh grids
+          // reload current invoice record
+          CurrentInvoice.Load(invoice.INVOICE_ID);
+          // reload all records in detail grid
+          LoadInvoiceLineData(invoice.INVOICE_ID);
+          // refresh all related controls
+          masterBinding.ResetCurrentItem();
+        }
+        catch (Exception ex) {
+          // display error
+          MessageBox.Show(ex.Message, "Error");
+          // Do not close the form to correct the error
+          fe.Cancel = true;
+        }
+      }
+    };
+    editor.ShowDialog(this);
+  }
+}
+        </pre><p>
+                     
+            </p>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-efw-dltinvoice"></a>Deleting an Invoice Detail Line
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>The method for deleting a detail record is implemented as follows:
+                            
+               </p><pre class="programlisting">
+private void btnDeleteInvoiceLine_Click(object sender, EventArgs e) {
+  var result = MessageBox.Show(
+    " Are you sure you want to delete the invoice item?",
+    "Confirmation",
+    MessageBoxButtons.YesNo,
+    MessageBoxIcon.Question);
+  if (result == DialogResult.Yes) {
+    var dbContext = AppVariables.getDbContext();
+    // get current invoice
+    var invoice = dbContext.INVOICES.Find(this.CurrentInvoice.Id);
+    try {
+      if (invoice.PAYED == 1)
+        throw new Exception("It is not possible to delete the entry, the invoice is paid.");
+      // create parameters
+      var idParam = new FbParameter("INVOICE_LINE_ID", FbDbType.Integer);
+      // initialize parameters values
+      idParam.Value = this.CurrentInvoiceLine.Id;
+      // execute stored procedure
+      dbContext.Database.ExecuteSqlCommand(
+        "EXECUTE PROCEDURE SP_DELETE_INVOICE_LINE(@INVOICE_LINE_ID)",
+        idParam);
+      // update grids
+      // reload current invoice
+      CurrentInvoice.Load(invoice.INVOICE_ID);
+      // reload all records in detail grids
+      LoadInvoiceLineData(invoice.INVOICE_ID);
+      // refresh related controls
+      masterBinding.ResetCurrentItem();
+    }
+    catch (Exception ex) {
+      // display error
+      MessageBox.Show(ex.Message, "Error");
+    }
+  }
+}
+          </pre><p>
+                          
+               </p>
+            </div>
+         </div>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-efw-showing-products"></a>Showing Products for Selection
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <p>In the methods for adding and editing invoice lines we
+                     used the form. For displaying products, we will use a TextBox
+                     control.
+                       
+            </p>
+            <div class="figure"><a name="efw-product-form"></a><p class="title"><b>Figure&nbsp;3.17.&nbsp;Product form</b></p>
+               <div class="figure-contents">
+                  <div class="mediaobject" align="center">
+                     <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="318">
+                        <tr style="height: 215px">
+                           <td align="center"><img src="images/fbdevgd30_efw_017_en.png" align="middle" width="318" alt="Product form"></td>
+                        </tr>
+                     </table>
+                  </div>
+               </div>
+               <p></p>
+            </div>
+            <p><br class="figure-break">
+                     
+            </p>
+            <p>A click on the button next to the TextBox will open a modal form with a
+                     grid for selecting products. The same modal form created for displaying the
+                     products is used for selecting them. The click handler code for the
+                     embedded button that initiates the form is:
+                       
+            </p><pre class="programlisting">
+public partial class InvoiceLineEditorForm : Form {
+    public InvoiceLineEditorForm() {
+        InitializeComponent();
+    }
+
+    public INVOICE_LINE InvoiceLine { get; set; }
+
+    private void InvoiceLineEditorForm_Load(object sender, EventArgs e) {
+        if (this.InvoiceLine.PRODUCT != null) {
+            edtProduct.Text = this.InvoiceLine.PRODUCT.NAME;
+            edtPrice.Text = this.InvoiceLine.PRODUCT.PRICE.ToString("F2");
+            btnChooseProduct.Click -= this.btnChooseProduct_Click;
+        }
+        if (this.InvoiceLine.QUANTITY == 0)
+            this.InvoiceLine.QUANTITY = 1;
+        edtQuantity.DataBindings.Add("Value", this.InvoiceLine, "QUANTITY");
+    }
+
+    private void btnChooseProduct_Click(object sender, EventArgs e) {
+        GoodsForm goodsForm = new GoodsForm();
+        if (goodsForm.ShowDialog() == DialogResult.OK) {
+            InvoiceLine.PRODUCT_ID = goodsForm.CurrentProduct.Id;
+            edtProduct.Text = goodsForm.CurrentProduct.Name;
+            edtPrice.Text = goodsForm.CurrentProduct.Price.ToString("F2");
+        }
+    }
+}
+        </pre><p>
+                     
+            </p>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdg30-efw-work-with-data.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Working with Data" alt="Prev: Working with Data"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-efw.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications with Microsoft Entity Framework" alt="Up: Developing Firebird Applications with Microsoft Entity Framework"></a><a href="fbdg30-efw-transactions.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Working with Transactions" alt="Next: Working with Transactions"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-efw.html">Developing Firebird Applications with Microsoft Entity Framework</a> &rarr; Secondary Modules
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

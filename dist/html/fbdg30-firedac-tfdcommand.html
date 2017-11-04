@@ -1,0 +1,155 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>TFDCommand component</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-firedac.html" title="Chapter 2: Developing Firebird Applications in Delphi">
+      <link rel="prev" href="fbdg30-firedac-datasets.html" title="Datasets">
+      <link rel="next" href="fbdg30-firedac-primary-modules.html" title="Creating the Primary Modules">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-firedac.html">Developing Firebird Applications in Delphi</a> &rarr; TFDCommand component
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdg30-firedac-datasets.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Datasets" alt="Prev: Datasets"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-firedac.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications in Delphi" alt="Up: Developing Firebird Applications in Delphi"></a><a href="fbdg30-firedac-primary-modules.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Creating the Primary Modules" alt="Next: Creating the Primary Modules"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdg30-firedac-tfdcommand"></a>TFDCommand component
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdg30-firedac-tfdcommand.html#fbdg30-firedac-commandkind">Types of Command</a></span></dt>
+            </dl>
+         </div>
+         <p>The <code class="classname">TFDCommand</code> component is used to execute SQL queries. It is not
+                descended from <code class="classname">TDataSet</code> so it is valid to use only for executing SQL queries
+                that do not return datasets.
+         </p>
+         <div class="table"><a name="fbdg30-firedac-tbl-tfdcommand"></a><p class="title"><b>Table&nbsp;2.5.&nbsp;TFDCommand component main properties</b></p>
+            <div class="table-contents">
+               <table summary="TFDCommand component main properties" border="1">
+                  <colgroup>
+                     <col>
+                     <col>
+                  </colgroup>
+                  <thead>
+                     <tr valign="middle">
+                        <th align="center" valign="middle">Property</th>
+                        <th align="center" valign="middle">Purpose</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <tr valign="middle">
+                        <td align="left" valign="middle">Connection</td>
+                        <td align="left" valign="middle">Reference to the TFDConnection component</td>
+                     </tr>
+                     <tr valign="middle">
+                        <td align="left" valign="middle">Transaction</td>
+                        <td align="left" valign="middle">The transaction  within which the SQL command will 
+                                       be executed
+                        </td>
+                     </tr>
+                     <tr valign="middle">
+                        <td align="left" valign="middle">CommandKind</td>
+                        <td align="left" valign="middle">Type of command. The types are described in the section 
+                                       below.
+                        </td>
+                     </tr>
+                     <tr valign="middle">
+                        <td align="left" valign="middle">CommandText</td>
+                        <td align="left" valign="middle">SQL query text</td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+            <p></p>
+         </div><br class="table-break"><div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-firedac-commandkind"></a>Types of Command
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <p>Usually, the command type is determined automatically from the text 
+                     of the SQL statement. The following values are available for the property
+                     <code class="classname">TFDCommand.CommandKind</code> to cater for cases where the 
+                     internal parser might be unable to make correct, unambiguous assumptions 
+                     based on the statement text alone:
+                       
+            </p>
+            <div class="itemizedlist">
+               <ul type="disc">
+                  <li>skUnknown&#8212;unknown. Tells the internal parser to
+                               determine the command type automatically from its analysis of the 
+                               text of the command
+                  </li>
+                  <li>skStartTransaction&#8212;a command for starting a transaction</li>
+                  <li>skCommit&#8212;a command for ending and committing a transaction</li>
+                  <li>skRollback&#8212;a command for ending and rolling back a transaction</li>
+                  <li>skCreate&#8212;a CREATE &#8230; command for creating a new metadata object</li>
+                  <li>skAlter&#8212;an ALTER &#8230; command for altering a metadata object</li>
+                  <li>skDrop&#8212;a DROP &#8230; command for deleting a metadata object</li>
+                  <li>skSelect&#8212;a SELECT command for retrieving data</li>
+                  <li>skSelectForLock&#8212;a SELECT &#8230; WITH LOCK command for locking 
+                               the selected rows
+                  </li>
+                  <li>skInsert&#8212;an INSERT &#8230; command for inserting a new 
+                               record
+                  </li>
+                  <li>skUpdate&#8212;an UPDATE &#8230; command for modifying records</li>
+                  <li>skDelete&#8212;a DELETE &#8230; command for deleting records</li>
+                  <li>skMerge&#8212;a MERGE INTO &#8230; command</li>
+                  <li>skExecute&#8212;an EXECUTE PROCEDURE or or EXECUTE BLOCK command</li>
+                  <li>skStoredProc&#8212;a stored procedure call</li>
+                  <li>skStoredProcNoCrs&#8212;a call to a stored procedure that does not
+                               return a cursor
+                  </li>
+                  <li>skStoredProcWithCrs&#8212;a call to a stored procedure that returns 
+                               a cursor
+                  </li>
+               </ul>
+            </div>
+            <p>
+                     
+            </p>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdg30-firedac-datasets.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Datasets" alt="Prev: Datasets"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-firedac.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications in Delphi" alt="Up: Developing Firebird Applications in Delphi"></a><a href="fbdg30-firedac-primary-modules.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Creating the Primary Modules" alt="Next: Creating the Primary Modules"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-firedac.html">Developing Firebird Applications in Delphi</a> &rarr; TFDCommand component
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

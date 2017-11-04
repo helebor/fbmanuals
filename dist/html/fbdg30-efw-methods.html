@@ -1,0 +1,85 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Methods of Interacting with a Database</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-efw.html" title="Chapter 3: Developing Firebird Applications with Microsoft Entity Framework">
+      <link rel="prev" href="fbdevgd30-efw.html" title="Chapter 3: Developing Firebird Applications with Microsoft Entity Framework">
+      <link rel="next" href="fbdg30-efw-vs-prepare.html" title="Setting Up for Firebird in Visual Studio 2015">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-efw.html">Developing Firebird Applications with Microsoft Entity Framework</a> &rarr; Methods of Interacting with a Database
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdevgd30-efw.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Developing Firebird Applications with Microsoft Entity Framework" alt="Prev: Developing Firebird Applications with Microsoft Entity Framework"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-efw.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications with Microsoft Entity Framework" alt="Up: Developing Firebird Applications with Microsoft Entity Framework"></a><a href="fbdg30-efw-vs-prepare.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Setting Up for Firebird in Visual Studio 2015" alt="Next: Setting Up for Firebird in Visual Studio 2015"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdg30-efw-methods"></a>Methods of Interacting with a Database
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <p>Entity Framework assumes three possible methods for interacting with a database:
+                  
+         </p>
+         <div class="variablelist">
+            <dl>
+               <dt><span class="term"><span><strong class="command">Database first</strong></span>:</span></dt>
+               <dd>Entity Framework creates a set of classes that reflect the model
+                            of an existing database.
+               </dd>
+               <dt><span class="term"><span><strong class="command">Model first</strong></span>:</span></dt>
+               <dd>the developer creates a database model that Entity Framework
+                            later uses to create an actual database on the server.
+               </dd>
+               <dt><span class="term"><span><strong class="command">Code first</strong></span>:</span></dt>
+               <dd>the developer creates a class for the model of the data that will
+                            be stored in a database and then Entity Framework uses this model to generate
+                            the database and its tables
+               </dd>
+            </dl>
+         </div>
+         <p>
+                Our sample application will use the <span><strong class="command">Code first</strong></span> approach, but
+                you could use one of the others just as easily.
+         </p>
+         <div class="note">
+            <h3 class="title">Note</h3>
+            <p>As we already have a database, we will just write the code that would
+                     result in creating that database.
+            </p>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdevgd30-efw.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Developing Firebird Applications with Microsoft Entity Framework" alt="Prev: Developing Firebird Applications with Microsoft Entity Framework"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-efw.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications with Microsoft Entity Framework" alt="Up: Developing Firebird Applications with Microsoft Entity Framework"></a><a href="fbdg30-efw-vs-prepare.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Setting Up for Firebird in Visual Studio 2015" alt="Next: Setting Up for Firebird in Visual Studio 2015"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-efw.html">Developing Firebird Applications with Microsoft Entity Framework</a> &rarr; Methods of Interacting with a Database
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

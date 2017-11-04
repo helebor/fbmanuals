@@ -1,0 +1,551 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Datasets</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-firedac.html" title="Chapter 2: Developing Firebird Applications in Delphi">
+      <link rel="prev" href="fbdg30-firedac-transactions.html" title="Working with Transactions">
+      <link rel="next" href="fbdg30-firedac-tfdcommand.html" title="TFDCommand component">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-firedac.html">Developing Firebird Applications in Delphi</a> &rarr; Datasets
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdg30-firedac-transactions.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Working with Transactions" alt="Prev: Working with Transactions"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-firedac.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications in Delphi" alt="Up: Developing Firebird Applications in Delphi"></a><a href="fbdg30-firedac-tfdcommand.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: TFDCommand component" alt="Next: TFDCommand component"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdg30-firedac-datasets"></a>Datasets
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdg30-firedac-datasets.html#fbdg30-firedac-tfdquery">TFDQuery Component</a></span></dt>
+               <dt><span class="section"><a href="fbdg30-firedac-datasets.html#fbdg30-firedac-tupdatesql">TFDUpdateSQL component</a></span></dt>
+            </dl>
+         </div>
+         <p>The components <code class="classname">TFDQuery</code>, <code class="classname">TFDTable</code>, 
+                <code class="classname">TFDStoredProc</code> and <code class="classname">TFDCommand</code> are the
+                components for working with data in FireDac.  <code class="classname">TFDCommand</code> does not 
+                deliver a dataset and, when TFDStoredProc is used with an executable stored procedure,
+                rather than a selectable one, it does not deliver a dataset, either.
+         </p>
+         <p><code class="classname">TFDQuery</code>, <code class="classname">TFDTable</code> and 
+                <code class="classname">TFDStoredProc</code> are inherited 
+                from <code class="classname">TFDRdbmsDataSet</code>.
+         </p>
+         <p>Apart from datasets for working with the database directly, FireDac also has
+                the <code class="classname">TFDMemTable</code> component for working with in-memory datasets. 
+                It is functionally equivalent to <code class="classname">TClientDataSet</code>.
+         </p>
+         <p>The main component for working with datasets, <code class="classname">TFDQuery</code>, 
+                can be used for practically any purpose. The <code class="classname">TFDTable</code> and 
+                <code class="classname">TFDStoredProc</code> components are just variants, expanded or reduced 
+                to meet differences in functionality. No more will be said about them and we will not 
+                be using them in our application. If you wish, you can learn about them in the FireDac 
+                documentation.
+         </p>
+         <p>The purpose of a dataset component is to buffer records retrieved by the 
+                SELECT statement, commonly for displaying in a grid and providing for the current 
+                record in the buffer (grid) to be  editable. Unlike the IBX <code class="classname">TIBDataSet</code> 
+                component, <code class="classname">TFDQuery</code> component does not have the properties 
+                <code class="classname">RefreshSQL</code>, <code class="classname">InsertSQL</code>,
+                <code class="classname">UpdateSQL</code> and <code class="classname">DeleteSQL</code>. 
+                Instead, a separate <code class="classname">TFDUpdateSQL</code> object specifies the statement
+                for dataset modifications and the dataset component carries a reference to that
+                component in its <code class="classname">UpdateObject</code> property.
+         </p>
+         <div class="note">
+            <h3 class="title">RequestLive Property</h3>
+            <p>Sometimes it is possible to make an <code class="classname">FDQuery</code> object editable
+                     without referring, through the <code class="classname">UpdateObject</code> property, to an 
+                     <code class="classname">FDUpdateSQL</code> object that specifies queries for insert, update 
+                     and delete.  The property <code class="classname">UpdateOptions.RequestLive</code> can be set 
+                     to True for sets that are naturally updatable and the object will generate the 
+                     modification queries for you. However, because this approach puts strict limitations 
+                     on the SELECT query, it is not always useful to rely on it. 
+            </p>
+         </div>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-firedac-tfdquery"></a>TFDQuery Component
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <div class="table"><a name="fbdg30-firedac-tbl-queryprops"></a><p class="title"><b>Table&nbsp;2.3.&nbsp;TFDQuery component main properties</b></p>
+               <div class="table-contents">
+                  <table summary="TFDQuery component main properties" border="1">
+                     <colgroup>
+                        <col>
+                        <col>
+                     </colgroup>
+                     <thead>
+                        <tr valign="middle">
+                           <th align="center" valign="middle">Property</th>
+                           <th align="center" valign="middle">Purpose</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">Connection</td>
+                           <td align="left" valign="middle">Reference to the FDConnection object</td>
+                        </tr>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">MasterSource</td>
+                           <td align="left" valign="middle">If the dataset is to be used as detail to a
+                                            master dataset, this property refers to the data source (TDataSource) 
+                                            of the master set
+                           </td>
+                        </tr>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">Transaction</td>
+                           <td align="left" valign="middle">If specified, refers to the transaction within which
+                                            the query will be executed. If not specified, the default transaction for 
+                                            the connection will be used.
+                           </td>
+                        </tr>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">UpdateObject</td>
+                           <td align="left" valign="middle">Reference to the FDUpdateSQL object providing for the 
+                                            dataset to be editable when the SELECT query does not meet the requirements 
+                                            for automatic generation of modification queries with 
+                                            UpdateOptions.RequestLive=True.
+                           </td>
+                        </tr>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">UpdateTransaction</td>
+                           <td align="left" valign="middle">The transaction within which modification queries will be 
+                                            executed. If the property is not specified the transaction from the 
+                                            Transaction property of the connection will be used.
+                           </td>
+                        </tr>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">UpdateOptions.CheckRequired</td>
+                           <td align="left" valign="middle">If set to True (the default) FireDac controls the Required
+                                            property of the corresponding NOT NULL fields. If you keep it True and a field
+                                            with the Required=True has no value assigned to it, an exception will be raised
+                                            when the Post method is called. This might not be what you want if a value is 
+                                            going to be assigned to this field later in BEFORE triggers.
+                           </td>
+                        </tr>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">UpdateOptions.EnableDelete</td>
+                           <td align="left" valign="middle">Specifies whether a record can be deleted from the dataset. 
+                                            If EnableDelete=False, an exception will be raised when the Delete method is 
+                                            called.
+                           </td>
+                        </tr>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">UpdateOptions.EnableInsert</td>
+                           <td align="left" valign="middle">Specifies whether a record can be inserted into the 
+                                            dataset. If EnableInsert=False, an exception will be raised when the 
+                                            Insert/Append method is called.
+                           </td>
+                        </tr>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">UpdateOptions.EnableInsert</td>
+                           <td align="left" valign="middle">Specifies whether a record can be inserted into the 
+                                            dataset. If EnableInsert=False, an exception will be raised when the 
+                                            Insert/Append method is called.
+                           </td>
+                        </tr>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">UpdateOptions.EnableUpdate</td>
+                           <td align="left" valign="middle">Specifies whether a record can be edited in the
+                                            dataset. If EnableUpdate=False, an exception will be raised when the 
+                                            Edit method is called.
+                           </td>
+                        </tr>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">UpdateOptions.FetchGeneratorPoint</td>
+                           <td align="left" valign="middle">Controls the moment when the next value is
+                                            fetched from the generator specified in the 
+                                            UpdateOptions.GeneratorName property or in the GeneratorName 
+                                            property of the auto-incremental field 
+                                            AutoGenerateValue=arAutoInc. The default is <code class="classname">gpDeferred</code>, 
+                                            causing the next value to be fetched from the generator before 
+                                            a new record is posted in the database, i.e., during Post or 
+                                            ApplyUpdates.  For the full set of possible values, 
+                                            see note (1) below.
+                           </td>
+                        </tr>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">UpdateOptions.GeneratorName</td>
+                           <td align="left" valign="middle">The name of the generator from which the next 
+                                            value for an auto-incremental field is to be fetched.
+                           </td>
+                        </tr>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">UpdateOptions.ReadOnly</td>
+                           <td align="left" valign="middle">Specifies whether it is a read-only dataset. The 
+                                            default value is False. If the value of this property is set to True, 
+                                            the EnableDelete, EnableInsert and EnableUpdate properties will be 
+                                            automatically set to False.
+                           </td>
+                        </tr>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">UpdateOptions.RequestLive</td>
+                           <td align="left" valign="middle">Setting RequestLive to True makes a query
+                                            editable, if possible. Queries for insert, update and delete
+                                            will be generated automatically. This  setting imposes strict 
+                                            limitations on the SELECT query. It is supported for backward 
+                                            compatibility with the ancient BDE and is not recommended.
+                           </td>
+                        </tr>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">UpdateOptions.UpdateMode</td>
+                           <td align="left" valign="middle">Controls how to check whether a record has
+                                            been modified. This property allows control over possible 
+                                            overwriting of updates in cases where one user is taking a long 
+                                            time to edit a record while another user has been editing the 
+                                            same record simultaneously and completes the update earlier.
+                                            The default is upWhereKeyOnly. For information about the 
+                                            available modes, see note (2) below.
+                           </td>
+                        </tr>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">CachedUpdates</td>
+                           <td align="left" valign="middle">Specifies whether the dataset cache defers changes 
+                                            in the dataset buffer. If this property is set to True, any changes (Insert/Post, 
+                                            Update/Post, Delete) are saved to a special log and the application 
+                                            must apply them explicitly by calling the ApplyUpdates method. All changes will
+                                            be made within a small period of time and within one short transaction. 
+                                            The default value of this property is False.
+                           </td>
+                        </tr>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">SQL</td>
+                           <td align="left" valign="middle">Contains the text of the SQL query. If this property is
+                                            a SELECT statement, execute it by calling the Open methold. Use the Execute 
+                                            or ExecSQL for executing a statement that does not return a dataset.
+                           </td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <p></p>
+            </div><br class="table-break"><div class="note">
+               <h3 class="title">Note 1: UpdateOptions.FetchGeneratorPoint</h3>
+               <p>The property UpdateOptions.FetchGeneratorPoint can take 
+                          the following values:
+                            
+               </p>
+               <div class="itemizedlist">
+                  <ul type="disc" compact>
+                     <li><code class="classname">gpNone</code>&#8212;no value is fetched from
+                                    the generator
+                     </li>
+                     <li><code class="classname">gpImmediate</code>&#8212;the next value is fetched
+                                    from the generator right after the Insert/Append method is called
+                     </li>
+                     <li><code class="classname">gpDeferred</code>&#8212;the next value is fetched
+                                    during Post or ApplyUpdates
+                     </li>
+                  </ul>
+               </div>
+               <p>
+                          
+               </p>
+            </div>
+            <div class="note">
+               <h3 class="title">Note 2: UpdateOptions.UpdateMode</h3>
+               <p>The user in a lengthy editing session could be unaware
+                          that a record has been updated one or more times during his
+                          editing session, perhaps causing his own changes to overwrite
+                          someone else's updates.  The <code class="classname">UpdateOptions.UpdateMode</code> property
+                          allows a choice of behaviours to lessen or avoid this risk:
+                            
+               </p>
+               <div class="itemizedlist">
+                  <ul type="disc">
+                     <li>
+                        <p><code class="classname">upWhereAll</code>&#8212;check whether a record exists
+                                       by its primary key + check all columns for old values, e.g.,
+                                         
+                        </p><pre class="literallayout">
+  update table set ...
+  where pkfield = :old_ pkfield and
+            client_name =  :old_client_name and
+           info = :old_info ...
+              </pre><p>
+                                       With <code class="classname">upWhereAll</code> set, the update query will change content
+                                       in a record only if the record has not been edited by anyone else
+                                       since our transaction started. It is especially important if there
+                                       are dependencies between values in columns, such as minimum and
+                                       maximum wages, etc.
+                                       
+                        </p>
+                     </li>
+                     <li>
+                        <p><code class="classname">upWhereChanged</code>&#8212;check whether a record exists
+                                       by its primary key + check for old values only in the columns
+                                       being edited.
+                                         
+                        </p><pre class="literallayout">
+  update table set ...
+  where pkfield = :old_pkfield and
+      client_name = :old_client
+              </pre><p>
+                                       
+                        </p>
+                     </li>
+                     <li>
+                        <p><code class="classname">upWhereKeyOnly</code>&#8212;check whether a record exists
+                                       by its primary key. This check corresponds to the automatically
+                                       generated UpdateSQL query.
+                        </p>
+                        <p>To avoid (or handle) update conflicts in a multi-user
+                                       environment, typically you need to add WHERE conditions manually.
+                                       You would need a similar tactic, of course, to implement a process
+                                       that emulates upWhereChanged, removing the unused column modifications
+                                       from the update table set,  leaving in the update list only the
+                                       columns that are actually modified.  The update query could otherwise
+                                       overwrite someone else's updates of this record.
+                        </p>
+                        <p>Obviously, the UpdateSQL needs to be created dynamically.</p>
+                        <p>If you want to specify the settings for detecting update conflicts
+                                        individually for each field, you can use the ProviderFlags property
+                                        for each field.
+                        </p>
+                     </li>
+                  </ul>
+               </div>
+               <p>
+                          
+               </p>
+            </div>
+         </div>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-firedac-tupdatesql"></a>TFDUpdateSQL component
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <div class="toc">
+               <p><b>Table of Contents</b></p>
+               <dl>
+                  <dt><span class="section"><a href="fbdg30-firedac-datasets.html#fbdg30-firedac-tupdatesql-props">TFDUpdateSQL Properties</a></span></dt>
+               </dl>
+            </div>
+            <p>The <code class="classname">TFDUpdateSQL</code> component enables you to refine or redefine
+                     the SQL command  that Delphi generates automatically for updating a
+                     dataset. It can be used to update an <code class="classname">FDQuery</code> object, an
+                     <code class="classname">FDTable</code> object or data underlying an <code class="classname">FDStoredProc</code>
+                     object.
+            </p>
+            <p>Using <code class="classname">TFDUpdateSQL</code> is optional for
+                     <code class="classname">TFDQuery</code> and <code class="classname">TFDTable</code> because
+                     these components can generate statements automatically, that can
+                     sometimes be used for posting updates from a dataset to the database.
+                     For updating a dataset that is delivered into an <code class="classname">FDStoredProc</code> object,
+                     use of the <code class="classname">TFDUpdateSQL</code> is not optional.  The developer
+                     must figure out a statement that will result in the desired updates.  If only one
+                     table is updated, a direct DML statement might be sufficient.  Where multiple tables
+                     are affected, an executable stored procedure will be unavoidable.
+            </p>
+            <p>We recommend that you always use it, even in the simplest cases,
+                     to give yourself full control over  the queries that are requested
+                     from your application.
+            </p>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-firedac-tupdatesql-props"></a>TFDUpdateSQL Properties
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>To specify the SQL DML statements at design time, double-click
+                          on the <code class="classname">TFDUpdateSQL</code> component in your data module to open the property
+                          editor.
+                            
+               </p>
+               <div class="important">
+                  <h3 class="title">Important</h3>
+                  <p>Each component has its own design-time property editor.  For
+                                 multiple data-aware editors to run, FireDac needs an active connection
+                                 to the database (<code class="classname">TFDConnection.Connected = True</code>) and a transaction
+                                 in the autostart mode (TFDTransaction.Options.AutoStart = True)
+                                 for each one.
+                  </p>
+                  <p>Design-time settings could interfere with the way the application
+                                 is intended to work. For instance, the user is supposed to log in to the
+                                 program using his username, but the FDConnection object connects
+                                 to the database as SYSDBA.
+                  </p>
+                  <p>It is advisable to check the <code class="classname">Connected</code> property of the
+                                 <code class="classname">FDConnection</code> object and reset it each time you use the data-aware
+                                 editors. <code class="classname">AutoStart</code> will have to be enabled and disabled for a
+                                 a read-only transaction as well.
+                  </p>
+               </div>
+               <p>
+                          
+               </p>
+               <p>
+                            
+               </p>
+               <div class="figure"><a name="tfdupdsql-prop-ed"></a><p class="title"><b>Figure&nbsp;2.2.&nbsp;TFDUpdateSQL property editor</b></p>
+                  <div class="figure-contents">
+                     <div class="mediaobject" align="center">
+                        <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="454">
+                           <tr style="height: 363px">
+                              <td align="center"><img src="images/fbdevgd30_delphi_002.png" align="middle" width="454" alt="TFDUpdateSQL property editor"></td>
+                           </tr>
+                        </table>
+                     </div>
+                  </div>
+                  <p></p>
+               </div>
+               <p><br class="figure-break">
+                          
+               </p>
+               <p>You can use the Generate tab to make writing Insert/Update/Delete/Refresh
+                          queries easier for yourself. Select the table to be updated, its key fields,
+                          the fields to be updated and the fields that will be reread after the update
+                          and click the Generate SQL button to have Delphi generate the queries
+                          automatically.  You will be switched to the SQL Commands tab where you can
+                          correct each query.
+               </p>
+               <div class="figure"><a name="updsql-cmd-editor"></a><p class="title"><b>Figure&nbsp;2.3.&nbsp;TFDUpdateSQL SQL command editor</b></p>
+                  <div class="figure-contents">
+                     <div class="mediaobject" align="center">
+                        <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="454">
+                           <tr style="height: 363px">
+                              <td align="center"><img src="images/fbdevgd30_delphi_003.png" align="middle" width="454" alt="TFDUpdateSQL SQL command editor"></td>
+                           </tr>
+                        </table>
+                     </div>
+                  </div>
+                  <p></p>
+               </div><br class="figure-break"><div class="note">
+                  <h3 class="title">Note</h3>
+                  <p>Since product_id is not included in <code class="classname">Updating Fields</code>,
+                               it is absent from the generated Insert query. It is assumed that this column
+                               is filled automatically by a generator call in a BEFORE INSERT trigger or,
+                               from Firebird 3.0 forward, it could be an IDENTITY column. When a value is
+                               fetched from the generator for this column at the server side, it is
+                               recommended to add the PRODUCT_ID column manually to the RETURNING
+                               clause of the INSERT statement.
+                  </p>
+               </div>
+               <div class="section" lang="en">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h5 class="title"><a name="fbdg30-firedac-tupdatesql-options"></a>The Options Tab
+                           </h5>
+                        </div>
+                     </div>
+                  </div>
+                  <p>The Options tab contains some properties that can affect the
+                               process of query generation. These properties are not related to the
+                               <code class="classname">TFDUpdateSQL</code> component itself.  Rather,
+                               for convenience, they are references to the <code class="classname">UpdateOptions</code>
+                               properties of the dataset that has the current <code class="classname">TFDUpdateSQL</code>
+                               specified in its <code class="classname">UpdateObject</code> property.
+                               
+                  </p>
+               </div>
+               <div class="table"><a name="fbdg30-firedac-tbl-updsqlprops"></a><p class="title"><b>Table&nbsp;2.4.&nbsp;TFDUpdateSQL component main properties</b></p>
+                  <div class="table-contents">
+                     <table summary="TFDUpdateSQL component main properties" border="1">
+                        <colgroup>
+                           <col>
+                           <col>
+                        </colgroup>
+                        <thead>
+                           <tr valign="middle">
+                              <th align="center" valign="middle">Property</th>
+                              <th align="center" valign="middle">Purpose</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <tr valign="middle">
+                              <td align="left" valign="middle">Connection</td>
+                              <td align="left" valign="middle">Reference to the TFDConnection component</td>
+                           </tr>
+                           <tr valign="middle">
+                              <td align="left" valign="middle">DeleteSQL</td>
+                              <td align="left" valign="middle">The SQL query for deleting a record</td>
+                           </tr>
+                           <tr valign="middle">
+                              <td align="left" valign="middle">FetchRowSQL</td>
+                              <td align="left" valign="middle">The SQL query for returning a current record
+                                                 after it has been updated or inserted&#8212;&#8220;<span class="quote">RefreshSQL</span>&#8221;
+                              </td>
+                           </tr>
+                           <tr valign="middle">
+                              <td align="left" valign="middle">InsertSQL</td>
+                              <td align="left" valign="middle">The SQL query for inserting a record</td>
+                           </tr>
+                           <tr valign="middle">
+                              <td align="left" valign="middle">LockSQL</td>
+                              <td align="left" valign="middle">The SQL query for locking a current record. (FOR
+                                                 UPDATE WITH LOCK)
+                              </td>
+                           </tr>
+                           <tr valign="middle">
+                              <td align="left" valign="middle">ModifySQL</td>
+                              <td align="left" valign="middle">The SQL query for modifying a record</td>
+                           </tr>
+                           <tr valign="middle">
+                              <td align="left" valign="middle">UnlockSQL</td>
+                              <td align="left" valign="middle">The SQL query for unlocking a current record.
+                                                 It is not used in Firebird.
+                              </td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+                  <p></p>
+               </div><br class="table-break"><p>Notice that, because the <code class="classname">TFDUpdateSQL</code> component 
+                          does not execute modification queries directly, it has no <code class="classname">Transaction</code> 
+                          property. It acts as a replacement for queries automatically generated in the parent
+                          <code class="classname">TFDRdbmsDataSet</code>.
+               </p>
+            </div>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdg30-firedac-transactions.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Working with Transactions" alt="Prev: Working with Transactions"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-firedac.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications in Delphi" alt="Up: Developing Firebird Applications in Delphi"></a><a href="fbdg30-firedac-tfdcommand.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: TFDCommand component" alt="Next: TFDCommand component"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-firedac.html">Developing Firebird Applications in Delphi</a> &rarr; Datasets
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

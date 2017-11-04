@@ -1,0 +1,332 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Connection parameters</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-firedac.html" title="Chapter 2: Developing Firebird Applications in Delphi">
+      <link rel="prev" href="fbdg30-firedac-libpath.html" title="Path to the Client Library">
+      <link rel="next" href="fbdg30-firedac-transactions.html" title="Working with Transactions">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-firedac.html">Developing Firebird Applications in Delphi</a> &rarr; Connection parameters
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdg30-firedac-libpath.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Path to the Client Library" alt="Prev: Path to the Client Library"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-firedac.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications in Delphi" alt="Up: Developing Firebird Applications in Delphi"></a><a href="fbdg30-firedac-transactions.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Working with Transactions" alt="Next: Working with Transactions"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdg30-firedac-connparams"></a>Connection parameters
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdg30-firedac-connparams.html#fbdg30-firedac-connparams-ini">Connection Parameters in a Configuration File</a></span></dt>
+               <dt><span class="section"><a href="fbdg30-firedac-connparams.html#fbdg30-firedac-connecting">Connecting to the database</a></span></dt>
+            </dl>
+         </div>
+         <p>The <code class="classname">Params</code> property of the <code class="classname">TFDConnection</code> component
+                contains the database connection parameters (username, password, connection character set, etc.).
+                If you invoke the <code class="classname">TFDConnection</code> property editor by double-clicking on the component, you will
+                see that those properties  have been filled automatically. The property set depends on the
+                database type.
+         </p>
+         <div class="figure"><a name="tfdcon-prop-ed"></a><p class="title"><b>Figure&nbsp;2.1.&nbsp;TFDConnection property editor</b></p>
+            <div class="figure-contents">
+               <div class="mediaobject" align="center">
+                  <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="415">
+                     <tr style="height: 490px">
+                        <td align="center"><img src="images/fbdevgd30_delphi_001.png" align="middle" width="415" alt="TFDConnection property editor"></td>
+                     </tr>
+                  </table>
+               </div>
+            </div>
+            <p></p>
+         </div><br class="figure-break"><div class="table"><a name="fbdg30-firedac-tbl-connprops"></a><p class="title"><b>Table&nbsp;2.1.&nbsp;TFDConnection component main properties</b></p>
+            <div class="table-contents">
+               <table summary="TFDConnection component main properties" border="1">
+                  <colgroup>
+                     <col>
+                     <col>
+                  </colgroup>
+                  <thead>
+                     <tr valign="middle">
+                        <th align="center" valign="middle">Property</th>
+                        <th align="center" valign="middle">Purpose</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <tr valign="middle">
+                        <td align="left" valign="middle">Pooled</td>
+                        <td align="left" valign="middle">Whether a connection pool is used</td>
+                     </tr>
+                     <tr valign="middle">
+                        <td align="left" valign="middle">Database</td>
+                        <td align="left" valign="middle">The path to the database or its alias as defined
+                                       in the aliases.conf configuration file (or in databases.conf) of the
+                                       Firebird server
+                        </td>
+                     </tr>
+                     <tr valign="middle">
+                        <td align="left" valign="middle">User_Name</td>
+                        <td align="left" valign="middle">Firebird user name. Not used if OSAuthent is True.</td>
+                     </tr>
+                     <tr valign="middle">
+                        <td align="left" valign="middle">Password</td>
+                        <td align="left" valign="middle">Firebird password. Not used if OSAuthent is True.</td>
+                     </tr>
+                     <tr valign="middle">
+                        <td align="left" valign="middle">OSAuthent</td>
+                        <td align="left" valign="middle">Whether operating system authentication is used</td>
+                     </tr>
+                     <tr valign="middle">
+                        <td align="left" valign="middle">Protocol</td>
+                        <td align="left" valign="middle">Connection protocol. Possible values:
+                                       
+                           <div class="itemizedlist">
+                              <ul type="disc" compact>
+                                 <li>Local&#8212;local protocol</li>
+                                 <li>NetBEUI&#8212;named pipes, WNET</li>
+                                 <li>SPX&#8212;This property is for Novell's IPX/SPX protocol, which
+                                                  has never been supported in Firebird
+                                 </li>
+                                 <li>TCPIP&#8212;TCP/IP</li>
+                              </ul>
+                           </div>
+                        </td>
+                     </tr>
+                     <tr valign="middle">
+                        <td align="left" valign="middle">Server</td>
+                        <td align="left" valign="middle">Server name or its IP address. If the server is run
+                                       on a non-standard port, you also need to append the port number after a
+                                       slash, e.g., localhost/3051
+                        </td>
+                     </tr>
+                     <tr valign="middle">
+                        <td align="left" valign="middle">SQLDialect</td>
+                        <td align="left" valign="middle">SQL Dialect. It must match that of the database</td>
+                     </tr>
+                     <tr valign="middle">
+                        <td align="left" valign="middle">RoleName</td>
+                        <td align="left" valign="middle">Role name, if required</td>
+                     </tr>
+                     <tr valign="middle">
+                        <td align="left" valign="middle">CharacterSet</td>
+                        <td align="left" valign="middle">Connection character set name</td>
+                     </tr>
+                     <tr valign="middle">
+                        <td colspan="2" align="left" valign="middle">Additional Properties:</td>
+                     </tr>
+                     <tr valign="middle">
+                        <td align="left" valign="middle">Connected</td>
+                        <td align="left" valign="middle"> Used to manage the database connection or check the connection
+                                       status. This property must be set to True in order for the wizards of other FireDac
+                                       components to work. If your application needs to request authentication data, it is
+                                       important to remember to reset this property to False before compiling your
+                                       application.
+                        </td>
+                     </tr>
+                     <tr valign="middle">
+                        <td align="left" valign="middle">LoginPrompt</td>
+                        <td align="left" valign="middle">Whether to request the username and password during a
+                                       connection attempt
+                        </td>
+                     </tr>
+                     <tr valign="middle">
+                        <td align="left" valign="middle">Transaction</td>
+                        <td align="left" valign="middle"> The TFDTransaction component that will be used as
+                                       default to conduct various TFDConnection transactions. If this property is
+                                       not explicitly specified, TFDConnection will create its own TFDTransaction
+                                       instance. Its parameters can be configured in the TxOptions property.
+                        </td>
+                     </tr>
+                     <tr valign="middle">
+                        <td align="left" valign="middle">UpdateTransaction</td>
+                        <td align="left" valign="middle">The TFDTransaction component that  is to be used as default
+                                       for the UpdateTransaction property of TFDQuery components, unless explicitly
+                                       specified for the dataset.  If this property is not specified explicitly, the
+                                       value from the Transaction property of the connection will be used, unless
+                                       it is explicitly specified for the dataset.
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+            <p></p>
+         </div><br class="table-break"><div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-firedac-connparams-ini"></a>Connection Parameters in a Configuration File
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <div class="toc">
+               <p><b>Table of Contents</b></p>
+               <dl>
+                  <dt><span class="section"><a href="fbdg30-firedac-connparams.html#fbdg30-firedac-config-ini">A Typical Configuration File</a></span></dt>
+               </dl>
+            </div>
+            <p>Since the connection parameters, except for the username and password and
+                     possibly the role, are usually common to all instances the application, we will
+                     read them from the configuration file:
+                       
+            </p><pre class="programlisting">
+xIniFile := TIniFile.Create(xAppPath + 'config.ini');
+try
+  xIniFile.ReadSectionValues('connection', FDConnection.Params);
+finally
+  xIniFile.Free;
+end;
+        </pre><p>
+                     
+            </p>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-firedac-config-ini"></a>A Typical Configuration File
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>Typically, the <code class="filename">config.ini</code> file contains the following
+                          lines:
+                            
+               </p><pre class="literallayout">
+  [connection]
+  DriverID=FB
+  Protocol=TCPIP
+  Server=localhost/3051
+  Database=examples
+  OSAuthent=No
+  RoleName=
+  CharacterSet=UTF8
+          </pre><p>
+                          
+               </p>
+               <p>You can get the contents of the connection section by copying the contents of
+                          the <code class="classname">Params</code> property of the <code class="classname">TFDConnection</code> 
+                          component after the wizard finishes its work.
+                          
+               </p>
+               <div class="note">
+                  <h3 class="title">Note</h3>
+                  <p>Actually, the common settings are usually located in
+                               <code class="filename">%AppData%\Manufacturer\AppName</code> and are saved to that location
+                               by the application installation software. However, it is convenient for the
+                               configuration file to be stored somewhere closer during the development, for instance,
+                               in the application folder.
+                  </p>
+                  <p>Note that if your application is installed into the Program Files folder and
+                               the configuration file is located there as well, it is likely that the file will be 
+                               virtualized in Program Data and issues could arise with modifying it and reading the 
+                               new settings subsequently.
+                  </p>
+               </div>
+               <p>
+                          
+               </p>
+            </div>
+         </div>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-firedac-connecting"></a>Connecting to the database
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <div class="toc">
+               <p><b>Table of Contents</b></p>
+               <dl>
+                  <dt><span class="section"><a href="fbdg30-firedac-connparams.html#fbdg30-firedac-auth-modification">A Little Modification</a></span></dt>
+               </dl>
+            </div>
+            <p>To connect to the database, it is necessary to change the <code class="classname">Connected</code> property
+                     of the <code class="classname">TFDConnection</code> component to True or call the <code class="classname">Open</code> method.
+                     You can use the <code class="classname">Open</code> method to pass the username and password as
+                     parameters.
+            </p>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-firedac-auth-modification"></a>A Little Modification
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>We will replace the standard database connection dialog box in our application
+                          and allow users to make three mistakes while entering the authentication information.
+                          After three failures, the application will be closed.
+               </p>
+               <p>To implement it, we will write the following code in the <code class="classname">OnCreate</code>
+                          event handler of the main data module.
+                            
+               </p><pre class="programlisting">
+// After three unsuccessful login attempts, we close the application.
+xLoginCount := 0;
+xLoginPromptDlg := TLoginPromptForm.Create(Self);
+while (xLoginCount &lt; MAX_LOGIN_COUNT) and
+      (not FDConnection.Connected) do
+begin
+  try
+    if xLoginPromptDlg.ShowModal = mrOK then
+      FDConnection.Open(
+        xLoginPromptDlg.UserName, xLoginPromptDlg.Password)
+    else
+      xLoginCount := MAX_LOGIN_COUNT;
+  except
+    on E: Exception do
+    begin
+      Inc(xLoginCount);
+      Application.ShowException(E);
+    end
+  end;
+end;
+xLoginPromptDlg.Free;
+if not FDConnection.Connected then
+  Halt;
+          </pre><p>
+                          
+               </p>
+            </div>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdg30-firedac-libpath.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Path to the Client Library" alt="Prev: Path to the Client Library"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-firedac.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications in Delphi" alt="Up: Developing Firebird Applications in Delphi"></a><a href="fbdg30-firedac-transactions.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Working with Transactions" alt="Next: Working with Transactions"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-firedac.html">Developing Firebird Applications in Delphi</a> &rarr; Connection parameters
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

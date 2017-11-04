@@ -1,0 +1,326 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Setting Up for Firebird in Visual Studio 2015</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-efw.html" title="Chapter 3: Developing Firebird Applications with Microsoft Entity Framework">
+      <link rel="prev" href="fbdg30-efw-methods.html" title="Methods of Interacting with a Database">
+      <link rel="next" href="fbdg30-efw-vs-crtproject.html" title="Creating a Project">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-efw.html">Developing Firebird Applications with Microsoft Entity Framework</a> &rarr; Setting Up for Firebird in Visual Studio 2015
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdg30-efw-methods.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Methods of Interacting with a Database" alt="Prev: Methods of Interacting with a Database"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-efw.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications with Microsoft Entity Framework" alt="Up: Developing Firebird Applications with Microsoft Entity Framework"></a><a href="fbdg30-efw-vs-crtproject.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Creating a Project" alt="Next: Creating a Project"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdg30-efw-vs-prepare"></a>Setting Up for Firebird in Visual Studio 2015
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdg30-efw-vs-prepare.html#fbdg30-efw-vs-install">The Installation Process</a></span></dt>
+            </dl>
+         </div>
+         <p>To prepare for working with Firebird, you will need to install the following:
+                  
+         </p>
+         <div class="itemizedlist">
+            <ul type="disc">
+               <li>FirebirdSql.Data.FirebirdClient.dll</li>
+               <li>the Firebird DDEX Provider for Visual Studio</li>
+               <li>EntityFramework.Firebird.dll</li>
+            </ul>
+         </div>
+         <p>
+                
+         </p>
+         <p>There is nothing difficult in installing the first two. They are currently
+                distributed and installed into a project by means of the
+                <a xmlns:xlink="http://www.w3.org/1999/xlink" href="https://www.nuget.org/" target="_top">NuGet package manager</a>. The DDEX Provider
+                library, designed for operating Visual Studio wizards, is not so easy to install
+                and may take more time and effort.
+         </p>
+         <p>Efforts have been made to automate the installation process and include all
+                components in a
+                <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://sourceforge.net/projects/firebird-4-8-0-ddex-installer/" target="_top">single
+                   installer package</a>. However, you might need to install all of the components
+                manually under some conditions. If so, you can download the following:
+                
+         </p>
+         <div class="itemizedlist">
+            <ul type="disc">
+               <li><a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://sourceforge.net/projects/firebird/files/firebird-net-provider/4.10.0.0/FirebirdSql.Data.FirebirdClient-4.10.0.0.msi/download" target="_top">FirebirdSql.Data.FirebirdClient-4.10.0.0.msi</a></li>
+               <li><a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://sourceforge.net/projects/firebird/files/firebird-net-provider/4.10.0.0/EntityFramework.Firebird-4.10.0.0-NET45.7z/download" target="_top">EntityFramework.Firebird-4.10.0.0-NET45.7z</a></li>
+               <li><a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://sourceforge.net/projects/firebird/files/firebird-net-provider/DDEX%203.0.2/DDEXProvider-3.0.2.0.7z/download" target="_top">DDEXProvider-3.0.2.0.7z</a></li>
+               <li><a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://sourceforge.net/projects/firebird/files/firebird-netprovider/DDEX%203.0.2/DDEXProvider-3.0.2.0-src.7z/download" target="_top">DDEXProvider-3.0.2.0-src.7z</a></li>
+            </ul>
+         </div>
+         <p>
+                
+         </p>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-efw-vs-install"></a>The Installation Process
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <div class="toc">
+               <p><b>Table of Contents</b></p>
+               <dl>
+                  <dt><span class="section"><a href="fbdg30-efw-vs-prepare.html#fbdg30-efw-vs-install-steps">Steps</a></span></dt>
+                  <dt><span class="section"><a href="fbdg30-efw-vs-prepare.html#fbdg30-efw-vs-install-testit">Testing the Installation</a></span></dt>
+               </dl>
+            </div>
+            <div class="important">
+               <h3 class="title">Important!</h3>
+               <p>Because the installation involves operations in protected directories,
+                          you will need administrator privileges to do it.
+               </p>
+            </div>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-efw-vs-install-steps"></a>Steps
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <div class="orderedlist">
+                  <ol type="1">
+                     <li>Install FirebirdSql.Data.FirebirdClient-4.10.0.0.msi</li>
+                     <li>
+                        <p>Unpack EntityFramework.Firebird-4.10.0.0-NET45.7z to the folder with the
+                                       installed Firebird client. In my case, it is the folder
+                                       <code class="filename">c:\Program Files (x86)\FirebirdClient\</code>.
+                        </p>
+                     </li>
+                     <li>
+                        <p>You need to install a Firebird build into the GAC. For your convenience,
+                                       specify the path to the <code class="classname">gacutil</code> utility for .NET Framework
+                                       4.5 in the environment variable <code class="classname">%PATH%</code>. In my case, the
+                                       path is
+                                       <code class="filename">c:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6.1 Tools\</code>
+                                       
+                        </p>
+                     </li>
+                     <li>
+                        <p>Run the command shell cmd.exe as administrator and go to the directory
+                                       with the installed client, e.g.,
+                                         
+                        </p><pre class="literallayout">
+  chdir "c:\Program Files (x86)\FirebirdClient"
+              </pre><p>
+                                       
+                        </p>
+                     </li>
+                     <li>
+                        <p>Now make sure that <code class="filename">FirebirdSql.Data.FirebirdClient</code> is
+                                       installed into the GAC by typing the following command:
+                                         
+                        </p><pre class="literallayout">
+  gacutil /l FirebirdSql.Data.FirebirdClient
+              </pre><p>
+                                       If FirebirdSql.Data.FirebirdClient has not been installed into the GAC,
+                                       use the following command to do it now:
+                                         
+                        </p><pre class="literallayout">
+  gacutil /i FirebirdSql.Data.FirebirdClient.dll
+              </pre><p>
+                                       
+                        </p>
+                     </li>
+                     <li>
+                        <p>Now install EntityFramework.Firebird into the GAC
+                                         
+                        </p><pre class="literallayout">
+  gacutil /i EntityFramework.Firebird.dll
+              </pre><p>
+                                       
+                        </p>
+                     </li>
+                     <li>
+                        <p>Unpack DDEXProvider-3.0.2.0.7z to a directory convenient for you.
+                                       Mine was unpacked to <code class="filename">c:\Program Files (x86)\FirebirdDDEX\</code>.
+                                      
+                        </p>
+                     </li>
+                     <li>
+                        <p>Unpack the contents of the <code class="filename">/reg_files/VS2015</code> subdirectory
+                                       from the archive <code class="filename">DDEXProvider-3.0.2.0-src.7z</code> there as well.
+                                         
+                        </p>
+                        <div class="note">
+                           <h3 class="title">Author's remark</h3>
+                           <p>For some strange reason these files are absent from the archive
+                                                with the compiled dll libraries, but they are present in the source
+                                                code archive.
+                           </p>
+                        </div>
+                        <p>
+                                       
+                        </p>
+                     </li>
+                     <li>
+                        <p>Open the <code class="filename">FirebirdDDEXProvider64.reg</code> file in Notepad.
+                                       Find the line that contains <code class="classname">%path%</code> and change it to the
+                                       full path to the file <code class="filename">FirebirdSql.VisualStudio.DataTools.dll</code>, e.g.,
+                                         
+                        </p><pre class="literallayout">
+"CodeBase"="c:\\Program Files (x86)\\FirebirdDDEX\\FirebirdSql.VisualStudio.DataTools.dll"
+              </pre><p>
+                                       
+                        </p>
+                     </li>
+                     <li>
+                        <p>Save this Registry file and run it. Click YES to the question about adding
+                                       the information to the Registry.
+                        </p>
+                     </li>
+                     <li>
+                        <p>Now you need to edit the <code class="filename">machine.config</code> file.
+                                       In my installation, the path is as follows:
+                                         
+                        </p><pre class="literallayout">
+  C:\Windows\Microsoft.NET\Framework\v4.0.30319\Config
+              </pre><p>
+                                       Open this file in Notepad. Find the following section:
+                                         
+                        </p><pre class="literallayout">
+  &lt;system.data&gt;
+      &lt;DbProviderFactories&gt;
+                    </pre><p>
+                                             Add the following lines to this section:
+                                               
+                        </p><pre class="literallayout">
+&lt;add name="FirebirdClient Data Provider"
+     invariant="FirebirdSql.Data.FirebirdClient"
+     description=".Net Framework Data Provider for Firebird"
+     type="FirebirdSql.Data.FirebirdClient.FirebirdClientFactory,
+           FirebirdSql.Data.FirebirdClient, Version=4.10.0.0, Culture=neutral,
+           PublicKeyToken=3750abcc3150b00c" /&gt;
+              </pre><p>
+                                         
+                        </p>
+                        <div class="note">
+                           <h3 class="title">Note</h3>
+                           <p>The settings we have configured here are valid
+                                              for version 4.10.0.
+                           </p>
+                        </div>
+                        <p>
+                                       
+                        </p>
+                        <p>Do the same for <code class="filename">machine.config</code> located at
+                                       <code class="filename">c:\Windows\Microsoft.NET\Framework64\v4.0.30319\Config\</code>
+                                       
+                        </p>
+                     </li>
+                  </ol>
+               </div>
+            </div>
+            <p>This completes the installation.</p>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-efw-vs-install-testit"></a>Testing the Installation
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>To make sure that everything has been installed successfully, start
+                          Visual Studio 2015. Find the Server Explorer and try to connect to an
+                          existing Firebird database.
+                            
+               </p>
+               <div class="figure"><a name="efw-test-install"></a><p class="title"><b>Figure&nbsp;3.1.&nbsp;Choose data source for testing installation</b></p>
+                  <div class="figure-contents">
+                     <div class="mediaobject" align="center">
+                        <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="428">
+                           <tr style="height: 290px">
+                              <td align="center"><img src="images/fbdevgd30_efw_001_en.png" align="middle" width="428" alt="Choose data source for testing installation"></td>
+                           </tr>
+                        </table>
+                     </div>
+                  </div>
+                  <p></p>
+               </div>
+               <p><br class="figure-break">
+                            
+                            
+               </p>
+               <div class="figure"><a name="efw-database-locate"></a><p class="title"><b>Figure&nbsp;3.2.&nbsp;Locate a database</b></p>
+                  <div class="figure-contents">
+                     <div class="mediaobject" align="center">
+                        <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="480">
+                           <tr style="height: 405px">
+                              <td align="center"><img src="images/fbdevgd30_efw_002_en.png" align="middle" width="480" alt="Locate a database"></td>
+                           </tr>
+                        </table>
+                     </div>
+                  </div>
+                  <p></p>
+               </div>
+               <p><br class="figure-break">
+                            
+                            
+               </p>
+               <div class="figure"><a name="efw-data-src-test-confirm"></a><p class="title"><b>Figure&nbsp;3.3.&nbsp;Test and confirm the connection</b></p>
+                  <div class="figure-contents">
+                     <div class="mediaobject" align="center">
+                        <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="213">
+                           <tr style="height: 140px">
+                              <td align="center"><img src="images/fbdevgd30_efw_003_en.png" align="middle" height="140" alt="Test and confirm the connection"></td>
+                           </tr>
+                        </table>
+                     </div>
+                  </div>
+                  <p></p>
+               </div>
+               <p><br class="figure-break">
+                          
+               </p>
+            </div>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdg30-efw-methods.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Methods of Interacting with a Database" alt="Prev: Methods of Interacting with a Database"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-efw.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications with Microsoft Entity Framework" alt="Up: Developing Firebird Applications with Microsoft Entity Framework"></a><a href="fbdg30-efw-vs-crtproject.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Creating a Project" alt="Next: Creating a Project"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-efw.html">Developing Firebird Applications with Microsoft Entity Framework</a> &rarr; Setting Up for Firebird in Visual Studio 2015
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

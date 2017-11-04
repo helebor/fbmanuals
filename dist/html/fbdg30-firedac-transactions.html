@@ -1,0 +1,333 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Working with Transactions</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-firedac.html" title="Chapter 2: Developing Firebird Applications in Delphi">
+      <link rel="prev" href="fbdg30-firedac-connparams.html" title="Connection parameters">
+      <link rel="next" href="fbdg30-firedac-datasets.html" title="Datasets">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-firedac.html">Developing Firebird Applications in Delphi</a> &rarr; Working with Transactions
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdg30-firedac-connparams.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Connection parameters" alt="Prev: Connection parameters"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-firedac.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications in Delphi" alt="Up: Developing Firebird Applications in Delphi"></a><a href="fbdg30-firedac-datasets.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Datasets" alt="Next: Datasets"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdg30-firedac-transactions"></a>Working with Transactions
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdg30-firedac-transactions.html#fbdg30-firedac-tfdtransaction">TFDTransaction Component</a></span></dt>
+            </dl>
+         </div>
+         <p>The Firebird client allows any operations to be made only in the context of a
+                transaction so, if you manage to access data without explicitly calling
+                <code class="classname">TFDTransaction.StartTransaction</code>, it means that it was called
+                automatically somewhere deep in FireDac. It is highly recommended to avoid this
+                practice. For applications to work correctly with databases, it is advisable to
+                manage transactions manually, which means starting and committing them or rolling
+                them back with explicit calls.
+         </p>
+         <p>The <code class="classname">TFDTransaction</code> component is used to manage transactions 
+                explicitly.
+         </p>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-firedac-tfdtransaction"></a>TFDTransaction Component
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <div class="toc">
+               <p><b>Table of Contents</b></p>
+               <dl>
+                  <dt><span class="section"><a href="fbdg30-firedac-transactions.html#fbdg30-firedac-multitransaction">Multiple Transactions</a></span></dt>
+               </dl>
+            </div>
+            <p><code class="classname">TFDTransaction</code> has three methods for managing a 
+                     transaction explicitly:
+                     <code class="classname">StartTransaction</code>, <code class="classname">Commit</code> and
+                     <code class="classname">Rollback</code>.  The following table summarises the properties available
+                     to configure this component.
+            </p>
+            <div class="table"><a name="fbdg30-firedac-tbl-transprops"></a><p class="title"><b>Table&nbsp;2.2.&nbsp;TFDTransaction component main properties</b></p>
+               <div class="table-contents">
+                  <table summary="TFDTransaction component main properties" border="1">
+                     <colgroup>
+                        <col>
+                        <col>
+                     </colgroup>
+                     <thead>
+                        <tr valign="middle">
+                           <th align="center" valign="middle">Property</th>
+                           <th align="center" valign="middle">Purpose</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">Connection</td>
+                           <td align="left" valign="middle">Reference to the FDConnection component</td>
+                        </tr>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">Options.AutoCommit</td>
+                           <td align="left" valign="middle">Controls the automatic start and end of a transaction,
+                                            emulating Firebird's own transaction management.
+                                            The default value is True. See note (1) below for more details about
+                                            behaviour if the Autocommit option is True.
+                           </td>
+                        </tr>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">Options.AutoStart</td>
+                           <td align="left" valign="middle">Controls the automatic start of a transaction. The
+                                          default value is True.
+                           </td>
+                        </tr>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">Options.AutoStop</td>
+                           <td align="left" valign="middle">Controls the automatic end of a transaction. The
+                                            default value is True.
+                           </td>
+                        </tr>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">Options.DisconnectAction</td>
+                           <td align="left" valign="middle">The action that will be performed when the connection is
+                                            closed while the transaction is active. The default value is
+                                            xdCommit&#8212;the transaction will be committed.  See note (2) below for
+                                            details of the other options.
+                           </td>
+                        </tr>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">Options.EnableNested</td>
+                           <td align="left" valign="middle">Controls nested transactions. The default value is True.
+                                            Firebird does not support nested transactions as such but FireDac can emulate
+                                            them using savepoints.  For more details, see note(3) below.
+                           </td>
+                        </tr>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">Options.Isolation</td>
+                           <td align="left" valign="middle">Specifies the transaction isolation level. It is the most
+                                            important transaction property. The default value is xiReadCommitted. The other
+                                            values that Firebird supports are xiSnapshot and xiUnspecified; also
+                                            xiSerializable, to some degree.  For more details about the available
+                                            isolation levels, see note (4) below.
+                           </td>
+                        </tr>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">Options.Params</td>
+                           <td align="left" valign="middle">Firebird-specific transaction attributes that can be
+                                            applied to refine the transaction parameters, overriding attributes applied
+                                            by the standard implementation of the selected isolation level.  For the
+                                            attributes that can be set and the &#8220;<span class="quote">legal</span>&#8221; combinations, see
+                                            note (5) below.
+                           </td>
+                        </tr>
+                        <tr valign="middle">
+                           <td align="left" valign="middle">Options.ReadOnly</td>
+                           <td align="left" valign="middle">Indicates whether it is a read-only transaction.
+                                            The default value is False. Setting it to True disables any write activity.
+                                            Long-running read-only transactions in READ COMMITTED isolation are recommended
+                                            for activities that do not change anything in the database because they use
+                                            fewer resources and do not interfere with garbage collection.
+                           </td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+               <p></p>
+            </div><br class="table-break"><div class="note">
+               <h3 class="title">Note 1: AutoCommit=True</h3>
+               <p>If the value of <code class="classname">AutoCommit</code> is set to True, FireDAC 
+                          behaves as follows:
+                            
+               </p>
+               <div class="itemizedlist">
+                  <ul type="disc" compact>
+                     <li>Starts a transaction (if required) before each SQL command and
+                                    ends the transaction after the SQL command completes execution
+                     </li>
+                     <li>If the command is successfully executed, the transaction will
+                                    be ended by <span class="database">COMMIT</span>. Otherwise, it will be ended 
+                                    by <span class="database">ROLLBACK</span>.
+                     </li>
+                     <li>If the application calls the StartTransaction method,
+                                    automatic transaction management will be disabled until that transaction is
+                                    ended by Commit or Rollback.
+                     </li>
+                  </ul>
+               </div>
+               <p>
+                          
+               </p>
+            </div>
+            <div class="note">
+               <h3 class="title">Note 2: DisconnectAction</h3>
+               <p>The following values are possible:
+                            
+               </p>
+               <div class="itemizedlist">
+                  <ul type="disc" compact>
+                     <li>xdNone&#8212;nothing will be done. The DBMS will perform its default
+                                    action.
+                     </li>
+                     <li>xdCommit&#8212;the transaction will be committed</li>
+                     <li>xdRollback&#8212;the transaction will be rolled back</li>
+                  </ul>
+               </div>
+               <p>
+                          Note that, in some other data access components, the default value for the 
+                          <code class="classname">DisconnectAction</code> property is <code class="classname">xdRollback</code> 
+                          and will need to be set manually with Firebird to match the <code class="classname">FDTransaction</code>
+                          setting.
+                          
+               </p>
+            </div>
+            <div class="note">
+               <h3 class="title">Note 3: EnableNested</h3>
+               <p>If <code class="classname">StartTransaction</code> is called from within an active 
+                          transaction, FireDac will emulate a nested transaction by creating a savepoint. 
+                          Unless you are very confident in the effect of enabling nested transactions, set 
+                          <code class="classname">EnableNested</code> to False.  With this setting, calling 
+                          <code class="classname">StartTransaction</code> inside the transaction will raise an 
+                          exception.
+               </p>
+            </div>
+            <div class="note">
+               <h3 class="title">Note 4: Isolation</h3>
+               <p>FireBird has three isolation levels: READ COMMITTED, SNAPSHOT (&#8220;<span class="quote">concurrency</span>&#8221;)
+                          and SNAPSHOT TABLE STABILITY (&#8220;<span class="quote">consistency</span>&#8221;, rarely used).  FireDac supports  some
+                          but not all configurations for READ COMMITTED and SNAPSHOT.  It uses the third level partially
+                          to emulate the SERIALIZABLE isolation that Firebird does not support.
+                            
+               </p>
+               <div class="itemizedlist">
+                  <ul type="disc">
+                     <li>xiReadCommitted&#8212;the READ COMMITTED isolation level. FireDac starts ReadCommitted
+                                      transactions in Firebird with the following parameters:
+                                      read/write, rec_version, nowait
+                     </li>
+                     <li>xiSnapshot&#8212;the SNAPSHOT (concurrency) isolation level. FireDac starts Snapshot
+                                      transactions in Firebird with the following parameters: read/write, wait
+                     </li>
+                     <li>xiUnspecified&#8212;Firebird's default isolation level (SNAPSHOT) with the following
+                                      parameters: read/write, wait
+                     </li>
+                     <li>xiSerializable&#8212;the SERIALIZABLE isolation level. Firebird does not support
+                                      serializable isolation, but FireDac emulates it by starting a SNAPSHOT TABLE STABILITY
+                                      (&#8220;<span class="quote">consistency</span>&#8221;) transaction with the following parameters: read/write,
+                                    wait.
+                     </li>
+                  </ul>
+               </div>
+               <p>
+                            Other parameters, not supported by Firebird at all, are:
+                            
+               </p>
+               <div class="itemizedlist">
+                  <ul type="disc">
+                     <li>xiDirtyRead&#8212;if this is selected (not a good idea!) READ COMMITTED will be used
+                                      instead
+                     </li>
+                     <li>xiRepeatableRead&#8212;if this is selected, SNAPSHOT will be used instead</li>
+                  </ul>
+               </div>
+               <p>
+                          
+               </p>
+            </div>
+            <div class="note">
+               <h3 class="title">Note 5: Firebird-specific Transaction Attributes</h3>
+               <p>Attributes that can be customised in Options.Params are:
+                            
+               </p>
+               <div class="itemizedlist">
+                  <ul type="disc">
+                     <li><code class="classname">read write</code>, the default read mode for all of
+                                      the options.isolation selections&#8212;see note (4) above.
+                                      Set <code class="classname">write</code> off if you want read-only mode.  Alternatively,
+                                      you can set <code class="classname">Options.ReadOnly</code> to True to achieve the same 
+                                      thing.  There is no such thing as a &#8220;<span class="quote">write-only</span>&#8221; transaction.
+                     </li>
+                     <li><code class="classname">read_committed</code>, <code class="classname">concurrency</code>
+                                      and <code class="classname">consistency</code> are isolation levels.
+                     </li>
+                     <li><code class="classname">wait</code> and <code class="classname">nowait</code>
+                                      are conflict resolution settings, determining whether the transaction is
+                                      to wait for a conflict to resolve
+                     </li>
+                     <li><code class="classname">rec_version</code> and <code class="classname">no rec_version</code>
+                                      provide an option that is applicable only to READ COMMITTED transactions.  The
+                                      default <code class="classname">rec_version</code> lets this transaction read the latest
+                                      committed version of a record and overwrite it if the transaction ID of the latest
+                                      committed version is newer (higher) than the ID of this transaction. The
+                                      <code class="classname">no rec_version</code> setting will block this transaction from
+                                      reading the latest committed version if an update is pending from any other
+                                      transaction.
+                     </li>
+                  </ul>
+               </div>
+               <p>
+                          
+               </p>
+            </div>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-firedac-multitransaction"></a>Multiple Transactions
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>Unlike many other DBMSs, Firebird allows as many <code class="classname">TFDTransaction</code> 
+                          objects as you need to associate with the same connection. In our application, we will
+                          use one common read transaction for all primary and secondary modules and one
+                          read/write transaction for each dataset.
+               </p>
+               <p>We do not want to rely on starting and ending transactions automatically: we want
+                          to have full control.  That is why <code class="classname">Options.AutoCommit=False</code>,
+                          <code class="classname">Options.AutoStart=False</code> and <code class="classname">Options.AutoStop=False</code>
+                          are set in all of our transactions.
+               </p>
+            </div>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdg30-firedac-connparams.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Connection parameters" alt="Prev: Connection parameters"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-firedac.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications in Delphi" alt="Up: Developing Firebird Applications in Delphi"></a><a href="fbdg30-firedac-datasets.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Datasets" alt="Next: Datasets"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-firedac.html">Developing Firebird Applications in Delphi</a> &rarr; Working with Transactions
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

@@ -1,0 +1,198 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Working with Transactions</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-efw.html" title="Chapter 3: Developing Firebird Applications with Microsoft Entity Framework">
+      <link rel="prev" href="fbdg30-efw-secondary-modules.html" title="Secondary Modules">
+      <link rel="next" href="fbdg30-efw-result.html" title="The Result">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-efw.html">Developing Firebird Applications with Microsoft Entity Framework</a> &rarr; Working with Transactions
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdg30-efw-secondary-modules.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Secondary Modules" alt="Prev: Secondary Modules"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-efw.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications with Microsoft Entity Framework" alt="Up: Developing Firebird Applications with Microsoft Entity Framework"></a><a href="fbdg30-efw-result.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: The Result" alt="Next: The Result"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdg30-efw-transactions"></a>Working with Transactions
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <p>Whenever we call the <code class="classname">SaveChanges()</code> method while adding,
+            updating or deleting, Entity Framework starts and ends an implicit transaction. Since
+             we use disconnected data access, all operations are carried out within one transaction.
+                Entity Framework starts and ends a transaction automatically for each data retrieval.
+                We will take the following example to illustrate how automatic transactions work.
+         </p>
+         <p>Suppose we need to make a discount on goods selected in the grid. Without explicit
+                transaction management, the code would be as follows:
+                  
+         </p><pre class="programlisting">
+var dbContext = AppVariables.getDbContext();
+foreach (DataGridViewRow gridRows in dataGridView.SelectedRows) {
+    int id = (int)gridRows.Cells["Id"].Value;
+    // here there is an implicit start and the completion of the transaction
+    var product = dbContext.PRODUCTS.Find(id);
+    // discount 10%
+    decimal discount = 10.0m;
+    product.PRICE = product.PRICE * (100 - discount) /100;
+}
+// here there is an implicit start and the completion of the transaction
+// all changes occur in one transaction
+dbContext.SaveChanges();
+      </pre><p>
+                
+         </p>
+         <p>Let's say we select 10 products. Ten implicit transactions will be used
+                for finding the products by their identifiers.  One more transaction will be used
+                to save the changes.
+         </p>
+         <p>If we control transactions explicitly, we can use just one transaction for
+                the same piece of work. For example:
+                  
+         </p><pre class="programlisting">
+var dbContext = AppVariables.getDbContext();
+// explicit start of a default transaction
+using (var dbTransaction = dbContext.Database.BeginTransaction()) {
+  string sql =
+    "UPDATE PRODUCT " +
+    "SET PRICE = PRICE * ROUND((100 - @DISCOUNT)/100, 2) " +
+    "WHERE PRODUCT_ID = @PRODUCT_ID";
+  try {
+    // create query parameters
+    var idParam = new FbParameter("PRODUCT_ID", FbDbType.Integer);
+    var discountParam = new FbParameter("DISCOUNT", FbDbType.Decimal);
+    // create a SQL command to update records
+    var sqlCommand = dbContext.Database.Connection.CreateCommand();
+    sqlCommand.CommandText = sql;
+    // specify which transaction to use
+    sqlCommand.Transaction = dbTransaction.UnderlyingTransaction;
+    sqlCommand.Parameters.Add(discountParam);
+    sqlCommand.Parameters.Add(idParam);
+    // prepare query
+    sqlCommand.Prepare();
+    // for all selected records in the grid
+    foreach (DataGridViewRow gridRows in dataGridView.SelectedRows) {
+      int id = (int)gridRows.Cells["Id"].Value;
+      // initialize query parameters
+      idParam.Value = id;
+      discountParam.Value = 10.0m; // discount 10%
+      // execute sql statement
+      sqlCommand.ExecuteNonQuery();
+    }
+    dbTransaction.Commit();
+  }
+  catch (Exception ex) {
+    dbTransaction.Rollback();
+    MessageBox.Show(ex.Message, "error");
+  }
+}
+      </pre><p>
+                
+         </p>
+         <p>Our code starts the transaction with the default parameters.
+                  To specify your own parameters for a transaction, you should use the
+                  <code class="classname">UseTransaction</code> method.
+                  
+         </p><pre class="programlisting">
+private void btnDiscount_Click(object sender, EventArgs e) {
+  DiscountEditorForm editor = new DiscountEditorForm();
+  editor.Text = "Enter discount";
+  if (editor.ShowDialog() != DialogResult.OK)
+    return;
+
+  bool needUpdate = false;
+  var dbContext = AppVariables.getDbContext();
+  var connection = dbContext.Database.Connection;
+  // explicit start of transaction
+  using (var dbTransaction = connection.BeginTransaction(IsolationLevel.Snapshot)) {
+    dbContext.Database.UseTransaction(dbTransaction);
+    string sql =
+      "UPDATE PRODUCT " +
+      "SET PRICE = ROUND(PRICE * (100 - @DISCOUNT)/100, 2) " +
+      "WHERE PRODUCT_ID = @PRODUCT_ID";
+    try {
+      // create query parameters
+      var idParam = new FbParameter("PRODUCT_ID", FbDbType.Integer);
+      var discountParam = new FbParameter("DISCOUNT", FbDbType.Decimal);
+      // create a SQL command to update records
+      var sqlCommand = connection.CreateCommand();
+      sqlCommand.CommandText = sql;
+      // specify which transaction to use
+      sqlCommand.Transaction = dbTransaction;
+      sqlCommand.Parameters.Add(discountParam);
+      sqlCommand.Parameters.Add(idParam);
+      // prepare statement
+      sqlCommand.Prepare();
+      // for all selected records in the grid
+      foreach (DataGridViewRow gridRows in dataGridView.SelectedRows) {
+        int id = (int)gridRows.Cells["PRODUCT_ID"].Value;
+        // initialize query parameters
+        idParam.Value = id;
+        discountParam.Value = editor.Discount;
+        // execute SQL statement
+        needUpdate = (sqlCommand.ExecuteNonQuery() &gt; 0) || needUpdate;
+      }
+      dbTransaction.Commit();
+    }
+    catch (Exception ex) {
+      dbTransaction.Rollback();
+      MessageBox.Show(ex.Message, "error");
+      needUpdate = false;
+    }
+  }
+  // refresh grid
+  if (needUpdate) {
+    // for all selected records in the grid
+    foreach (DataGridViewRow gridRows in dataGridView.SelectedRows) {
+      var product = (PRODUCT)bindingSource.List[gridRows.Index];
+      dbContext.Refresh(RefreshMode.StoreWins, product);
+    }
+    bindingSource.ResetBindings(false);
+  }
+}
+      </pre><p>
+                
+         </p>
+         <p>That's it. Now only one transaction is used for the entire set of updates
+                and there are no unnecessary commands for finding data.
+         </p>
+         <p>All that is left to do is to add a dialog box for entering the value of the
+                discount and code to update data in the grid. Try to do it on your own.
+                
+         </p>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdg30-efw-secondary-modules.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Secondary Modules" alt="Prev: Secondary Modules"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-efw.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications with Microsoft Entity Framework" alt="Up: Developing Firebird Applications with Microsoft Entity Framework"></a><a href="fbdg30-efw-result.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: The Result" alt="Next: The Result"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-efw.html">Developing Firebird Applications with Microsoft Entity Framework</a> &rarr; Working with Transactions
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

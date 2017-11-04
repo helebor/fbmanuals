@@ -1,0 +1,178 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Firebird 3.0 Developer's Guide PRE-BETA</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <meta name="description" content="...">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="index.html" title="Firebird Reference Documentation">
+      <link rel="prev" href="fblangref25-dochist.html" title="Appendix H: Document History">
+      <link rel="next" href="fbdevgd30-intro.html" title="Chapter 1: About the Firebird Developer's Guide">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; Firebird 3.0 Developer's Guide PRE-BETA
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><img src="images/prev-dim.png" width="30" height="30" border="0"><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><img src="images/top-dim.png" width="30" height="30" border="0"><a href="fbdevgd30-intro.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: About the Firebird Developer's Guide" alt="Next: About the Firebird Developer's Guide"></a></td>
+         </tr>
+      </table>
+      <div class="book" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h1 class="title"><a name="fbdevgd30"></a>Firebird 3.0 Developer's Guide PRE-BETA
+                  </h1>
+               </div>
+               <div>
+                  <h2 class="subtitle">Release 0.1</h2>
+               </div>
+               <div>
+                  <div class="authorgroup">
+                     <div class="author">
+                        <h3 class="author"><span class="firstname">Denis</span> <span class="surname">Simonov</span></h3>
+                     </div>
+                     <div class="othercredit">
+                        <h3 class="othercredit"><span class="firstname">Dimitry</span> <span class="surname">Borodin</span></h3><span class="contrib">Megatranslations Ltd, translation of text from the
+                                   original Russian to English</span></div>
+                     <div class="othercredit">
+                        <h3 class="othercredit"><span class="firstname">Helen</span> <span class="surname">Borrie</span></h3><span class="contrib">Editor of the translated text</span></div>
+                  </div>
+               </div>
+               <div>
+                  <p class="edition">3 November 2017, document version 0.101</p>
+               </div>
+               <div>
+                  <p class="copyright">Copyright &copy; 2017 Firebird Project and all contributing authors, under the
+                           <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.firebirdsql.org/manual/pdl.html" target="_top">Public Documentation License 
+                              Version 1.0</a>. Please refer to the <a href="fbdevgd30-license.html" title="Appendix A: License notice">License Notice
+                              </a>.
+                           
+                  </p>
+               </div>
+               <div>
+                  <div class="abstract">
+                     <p class="title"><b>Abstract</b></p>
+                     <p>...</p>
+                  </div>
+               </div>
+            </div>
+            <div></div>
+            <hr>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="chapter"><a href="fbdevgd30-intro.html">1. About the Firebird Developer's Guide</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="fbdevgd30-intro-subject.html">Subject Matter</a></span></dt>
+                     <dt><span class="section"><a href="fbdevgd30-intro-author.html">About the Author</a></span></dt>
+                     <dt><span class="section"><a href="fbdevgd30-acknowledgements.html">Acknowledgments</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="chapter"><a href="fbdevgd30-firedac.html">2. Developing Firebird Applications in Delphi</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="fbdg30-firedac-proj-start.html">Starting a Project</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-firedac-tfdconnection.html">TFDConnection Component</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-firedac-libpath.html">Path to the Client Library</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-firedac-connparams.html">Connection parameters</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-firedac-transactions.html">Working with Transactions</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-firedac-datasets.html">Datasets</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-firedac-tfdcommand.html">TFDCommand component</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-firedac-primary-modules.html">Creating the Primary Modules</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-firedac-secondary-modules.html">Creating a Secondary Module</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-firedac-proj-result.html">The Result</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-firedac-conclusion.html">Conclusion</a></span></dt>
+                     <dt><span class="section"><a href="fbdevgd30-downloads.html">Downloads</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="chapter"><a href="fbdevgd30-efw.html">3. Developing Firebird Applications with Microsoft Entity Framework</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="fbdg30-efw-methods.html">Methods of Interacting with a Database</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-efw-vs-prepare.html">Setting Up for Firebird in Visual Studio 2015</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-efw-vs-crtproject.html">Creating a Project</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-efw-vs-crt-edm.html">Creating an Entity Data Model (EDM)</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-efw-vs-crt-gui.html">Creating a User Interface</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-efw-work-with-data.html">Working with Data</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-efw-secondary-modules.html">Secondary Modules</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-efw-transactions.html">Working with Transactions</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-efw-result.html">The Result</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-efw-vs-project-sourcecode.html">Source Code</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="appendix"><a href="fbdevgd30-license.html">A. License notice</a></span></dt>
+            </dl>
+         </div>
+         <div class="list-of-figures">
+            <p><b>List of Figures</b></p>
+            <dl>
+               <dt>2.1. <a href="fbdg30-firedac-connparams.html#tfdcon-prop-ed">TFDConnection property editor</a></dt>
+               <dt>2.2. <a href="fbdg30-firedac-datasets.html#tfdupdsql-prop-ed">TFDUpdateSQL property editor</a></dt>
+               <dt>2.3. <a href="fbdg30-firedac-datasets.html#updsql-cmd-editor">TFDUpdateSQL SQL command editor</a></dt>
+               <dt>2.4. <a href="fbdg30-firedac-primary-modules.html#dcust-datamodule">dCustomers datamodule</a></dt>
+               <dt>2.5. <a href="fbdg30-firedac-primary-modules.html#cust-form-init">Customers form, initial view</a></dt>
+               <dt>2.6. <a href="fbdg30-firedac-secondary-modules.html#inv-module-config">The Invoice form tab</a></dt>
+               <dt>2.7. <a href="fbdg30-firedac-secondary-modules.html#inv-datamodule">The Invoice data module tab</a></dt>
+               <dt>2.8. <a href="fbdg30-firedac-secondary-modules.html#cust-input-form">The Customer input form</a></dt>
+               <dt>2.9. <a href="fbdg30-firedac-proj-result.html#delphi-project-result">Screenshot of the sample application</a></dt>
+               <dt>3.1. <a href="fbdg30-efw-vs-prepare.html#efw-test-install">Choose data source for testing installation</a></dt>
+               <dt>3.2. <a href="fbdg30-efw-vs-prepare.html#efw-database-locate">Locate a database</a></dt>
+               <dt>3.3. <a href="fbdg30-efw-vs-prepare.html#efw-data-src-test-confirm">Test and confirm the connection</a></dt>
+               <dt>3.4. <a href="fbdg30-efw-vs-crtproject.html#efw-nuget-select-pkgs">Solution Explorer&#8212;&gt;select NuGet packages</a></dt>
+               <dt>3.5. <a href="fbdg30-efw-vs-crtproject.html#efw-nuget-install-pkgs">Select and install packages from NuGet catalogue</a></dt>
+               <dt>3.6. <a href="fbdg30-efw-vs-crt-edm.html#efw-add-new-item">Solution Explorer - Add&#8212;&gt;New Item</a></dt>
+               <dt>3.7. <a href="fbdg30-efw-vs-crt-edm.html#efw-select-ado-net">Add New Item wizard - select ADO.NET Entity Data Model</a></dt>
+               <dt>3.8. <a href="fbdg30-efw-vs-crt-edm.html#efw-select-code-first">Add New Item wizard - select 'Code First from database'</a></dt>
+               <dt>3.9. <a href="fbdg30-efw-vs-crt-edm.html#efw-choose-connection">Add New Item wizard - choose Connection</a></dt>
+               <dt>3.10. <a href="fbdg30-efw-vs-crt-edm.html#efw-conn-properties">Add Connection wizard - Connection properties</a></dt>
+               <dt>3.11. <a href="fbdg30-efw-vs-crt-edm.html#efw-adv-conn-props">Add Connection wizard - Advanced connection properties</a></dt>
+               <dt>3.12. <a href="fbdg30-efw-vs-crt-edm.html#efw-conn-str-storage">EDM wizard - connection string storage</a></dt>
+               <dt>3.13. <a href="fbdg30-efw-vs-crt-edm.html#d0e160099">EDM wizard - select tables and views</a></dt>
+               <dt>3.14. <a href="fbdg30-efw-vs-crt-gui.html#efw-forn-cust-entty">A form for the Customer entity</a></dt>
+               <dt>3.15. <a href="fbdg30-efw-work-with-data.html#efw-cust-edit-form">Customer edit form</a></dt>
+               <dt>3.16. <a href="fbdg30-efw-secondary-modules.html#efw-inv-form">Invoice form</a></dt>
+               <dt>3.17. <a href="fbdg30-efw-secondary-modules.html#efw-product-form">Product form</a></dt>
+               <dt>3.18. <a href="fbdg30-efw-result.html#efw-project-result">The result of the Entity Framework project</a></dt>
+            </dl>
+         </div>
+         <div class="list-of-tables">
+            <p><b>List of Tables</b></p>
+            <dl>
+               <dt>2.1. <a href="fbdg30-firedac-connparams.html#fbdg30-firedac-tbl-connprops">TFDConnection component main properties</a></dt>
+               <dt>2.2. <a href="fbdg30-firedac-transactions.html#fbdg30-firedac-tbl-transprops">TFDTransaction component main properties</a></dt>
+               <dt>2.3. <a href="fbdg30-firedac-datasets.html#fbdg30-firedac-tbl-queryprops">TFDQuery component main properties</a></dt>
+               <dt>2.4. <a href="fbdg30-firedac-datasets.html#fbdg30-firedac-tbl-updsqlprops">TFDUpdateSQL component main properties</a></dt>
+               <dt>2.5. <a href="fbdg30-firedac-tfdcommand.html#fbdg30-firedac-tbl-tfdcommand">TFDCommand component main properties</a></dt>
+            </dl>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><img src="images/prev-dim.png" width="30" height="30" border="0"><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><img src="images/top-dim.png" width="30" height="30" border="0"><a href="fbdevgd30-intro.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: About the Firebird Developer's Guide" alt="Next: About the Firebird Developer's Guide"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; Firebird 3.0 Developer's Guide PRE-BETA
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

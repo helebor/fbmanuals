@@ -1,0 +1,69 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>TFDConnection Component</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-firedac.html" title="Chapter 2: Developing Firebird Applications in Delphi">
+      <link rel="prev" href="fbdg30-firedac-proj-start.html" title="Starting a Project">
+      <link rel="next" href="fbdg30-firedac-libpath.html" title="Path to the Client Library">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-firedac.html">Developing Firebird Applications in Delphi</a> &rarr; TFDConnection Component
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdg30-firedac-proj-start.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Starting a Project" alt="Prev: Starting a Project"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-firedac.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications in Delphi" alt="Up: Developing Firebird Applications in Delphi"></a><a href="fbdg30-firedac-libpath.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Path to the Client Library" alt="Next: Path to the Client Library"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdg30-firedac-tfdconnection"></a>TFDConnection Component
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <p>The <code class="classname">TFDConnection</code> component provides connectivity to various
+                types of databases.
+                We will specify an instance of this component in the <code class="classname">Connection</code> properties of other FireDac
+                components. The particular type of the database to which the connection will be established
+                depends on the value of the <code class="classname">DriverName</code> property. To access Firebird,
+                you need to set this property to <code class="classname">FB</code>.
+         </p>
+         <p>For the connection to know exactly which access library it should work with, place
+                the <code class="classname">TFBPhysFBDriverLink</code> component in the main data module. Its
+                <code class="classname">VendorLib</code> property enables the path to the client library to be 
+                specified precisely. If it is not specified, the component will attempt to establish a 
+                connection via libraries registered in the system, for example, in <code class="filename">system32</code>, 
+                which might not be what you want at all.
+         </p>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdg30-firedac-proj-start.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Starting a Project" alt="Prev: Starting a Project"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-firedac.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications in Delphi" alt="Up: Developing Firebird Applications in Delphi"></a><a href="fbdg30-firedac-libpath.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Path to the Client Library" alt="Next: Path to the Client Library"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-firedac.html">Developing Firebird Applications in Delphi</a> &rarr; TFDConnection Component
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

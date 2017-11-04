@@ -1,0 +1,173 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Creating a User Interface</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-efw.html" title="Chapter 3: Developing Firebird Applications with Microsoft Entity Framework">
+      <link rel="prev" href="fbdg30-efw-vs-crt-edm.html" title="Creating an Entity Data Model (EDM)">
+      <link rel="next" href="fbdg30-efw-work-with-data.html" title="Working with Data">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-efw.html">Developing Firebird Applications with Microsoft Entity Framework</a> &rarr; Creating a User Interface
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdg30-efw-vs-crt-edm.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Creating an Entity Data Model (EDM)" alt="Prev: Creating an Entity Data Model (EDM)"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-efw.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications with Microsoft Entity Framework" alt="Up: Developing Firebird Applications with Microsoft Entity Framework"></a><a href="fbdg30-efw-work-with-data.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Working with Data" alt="Next: Working with Data"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdg30-efw-vs-crt-gui"></a>Creating a User Interface
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdg30-efw-vs-crt-gui.html#fbdg30-efw-vs-context">Getting a Context</a></span></dt>
+            </dl>
+         </div>
+         <p>In our application, we will create interfaces for two primary entities: a form
+                each for the product and the customer entities. Each form contains a DataGridView grid,
+                a ToolStrip toolbar with buttons and also a BindingSource component that is used to
+                bind data to the controls on the form.
+                  
+         </p>
+         <div class="figure"><a name="efw-forn-cust-entty"></a><p class="title"><b>Figure&nbsp;3.14.&nbsp;A form for the Customer entity</b></p>
+            <div class="figure-contents">
+               <div class="mediaobject" align="center">
+                  <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="494">
+                     <tr style="height: 392px">
+                        <td align="center"><img src="images/fbdevgd30_efw_014_en.png" align="middle" width="494" alt="A form for the Customer entity"></td>
+                     </tr>
+                  </table>
+               </div>
+            </div>
+            <p></p>
+         </div>
+         <p><br class="figure-break">
+                
+         </p>
+         <p>Since both forms are similar in function and implementation, we will describe
+                just one.
+         </p>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-efw-vs-context"></a>Getting a Context
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <p>To work with our model, we will need the method for getting a context (or a model).
+                     The following statement is sufficient for that purpose:
+                       
+            </p><pre class="literallayout">
+  DbModel dbContext = new DbModel();
+        </pre><p>
+                     If no confidential data  are stored in the connection string&#8212;for example, the
+                     password is absent because it will be captured during the authentication process
+                     when the application is started&#8212;we will need a special method for storing and
+                     recovering the connection string or for storing the previously created context. For
+                     that, we will create a special class containing  some application-level global
+                     variables, along with a method for getting a context.
+            </p>
+            <p>A context might be  the start and end dates of  a work period, for example.</p><pre class="programlisting">
+static class AppVariables
+{
+    private static DbModel dbContext = null;
+
+    /// &lt;summary&gt;
+    /// Start date of the working period
+    /// &lt;/summary&gt;
+    public static DateTime StartDate { get; set; }
+
+    /// &lt;summary&gt;
+    /// End date of the working period
+    /// &lt;/summary&gt;
+    public static DateTime FinishDate { get; set; }
+
+    /// &lt;summary&gt;
+    /// Returns an instance of the model (context)
+    /// &lt;/summary&gt;
+    /// &lt;returns&gt;Model&lt;/returns&gt;
+    public static DbModel CreateDbContext() {
+        dbContext = dbContext ?? new DbModel();
+        return dbContext;
+    }
+}
+      </pre><p>The connection string itself is applied after the authentication process
+                     completes successfully during the application launch. We will add the following
+                     code to the <code class="classname">Load</code> event handler of the main form for that.
+                       
+            </p><pre class="programlisting">
+private void MainForm_Load(object sender, EventArgs e) {
+    var dialog = new LoginForm();
+    if (dialog.ShowDialog() == DialogResult.OK)
+    {
+        var dbContext = AppVariables.getDbContext();
+        try
+        {
+            string s = dbContext.Database.Connection.ConnectionString;
+            var builder = new FbConnectionStringBuilder(s);
+            builder.UserID = dialog.UserName;
+            builder.Password = dialog.Password;
+            dbContext.Database.Connection.ConnectionString = builder.ConnectionString;
+            // try connect
+            dbContext.Database.Connection.Open();
+        }
+        catch (Exception ex)
+        {
+           // display error
+           MessageBox.Show(ex.Message, "Error");
+           Application.Exit();
+        }
+     }
+     else
+        Application.Exit();
+}
+        </pre><p>
+                     
+            </p>
+            <p>Now, to get a context, we use the static <code class="classname">CreateDbContext</code>
+                     method:
+                       
+            </p><pre class="literallayout">
+var dbContext = AppVariables.getDbContext();
+        </pre><p>
+                     
+            </p>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdg30-efw-vs-crt-edm.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Creating an Entity Data Model (EDM)" alt="Prev: Creating an Entity Data Model (EDM)"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-efw.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications with Microsoft Entity Framework" alt="Up: Developing Firebird Applications with Microsoft Entity Framework"></a><a href="fbdg30-efw-work-with-data.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Working with Data" alt="Next: Working with Data"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-efw.html">Developing Firebird Applications with Microsoft Entity Framework</a> &rarr; Creating a User Interface
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

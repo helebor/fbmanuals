@@ -1,0 +1,141 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Path to the Client Library</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-firedac.html" title="Chapter 2: Developing Firebird Applications in Delphi">
+      <link rel="prev" href="fbdg30-firedac-tfdconnection.html" title="TFDConnection Component">
+      <link rel="next" href="fbdg30-firedac-connparams.html" title="Connection parameters">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-firedac.html">Developing Firebird Applications in Delphi</a> &rarr; Path to the Client Library
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdg30-firedac-tfdconnection.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: TFDConnection Component" alt="Prev: TFDConnection Component"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-firedac.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications in Delphi" alt="Up: Developing Firebird Applications in Delphi"></a><a href="fbdg30-firedac-connparams.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Connection parameters" alt="Next: Connection parameters"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdg30-firedac-libpath"></a>Path to the Client Library
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdg30-firedac-libpath.html#fbdg30-firedac-embedded">Developing for Embedded Applications</a></span></dt>
+            </dl>
+         </div>
+         <p>We will place the necessary library in the <code class="filename">fbclient</code> folder
+                located in the application folder and use the following code for the OnCreate event
+                of the data module:
+                  
+         </p><pre class="programlisting">
+xAppPath := ExtractFileDir(Application.ExeName) + PathDelim;
+FDPhysFBDriverLink.VendorLib := xAppPath + 'fbclient' + PathDelim + 'fbclient.dll';
+       </pre><p>
+            
+                  
+         </p>
+         <div class="important">
+            <h3 class="title">Important notes about &#8220;<span class="quote">bitness</span>&#8221;
+            </h3>
+            <p>If you compile a 32-bit application, you should use the 32-bit fbclient.dll
+                       library. For a 64-bit application, it should be the 64-bit library.
+            </p>
+            <p>Along with the file fbclient.dll, it is advisable to place the following libraries
+                       in the same folder: <code class="filename">msvcp80.dll</code> and <code class="filename">msvcr80.dll</code>
+                       (for Firebird 2.5) as well as <code class="filename">msvcp100.dll</code> and <code class="filename">msvcr100.dll</code>
+                       (for Firebird 3.0). These libraries are located either in the <code class="filename">bin</code>
+                       subfolder (Firebird 2.5) or in the root folder of the server (Firebird 3.0).
+            </p>
+            <p>For the application to show internal firebird errors correctly, it is necessary to copy
+                       the file <code class="filename">firebird.msg</code> as well.
+                         
+            </p>
+            <div class="itemizedlist">
+               <ul type="disc" compact>
+                  <li>For Firebird 2.5 or earlier, the libraries must be one level up from the folder
+                                 with the client library, i.e., in the application folder for our purposes.
+                  </li>
+                  <li>For Firebird 3, they must be in the same folder as the client library,
+                                 i.e. in the <code class="filename">fbclient</code> folder.
+                  </li>
+               </ul>
+            </div>
+            <p>
+                       
+            </p>
+         </div>
+         <p>
+                
+         </p>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-firedac-embedded"></a>Developing for Embedded Applications
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <p>If you need your application to run without the installed Firebird server,
+                     i.e. in the Embedded mode, for Firebird 2.5 you should replace <code class="filename">fbclient.dll</code>
+                     with <code class="filename">fbembed.dll</code>.
+                     Make sure that the width of the CPU register (64-bit or 32-bit) matches the application.
+                     If necessary, the name of the library can be placed in the configuration file of your
+                     application. 
+            </p>
+            <p>It is not necessary to change anything for Firebird 3.0, in which the working mode
+                     depends on the connection string and the value of the <code class="classname">Providers</code> parameter
+                     in the file firebird.conf/databases.conf.
+            </p>
+            <div class="note">
+               <h3 class="title">TIP</h3>
+               <p>Even if your application is intended to work with Firebird in the Embedded mode,
+                          it is advisable to attach to the full server during development.  The reason is that
+                          embedded Firebird runs in the same address space as the application and any application
+                          connecting to a database in embedded mode must be able to obtain exclusive access
+                          to that database.  Once that connection succeeds, no other embedded connections are
+                          possible. When you are connected to your database in the Delphi IDE, the established
+                          connection is in Delphi's application space, thus preventing your application from
+                          being run successfully from the IDE.
+               </p>
+               <p>Note, Firebird 3 embedded still requires exclusive access if the installed full
+                          server is in Super (Superserver) mode.
+               </p>
+            </div>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdg30-firedac-tfdconnection.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: TFDConnection Component" alt="Prev: TFDConnection Component"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-firedac.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications in Delphi" alt="Up: Developing Firebird Applications in Delphi"></a><a href="fbdg30-firedac-connparams.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Connection parameters" alt="Next: Connection parameters"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-firedac.html">Developing Firebird Applications in Delphi</a> &rarr; Path to the Client Library
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

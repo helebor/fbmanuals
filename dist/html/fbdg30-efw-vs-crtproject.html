@@ -1,0 +1,127 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Creating a Project</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-efw.html" title="Chapter 3: Developing Firebird Applications with Microsoft Entity Framework">
+      <link rel="prev" href="fbdg30-efw-vs-prepare.html" title="Setting Up for Firebird in Visual Studio 2015">
+      <link rel="next" href="fbdg30-efw-vs-crt-edm.html" title="Creating an Entity Data Model (EDM)">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-efw.html">Developing Firebird Applications with Microsoft Entity Framework</a> &rarr; Creating a Project
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdg30-efw-vs-prepare.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Setting Up for Firebird in Visual Studio 2015" alt="Prev: Setting Up for Firebird in Visual Studio 2015"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-efw.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications with Microsoft Entity Framework" alt="Up: Developing Firebird Applications with Microsoft Entity Framework"></a><a href="fbdg30-efw-vs-crt-edm.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Creating an Entity Data Model (EDM)" alt="Next: Creating an Entity Data Model (EDM)"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdg30-efw-vs-crtproject"></a>Creating a Project
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdg30-efw-vs-crtproject.html#fbdg30-efw-vs-crtproj-add-pkgs">Adding Packages to the Project</a></span></dt>
+            </dl>
+         </div>
+         <p>For our example in this chapter, we will create a <code class="classname">Windows Forms</code> 
+                application. Other types of applications differ from it, but the principles of working with 
+                Firebird via Entity Framework remain the same.
+         </p>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-efw-vs-crtproj-add-pkgs"></a>Adding Packages to the Project
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <p>The first task after creating a Windows Forms project is to add the following packages
+                     to it, using the NuGet package manager:
+                       
+            </p>
+            <div class="itemizedlist">
+               <ul type="disc" compact>
+                  <li><code class="filename">FirebirdSql.Data.FirebirdClient</code></li>
+                  <li><code class="filename">EntityFramework</code></li>
+                  <li><code class="filename">EntityFramework.Firebird</code></li>
+               </ul>
+            </div>
+            <p>
+                     Right-click the project name in Solution Explorer and select <code class="classname">Manage
+                        NuGet Packages</code> from the drop-down list.
+            </p>
+            <p>
+                       
+            </p>
+            <div class="figure"><a name="efw-nuget-select-pkgs"></a><p class="title"><b>Figure&nbsp;3.4.&nbsp;Solution Explorer&#8212;&gt;select NuGet packages</b></p>
+               <div class="figure-contents">
+                  <div class="mediaobject" align="center">
+                     <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="427">
+                        <tr style="height: 367px">
+                           <td align="center"><img src="images/fbdevgd30_efw_004_en.png" align="middle" width="427" alt="Solution Explorer&#8212;&gt;select NuGet packages"></td>
+                        </tr>
+                     </table>
+                  </div>
+               </div>
+               <p></p>
+            </div>
+            <p><br class="figure-break">
+                     
+            </p>
+            <p>Find the packages listed above in the Nuget catalogue and install them in
+                     the package manager.
+                       
+            </p>
+            <div class="figure"><a name="efw-nuget-install-pkgs"></a><p class="title"><b>Figure&nbsp;3.5.&nbsp;Select and install packages from NuGet catalogue</b></p>
+               <div class="figure-contents">
+                  <div class="mediaobject" align="center">
+                     <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="497">
+                        <tr style="height: 359px">
+                           <td align="center"><img src="images/fbdevgd30_efw_005_en.png" align="middle" width="497" alt="Select and install packages from NuGet catalogue"></td>
+                        </tr>
+                     </table>
+                  </div>
+               </div>
+               <p></p>
+            </div>
+            <p><br class="figure-break">
+                     
+            </p>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdg30-efw-vs-prepare.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Setting Up for Firebird in Visual Studio 2015" alt="Prev: Setting Up for Firebird in Visual Studio 2015"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-efw.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications with Microsoft Entity Framework" alt="Up: Developing Firebird Applications with Microsoft Entity Framework"></a><a href="fbdg30-efw-vs-crt-edm.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Creating an Entity Data Model (EDM)" alt="Next: Creating an Entity Data Model (EDM)"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-efw.html">Developing Firebird Applications with Microsoft Entity Framework</a> &rarr; Creating a Project
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

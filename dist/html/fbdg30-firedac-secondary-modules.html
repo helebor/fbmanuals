@@ -1,0 +1,796 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Creating a Secondary Module</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-firedac.html" title="Chapter 2: Developing Firebird Applications in Delphi">
+      <link rel="prev" href="fbdg30-firedac-primary-modules.html" title="Creating the Primary Modules">
+      <link rel="next" href="fbdg30-firedac-proj-result.html" title="The Result">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-firedac.html">Developing Firebird Applications in Delphi</a> &rarr; Creating a Secondary Module
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdg30-firedac-primary-modules.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Creating the Primary Modules" alt="Prev: Creating the Primary Modules"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-firedac.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications in Delphi" alt="Up: Developing Firebird Applications in Delphi"></a><a href="fbdg30-firedac-proj-result.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: The Result" alt="Next: The Result"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdg30-firedac-secondary-modules"></a>Creating a Secondary Module
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdg30-firedac-secondary-modules.html#fbdg30-firedac-secondary-modules-txread">The Transactions for Invoice Data</a></span></dt>
+               <dt><span class="section"><a href="fbdg30-firedac-secondary-modules.html#fbdg30-firedac-secondary-modules-workperiod">A Filter for the Data</a></span></dt>
+               <dt><span class="section"><a href="fbdg30-firedac-secondary-modules.html#fbdg30-firedac-secondary-modules-configuring">Configuring the Module</a></span></dt>
+               <dt><span class="section"><a href="fbdg30-firedac-secondary-modules.html#fbdg30-firedac-secondary-modules-operations">Doing the Work</a></span></dt>
+               <dt><span class="section"><a href="fbdg30-firedac-secondary-modules.html#fbdg30-firedac-secondary-inv-detail">The Invoice Details</a></span></dt>
+            </dl>
+         </div>
+         <p>Secondary datasets typically contain larger numbers of records than
+                primary datasets and new records are added frequently.
+                Our application will have only one secondary module, named &#8220;<span class="quote">Invoices</span>&#8221;.
+         </p>
+         <p>An invoice consists of a header where some general attributes are described
+                (number, date, customer &#8230;) and invoice lines with the list of products,
+                their quantities, prices, etc. It is convenient to have two grids for such documents:
+                the main one (master) showing the data invoice header data and the detail one
+                showing the invoice lines.
+         </p>
+         <p>We want to place two <code class="classname">TDBGrid</code> components on the invoice form and 
+                link a separate <code class="classname">TDataSource</code> to each of them that will be linked to its 
+                respective <code class="classname">TFDQuery</code>. In our project, the dataset with the invoice headers 
+                (the master set) will be called qryInvoice, and the one with the invoice lines (the detail 
+                set) will be called qryInvoiceLine.
+         </p>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-firedac-secondary-modules-txread"></a>The Transactions for Invoice Data
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <p>The <code class="classname">Transaction</code> property of each dataset will specify 
+                     the read-only transaction trRead that is located in the dmInvoicedata module. 
+                     Use the <code class="classname">UpdateTransaction</code> property to specify the trWrite 
+                     transaction and the <code class="classname">Connection</code> property to specify the connection 
+                     located in the main data module.
+            </p>
+         </div>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-firedac-secondary-modules-workperiod"></a>A Filter for the Data
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <p>Secondary datasets usually contain a field with the record creation
+                     date. In order to reduce the amount of retrieved data, a notion such as
+                     &#8220;<span class="quote">a work period</span>&#8221; is commonly incorporated in the application to
+                     filter the set of data sent to the client. A work period is a range of dates
+                     for which the records are required.
+            </p>
+            <p>Since the application could have more than one secondary dataset, it makes
+                     sense to add variables containing the start and end dates of a work period
+                     to the global dmMain data module that is used by all modules working with the
+                     database in one way or another. Once the application is started, the work period
+                     could be defined by the start and end dates of the current quarter, or some other
+                     appropriate start/end date pair. The application could allow the user to change
+                     the work period while working with the application.
+            </p>
+         </div>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-firedac-secondary-modules-configuring"></a>Configuring the Module
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <div class="figure"><a name="inv-module-config"></a><p class="title"><b>Figure&nbsp;2.6.&nbsp;The Invoice form tab</b></p>
+               <div class="figure-contents">
+                  <div class="mediaobject" align="center">
+                     <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="495">
+                        <tr style="height: 388px">
+                           <td align="center"><img src="images/fbdevgd30_delphi_006.png" align="middle" width="495" alt="The Invoice form tab"></td>
+                        </tr>
+                     </table>
+                  </div>
+               </div>
+               <p></p>
+            </div><br class="figure-break"><div class="figure"><a name="inv-datamodule"></a><p class="title"><b>Figure&nbsp;2.7.&nbsp;The Invoice data module tab</b></p>
+               <div class="figure-contents">
+                  <div class="mediaobject" align="center">
+                     <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="480">
+                        <tr style="height: 489px">
+                           <td align="center"><img src="images/fbdevgd30_delphi_007.png" align="middle" width="480" alt="The Invoice data module tab"></td>
+                        </tr>
+                     </table>
+                  </div>
+               </div>
+               <p></p>
+            </div><br class="figure-break"><p>Since the latest invoices are the most requested ones, it makes sense
+                     to sort them by date in reverse order. The query will look like this in the SQL
+                     property of the qryInvoice dataset:
+                       
+            </p><pre class="programlisting">
+SELECT
+  invoice.invoice_id AS invoice_id,
+  invoice.customer_id AS customer_id,
+  customer.NAME AS customer_name,
+  invoice.invoice_date AS invoice_date,
+  invoice.total_sale AS total_sale,
+  IIF(invoice.payed=1, 'Yes', 'No') AS payed
+FROM
+  invoice
+  JOIN customer ON customer.customer_id = invoice.customer_id
+WHERE invoice.invoice_date BETWEEN :date_begin AND :date_end
+ORDER BY invoice.invoice_date DESC
+        </pre><p>
+                     
+            </p>
+            <p>To open this dataset, it will be necessary to initialise the
+                     query parameters:
+                       
+            </p><pre class="programlisting">
+qryInvoice.ParamByName('date_begin').AsSqlTimeStamp := dmMain.BeginDateSt;
+qryInvoice.ParamByName('date_end').AsSqlTimeStamp := dmMain.EndDateSt;
+qryInvoice.Open;
+        </pre><p>
+                     
+            </p>
+            <p>For the purpose of illustration, we will use stored procedures
+                     to perform all operations on an invoice.   Regular INSERT/UPDATE/DELETE queries
+                     can be used when operations are simple and involve writing to only one table
+                     in the database. We will execute each stored procedure as a separate query in
+                     TFDCommand objects. This component is not descended from <code class="classname">TFDRdbmsDataSet</code>,
+                     does not buffer data and returns not more than one result row.  We are using it
+                     because it consumes fewer resources  for queries that do not return data.
+            </p>
+            <p>Since our stored procedures modify data, it is necessary to point the
+                     <code class="classname">Transaction</code> property of each TFDCommand object to the
+                     trWrite transaction.
+            </p>
+            <div class="note">
+               <h3 class="title">Tip</h3>
+               <p>Another alternative is to place the stored procedure calls for inserting,
+                          editing and adding a record in the corresponding properties of a
+                          <code class="classname">TFDUpdateSQL</code> object.
+               </p>
+            </div>
+         </div>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-firedac-secondary-modules-operations"></a>Doing the Work
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <div class="toc">
+               <p><b>Table of Contents</b></p>
+               <dl>
+                  <dt><span class="section"><a href="fbdg30-firedac-secondary-modules.html#fbdg30-firedac-secondary-proc-addinvoice">qryAddInvoice.CommandText</a></span></dt>
+                  <dt><span class="section"><a href="fbdg30-firedac-secondary-modules.html#fbdg30-firedac-secondary-proc-editinvoice">qryEditInvoice.CommandText</a></span></dt>
+                  <dt><span class="section"><a href="fbdg30-firedac-secondary-modules.html#fbdg30-firedac-secondary-proc-dltinvoice">qryDeleteInvoice.CommandText</a></span></dt>
+                  <dt><span class="section"><a href="fbdg30-firedac-secondary-modules.html#fbdg30-firedac-secondary-proc-payinvoice">qryPayForInvoice.CommandText</a></span></dt>
+                  <dt><span class="section"><a href="fbdg30-firedac-secondary-modules.html#fbdg30-firedac-secondary-usrconfirm">Getting User Confirmation</a></span></dt>
+                  <dt><span class="section"><a href="fbdg30-firedac-secondary-modules.html#fbdg30-firedac-secondary-add-or-edit">Adding or Editing Records</a></span></dt>
+               </dl>
+            </div>
+            <p>Four operations are provided for working with the invoice header:
+                      adding, editing, deleting and setting the &#8220;<span class="quote">paid</span>&#8221; attribute.
+                      Once an invoice is paid, we prevent any modifications to either the header
+                      or the lines. The rule is implemented at stored procedure level. Let's
+                      examine the query strings in the <code class="classname">CommandText</code> property
+                      for calling the stored procedures.
+            </p>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-firedac-secondary-proc-addinvoice"></a>qryAddInvoice.CommandText
+                        </h4>
+                     </div>
+                  </div>
+               </div><pre class="programlisting">
+EXECUTE PROCEDURE sp_add_invoice(
+  NEXT VALUE FOR gen_invoice_id,
+  :CUSTOMER_ID,
+  :INVOICE_DATE
+)
+        </pre></div>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-firedac-secondary-proc-editinvoice"></a>qryEditInvoice.CommandText
+                        </h4>
+                     </div>
+                  </div>
+               </div><pre class="programlisting">
+EXECUTE PROCEDURE sp_edit_invoice(
+  :INVOICE_ID,
+  :CUSTOMER_ID,
+  :INVOICE_DATE
+)
+        </pre></div>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-firedac-secondary-proc-dltinvoice"></a>qryDeleteInvoice.CommandText
+                        </h4>
+                     </div>
+                  </div>
+               </div><pre class="programlisting">
+EXECUTE PROCEDURE sp_delete_invoice(:INVOICE_ID)
+        </pre></div>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-firedac-secondary-proc-payinvoice"></a>qryPayForInvoice.CommandText
+                        </h4>
+                     </div>
+                  </div>
+               </div><pre class="programlisting">
+EXECUTE PROCEDURE sp_pay_for_invoice(:invoice_id)
+        </pre></div>
+            <p>Since our stored procedures are not called from a <code class="classname">TFDUpdateSQL</code>
+                     object, we need to call <code class="classname">qryInvoice.Refresh</code> after they are executed,
+                     in order to update the data in the grid.
+            </p>
+            <p>Stored procedures that do not require input data from the user
+                     are called as follows:
+                       
+            </p><pre class="programlisting">
+procedure TdmInvoice.DeleteInvoice;
+begin
+  // We do everything in a short transaction
+  trWrite.StartTransaction;
+  try
+    qryDeleteInvoice.ParamByName('INVOICE_ID').AsInteger :=
+      Invoice.INVOICE_ID.Value;
+    qryDeleteInvoice.Execute;
+    trWrite.Commit;
+    qryInvoice.Refresh;
+  except
+    on E: Exception do
+    begin
+      if trWrite.Active then
+        trWrite.Rollback;
+      raise;
+    end;
+  end;
+end;
+        </pre><p>
+                     
+            </p>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-firedac-secondary-usrconfirm"></a>Getting User Confirmation
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>Before performing some operations, such as deleting an invoice, we want
+                          to get confirmation from the user:
+                            
+               </p><pre class="programlisting">
+procedure TInvoiceForm.actDeleteInvoiceExecute(Sender: TObject);
+begin
+  if MessageDlg('Are you sure you want to delete an invoice?',
+                mtConfirmation,
+                [mbYes, mbNo], 0) = mrYes then
+  begin
+    Invoices.DeleteInvoice;
+  end;
+end;
+          </pre><p>
+                          
+               </p>
+            </div>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-firedac-secondary-add-or-edit"></a>Adding or Editing Records
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>As with the primary modules, we will use modal forms to add a
+                          new record or edit an existing one. We will not use data-aware visual
+                          components in this implementation. As another variation, we will use a
+                          <code class="classname">TButtonedEdit</code> component to select a customer.
+                          It will display the name of the current customer and open a modal form
+                          with a grid for selecting a customer on the click of the embedded button.
+                          We could use something like <code class="classname">TDBLookupCombobox</code>, of
+                          course, but it has drawbacks: first, the customer list may be too large
+                          for scrolling comfortably through the drop-down list; secondly, the name
+                          alone may not be enough to find the customer you want.
+               </p>
+               <div class="figure"><a name="cust-input-form"></a><p class="title"><b>Figure&nbsp;2.8.&nbsp;The Customer input form</b></p>
+                  <div class="figure-contents">
+                     <div class="mediaobject" align="center">
+                        <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="380">
+                           <tr style="height: 188px">
+                              <td align="center"><img src="images/fbdevgd30_delphi_008.png" align="middle" height="188" alt="The Customer input form"></td>
+                           </tr>
+                        </table>
+                     </div>
+                  </div>
+                  <p></p>
+               </div><br class="figure-break"><p>As the window for selecting a customer, we will use the same modal form
+                          that was created for adding customers. The code for the button click handler
+                          for the <code class="classname">TButtonedEdit</code> component is as follows:
+                            
+               </p><pre class="programlisting">
+procedure TEditInvoiceForm.edtCustomerRightButtonClick(Sender: TObject);
+var
+  xSelectForm: TCustomerForm;
+begin
+  xSelectForm := TCustomerForm.Create(Self);
+  try
+    xSelectForm.Visible := False;
+    if xSelectForm.ShowModal = mrOK then
+    begin
+      FCustomerId := xSelectForm.Customers.Customer.CUSTOMER_ID.Value;
+      edtCustomer.Text := xSelectForm.Customers.Customer.NAME.Value;
+    end;
+  finally
+    xSelectForm.Free;
+  end;
+end;
+          </pre><p>
+                          
+               </p>
+               <p>Since we are not using data-aware visual components, we need
+                          to initialize the customer code and name for displaying during the
+                          call to the edit form:
+                            
+               </p><pre class="programlisting">
+procedure TInvoiceForm.actEditInvoiceExecute(Sender: TObject);
+var
+  xEditorForm: TEditInvoiceForm;
+begin
+  xEditorForm := TEditInvoiceForm.Create(Self);
+  try
+    xEditorForm.OnClose := EditInvoiceEditorClose;
+    xEditorForm.Caption := 'Edit invoice';
+    xEditorForm.InvoiceId := Invoices.Invoice.INVOICE_ID.Value;
+    xEditorForm.SetCustomer(
+      Invoices.Invoice.CUSTOMER_ID.Value,
+      Invoices.Invoice.CUSTOMER_NAME.Value);
+    xEditorForm.InvoiceDate := Invoices.Invoice.INVOICE_DATE.AsDateTime;
+    xEditorForm.ShowModal;
+  finally
+    xEditorForm.Free;
+  end;
+end;
+
+procedure TEditInvoiceForm.SetCustomer(ACustomerId: Integer;
+  const ACustomerName: string);
+begin
+  FCustomerId := ACustomerId;
+  edtCustomer.Text := ACustomerName;
+end;
+          </pre><p>
+                          
+               </p>
+               <p>Adding a new invoice and editing an existing one will be
+                          handled in the <code class="classname">Close</code> event of the modal form 
+                          as it is for the primary modules. However, we will not switch the dataset 
+                          to <code class="classname">CachedUpdates</code> mode for these because the updates 
+                           carried out by stored procedures and we are not using data-aware visual 
+                           components to capture input.
+                            
+               </p><pre class="programlisting">
+procedure TInvoiceForm.actAddInvoiceExecute(Sender: TObject);
+var
+  xEditorForm: TEditInvoiceForm;
+begin
+  xEditorForm := TEditInvoiceForm.Create(Self);
+  try
+    xEditorForm.Caption := 'Add invoice';
+    xEditorForm.OnClose := AddInvoiceEditorClose;
+    xEditorForm.InvoiceDate := Now;
+    xEditorForm.ShowModal;
+  finally
+    xEditorForm.Free;
+  end;
+end;
+
+procedure TInvoiceForm.AddInvoiceEditorClose(Sender: TObject;
+  var Action: TCloseAction);
+var
+  xEditorForm: TEditInvoiceForm;
+begin
+  xEditorForm := TEditInvoiceForm(Sender);
+  if xEditorForm.ModalResult &lt;&gt; mrOK then
+  begin
+    Action := caFree;
+    Exit;
+  end;
+  try
+    Invoices.AddInvoice(xEditorForm.CustomerId, xEditorForm.InvoiceDate);
+    Action := caFree;
+  except
+    on E: Exception do
+    begin
+      Application.ShowException(E);
+// It does not close the window give the user correct the error
+      Action := caNone;
+    end;
+  end;
+end;
+
+procedure TdmInvoice.AddInvoice(ACustomerId: Integer; AInvoiceDate: TDateTime);
+begin
+  // We do everything in a short transaction
+  trWrite.StartTransaction;
+  try
+    qryAddInvoice.ParamByName('CUSTOMER_ID').AsInteger := ACustomerId;
+    qryAddInvoice.ParamByName('INVOICE_DATE').AsSqlTimeStamp :=
+    DateTimeToSQLTimeStamp(AInvoiceDate);
+    qryAddInvoice.Execute();
+    trWrite.Commit;
+    qryInvoice.Refresh;
+  except
+    on E: Exception do
+    begin
+      if trWrite.Active then
+        trWrite.Rollback;
+      raise;
+    end;
+  end;
+end;
+          </pre><p>
+                          
+               </p>
+            </div>
+         </div>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-firedac-secondary-inv-detail"></a>The Invoice Details
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <div class="toc">
+               <p><b>Table of Contents</b></p>
+               <dl>
+                  <dt><span class="section"><a href="fbdg30-firedac-secondary-modules.html#fbdg30-firedac-secondary-inv-line-add">qryAddInvoiceLine.CommandText</a></span></dt>
+                  <dt><span class="section"><a href="fbdg30-firedac-secondary-modules.html#fbdg30-firedac-secondary-inv-line-edit">qryEditInvoiceLine.CommandText</a></span></dt>
+                  <dt><span class="section"><a href="fbdg30-firedac-secondary-modules.html#fbdg30-firedac-secondary-inv-line-dlt">qryDeleteInvoiceLine.CommandText</a></span></dt>
+               </dl>
+            </div>
+            <p>Next, we move on to the details of an invoice. For the qryInvoiceLine
+                     dataset, we set the <code class="classname">MasterSource</code> property to the
+                     datasource that is linked to qryInvoice and the <code class="classname">MasterFields</code>
+                     property to INVOICE_ID. We specify the following query in the
+                     <code class="classname">SQL</code> property:
+                       
+            </p><pre class="programlisting">
+SELECT
+  invoice_line.invoice_line_id AS invoice_line_id,
+  invoice_line.invoice_id AS invoice_id,
+  invoice_line.product_id AS product_id,
+  product.name AS productname,
+  invoice_line.quantity AS quantity,
+  invoice_line.sale_price AS sale_price,
+  invoice_line.quantity * invoice_line.sale_price AS total
+FROM
+  invoice_line
+  JOIN product ON product.product_id = invoice_line.product_id
+WHERE invoice_line.invoice_id = :invoice_id
+        </pre><p>
+                     
+            </p>
+            <p>As with the invoice header, we will use stored procedures to
+                     perform all modifications. Let's examine the query strings in the
+                     <code class="classname">CommandText</code> property of the commands that
+                     call the stored procedures.
+            </p>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-firedac-secondary-inv-line-add"></a>qryAddInvoiceLine.CommandText
+                        </h4>
+                     </div>
+                  </div>
+               </div><pre class="programlisting">
+EXECUTE PROCEDURE sp_add_invoice_line(
+  :invoice_id,
+  :product_id,
+  :quantity
+)
+        </pre></div>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-firedac-secondary-inv-line-edit"></a>qryEditInvoiceLine.CommandText
+                        </h4>
+                     </div>
+                  </div>
+               </div><pre class="programlisting">
+EXECUTE PROCEDURE sp_edit_invoice_line(
+  :invoice_line_id,
+  :quantity
+)
+        </pre></div>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-firedac-secondary-inv-line-dlt"></a>qryDeleteInvoiceLine.CommandText
+                        </h4>
+                     </div>
+                  </div>
+               </div><pre class="programlisting">
+EXECUTE PROCEDURE sp_delete_invoice_line(
+  :invoice_line_id
+)
+        </pre></div>
+            <p>As with the header, the form for adding a new record and editing
+                     an existing one does not use data-aware visual components. To select a
+                     product, we use the <code class="classname">TButtonedEdit</code> component again.
+                     The code for the on-click handler for the button on the
+                     <code class="classname">TButtonedEdit</code> object is as follows:
+                       
+            </p><pre class="programlisting">
+procedure TEditInvoiceLineForm.edtProductRightButtonClick(Sender: TObject);
+var
+  xSelectForm: TGoodsForm;
+begin
+  if FEditMode = emInvoiceLineEdit then
+    Exit;
+  xSelectForm := TGoodsForm.Create(Self);
+  try
+    xSelectForm.Visible := False;
+    if xSelectForm.ShowModal = mrOK then
+    begin
+      FProductId := xSelectForm.Goods.Product.PRODUCT_ID.Value;
+      edtProduct.Text := xSelectForm.Goods.Product.NAME.Value;
+      edtPrice.Text := xSelectForm.Goods.Product.PRICE.AsString;
+    end;
+  finally
+    xSelectForm.Free;
+  end;
+end;
+        </pre><p>
+                     
+            </p>
+            <p>Since we are not using data-aware visual components,
+                     again we will need to initialize the product code and name
+                     and its price for displaying on the edit form.
+                       
+            </p><pre class="programlisting">
+procedure TInvoiceForm.actEditInvoiceLineExecute(Sender: TObject);
+var
+  xEditorForm: TEditInvoiceLineForm;
+begin
+  xEditorForm := TEditInvoiceLineForm.Create(Self);
+  try
+    xEditorForm.EditMode := emInvoiceLineEdit;
+    xEditorForm.OnClose := EditInvoiceLineEditorClose;
+    xEditorForm.Caption := 'Edit invoice line';
+    xEditorForm.InvoiceLineId := Invoices.InvoiceLine.INVOICE_LINE_ID.Value;
+    xEditorForm.SetProduct(
+      Invoices.InvoiceLine.PRODUCT_ID.Value,
+      Invoices.InvoiceLine.PRODUCTNAME.Value,
+      Invoices.InvoiceLine.SALE_PRICE.AsCurrency);
+    xEditorForm.Quantity := Invoices.InvoiceLine.QUANTITY.Value;
+    xEditorForm.ShowModal;
+  finally
+    xEditorForm.Free;
+  end;
+end;
+
+procedure TEditInvoiceLineForm.SetProduct(AProductId: Integer;
+  AProductName: string; APrice: Currency);
+begin
+  FProductId := AProductId;
+  edtProduct.Text := AProductName;
+  edtPrice.Text := CurrToStr(APrice);
+end;
+        </pre><p>
+                     
+            </p>
+            <p>We handle adding a new item and editing an existing one
+                     in the Close event of the modal form.
+                       
+            </p><pre class="programlisting">
+procedure TInvoiceForm.actAddInvoiceLineExecute(Sender: TObject);
+var
+  xEditorForm: TEditInvoiceLineForm;
+begin
+  xEditorForm := TEditInvoiceLineForm.Create(Self);
+  try
+xEditorForm.EditMode := emInvoiceLineAdd;
+xEditorForm.OnClose := AddInvoiceLineEditorClose;
+    xEditorForm.Caption := 'Add invoice line';
+    xEditorForm.Quantity := 1;
+    xEditorForm.InvoiceId := Invoices.Invoice.INVOICE_ID.Value;
+    xEditorForm.ShowModal;
+  finally
+    xEditorForm.Free;
+  end;
+end;
+
+procedure TInvoiceForm.actEditInvoiceLineExecute(Sender: TObject);
+var
+  xEditorForm: TEditInvoiceLineForm;
+begin
+  xEditorForm := TEditInvoiceLineForm.Create(Self);
+  try
+    xEditorForm.EditMode := emInvoiceLineEdit;
+    xEditorForm.OnClose := EditInvoiceLineEditorClose;
+    xEditorForm.Caption := 'Edit invoice line';
+    xEditorForm.InvoiceLineId := Invoices.InvoiceLine.INVOICE_LINE_ID.Value;
+    xEditorForm.SetProduct(
+      Invoices.InvoiceLine.PRODUCT_ID.Value,
+      Invoices.InvoiceLine.PRODUCTNAME.Value,
+      Invoices.InvoiceLine.SALE_PRICE.AsCurrency);
+    xEditorForm.Quantity := Invoices.InvoiceLine.QUANTITY.Value;
+    xEditorForm.ShowModal;
+  finally
+    xEditorForm.Free;
+  end;
+end;
+
+procedure TInvoiceForm.AddInvoiceLineEditorClose(Sender: TObject;
+  var Action: TCloseAction);
+var
+  xEditorForm: TEditInvoiceLineForm;
+  xCustomerId: Integer;
+begin
+  xEditorForm := TEditInvoiceLineForm(Sender);
+  if xEditorForm.ModalResult &lt;&gt; mrOK then
+  begin
+    Action := caFree;
+    Exit;
+  end;
+  try
+    Invoices.AddInvoiceLine(xEditorForm.ProductId, xEditorForm.Quantity);
+    Action := caFree;
+  except
+    on E: Exception do
+    begin
+      Application.ShowException(E);
+      // It does not close the window give the user correct the error
+      Action := caNone;
+    end;
+  end;
+end;
+
+procedure TInvoiceForm.EditInvoiceLineEditorClose(Sender: TObject;
+  var Action: TCloseAction);
+var
+  xCustomerId: Integer;
+  xEditorForm: TEditInvoiceLineForm;
+begin
+  xEditorForm := TEditInvoiceLineForm(Sender);
+  if xEditorForm.ModalResult &lt;&gt; mrOK then
+  begin
+    Action := caFree;
+    Exit;
+  end;
+  try
+    Invoices.EditInvoiceLine(xEditorForm.Quantity);
+    Action := caFree;
+  except
+    on E: Exception do
+    begin
+      Application.ShowException(E);
+      // It does not close the window give the user correct the error
+      Action := caNone;
+    end;
+  end;
+end;
+        </pre><p>
+                     
+            </p>
+            <p>Now let's take a look at the code for the AddInvoiceLine and
+                     EditInvoiceLine procedures of the dmInvoice data module:
+                       
+            </p><pre class="programlisting">
+procedure TdmInvoice.AddInvoiceLine(AProductId: Integer; AQuantity: Integer);
+begin
+  // We do everything in a short transaction
+  trWrite.StartTransaction;
+  try
+    qryAddInvoiceLine.ParamByName('INVOICE_ID').AsInteger :=
+      Invoice.INVOICE_ID.Value;
+    if AProductId = 0 then
+      raise Exception.Create('Not selected product');
+    qryAddInvoiceLine.ParamByName('PRODUCT_ID').AsInteger := AProductId;
+    qryAddInvoiceLine.ParamByName('QUANTITY').AsInteger := AQuantity;
+    qryAddInvoiceLine.Execute();
+    trWrite.Commit;
+    qryInvoice.Refresh;
+    qryInvoiceLine.Refresh;
+  except
+    on E: Exception do
+    begin
+      if trWrite.Active then
+        trWrite.Rollback;
+      raise;
+    end;
+  end;
+end;
+
+procedure TdmInvoice.EditInvoiceLine(AQuantity: Integer);
+begin
+  // We do everything in a short transaction
+  trWrite.StartTransaction;
+  try
+    qryEditInvoiceLine.ParamByName('INVOICE_LINE_ID').AsInteger :=
+      InvoiceLine.INVOICE_LINE_ID.Value;
+    qryEditInvoiceLine.ParamByName('QUANTITY').AsInteger := AQuantity;
+    qryEditInvoiceLine.Execute();
+    trWrite.Commit;
+    qryInvoice.Refresh;
+    qryInvoiceLine.Refresh;
+  except
+    on E: Exception do
+    begin
+      if trWrite.Active then
+        trWrite.Rollback;
+      raise;
+    end;
+  end;
+end;
+        </pre><p>
+                     
+            </p>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdg30-firedac-primary-modules.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Creating the Primary Modules" alt="Prev: Creating the Primary Modules"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-firedac.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Developing Firebird Applications in Delphi" alt="Up: Developing Firebird Applications in Delphi"></a><a href="fbdg30-firedac-proj-result.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: The Result" alt="Next: The Result"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-firedac.html">Developing Firebird Applications in Delphi</a> &rarr; Creating a Secondary Module
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>
