@@ -1,0 +1,114 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Chapter 2: The examples.fdb Database</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30.html" title="Firebird 3.0 Developer's Guide PRE-BETA">
+      <link rel="prev" href="fbdevgd30-acknowledgements.html" title="Acknowledgments">
+      <link rel="next" href="fbdevg30-db-create.html" title="Database Creation Script">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; The examples.fdb Database
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdevgd30-acknowledgements.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Acknowledgments" alt="Prev: Acknowledgments"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Firebird 3.0 Developer's Guide PRE-BETA" alt="Up: Firebird 3.0 Developer's Guide PRE-BETA"></a><a href="fbdevg30-db-create.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Database Creation Script" alt="Next: Database Creation Script"></a></td>
+         </tr>
+      </table>
+      <div class="chapter" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title"><a name="fbdevgd30-database"></a>Chapter 2: The examples.fdb Database
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdevg30-db-create.html">Database Creation Script</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="fbdevg30-db-create.html#fbdevg30-db-aliases">Database Aliases</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="section"><a href="fbdevg30-db-crt-db-objects.html">Creating the Database Objects</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="fbdevg30-db-crt-db-objects.html#fbdevg30-db-crt-domains">Domains</a></span></dt>
+                     <dt><span class="section"><a href="fbdevg30-db-crt-db-objects.html#fbdevg30-db-primary-tables">Primary Tables</a></span></dt>
+                     <dt><span class="section"><a href="fbdevg30-db-crt-db-objects.html#fbdevg30-db-secondary-tables">Secondary Tables</a></span></dt>
+                     <dt><span class="section"><a href="fbdevg30-db-crt-db-objects.html#fbdevg30-db-stored-procs">Stored Procedures</a></span></dt>
+                     <dt><span class="section"><a href="fbdevg30-db-crt-db-objects.html#fbdevg30-db-user-privs">Roles and Privileges for Users</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="section"><a href="fbdevg30-db-run-script.html">Saving and Running the Script</a></span></dt>
+               <dt><span class="section"><a href="fbdevg30-db-load-test-data.html">Loading Test Data</a></span></dt>
+            </dl>
+         </div>
+         <p>Before we explore the process of creating applications in various programming
+                languages, we will walk through the creation and preparation of the database that 
+                is used as the back-end to all of the sample projects.
+         </p>
+         <p>The applications work with a database based on the model illustrated in
+                this diagram:
+                  
+         </p>
+         <div class="figure"><a name="db-diagram"></a><p class="title"><b>Figure&nbsp;2.1.&nbsp;Model of the examples.fdb database</b></p>
+            <div class="figure-contents">
+               <div class="mediaobject" align="center">
+                  <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="488">
+                     <tr style="height: 231px">
+                        <td align="center"><img src="images/fbdevgd30_db_001_en.png" align="middle" height="231" alt="Model of the examples.fdb database"></td>
+                     </tr>
+                  </table>
+               </div>
+            </div>
+            <p></p>
+         </div>
+         <p><br class="figure-break">
+                
+         </p>
+         <div class="note">
+            <h3 class="title">Disclaimer</h3>
+            <p>This chapter does not attempt to provide a tutorial about database design
+                     or SQL syntax. The model is made as simple as possible to avoid cluttering the
+                     application development techniques with topics about database modeling and development.
+                     We hope some readers might be enlightened by our approach to maintaining interrelated
+                     data using stored procedures. The scripts are all here for you to refer to as you work 
+                     your way through the projects.
+            </p>
+            <p>The requirements for your real-life projects are undoubtedly different from and much
+                     more complicated than those for our example projects.
+            </p>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdevgd30-acknowledgements.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Acknowledgments" alt="Prev: Acknowledgments"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Firebird 3.0 Developer's Guide PRE-BETA" alt="Up: Firebird 3.0 Developer's Guide PRE-BETA"></a><a href="fbdevg30-db-create.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Database Creation Script" alt="Next: Database Creation Script"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; The examples.fdb Database
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

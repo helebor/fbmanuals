@@ -51,7 +51,7 @@
                   </div>
                </div>
                <div>
-                  <p class="edition">3 November 2017, document version 0.101</p>
+                  <p class="edition">5 November 2017, document version 0.102</p>
                </div>
                <div>
                   <p class="copyright">Copyright &copy; 2017 Firebird Project and all contributing authors, under the
@@ -82,7 +82,16 @@
                      <dt><span class="section"><a href="fbdevgd30-acknowledgements.html">Acknowledgments</a></span></dt>
                   </dl>
                </dd>
-               <dt><span class="chapter"><a href="fbdevgd30-firedac.html">2. Developing Firebird Applications in Delphi</a></span></dt>
+               <dt><span class="chapter"><a href="fbdevgd30-database.html">2. The examples.fdb Database</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="fbdevg30-db-create.html">Database Creation Script</a></span></dt>
+                     <dt><span class="section"><a href="fbdevg30-db-crt-db-objects.html">Creating the Database Objects</a></span></dt>
+                     <dt><span class="section"><a href="fbdevg30-db-run-script.html">Saving and Running the Script</a></span></dt>
+                     <dt><span class="section"><a href="fbdevg30-db-load-test-data.html">Loading Test Data</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="chapter"><a href="fbdevgd30-firedac.html">3. Developing Firebird Applications in Delphi</a></span></dt>
                <dd>
                   <dl>
                      <dt><span class="section"><a href="fbdg30-firedac-proj-start.html">Starting a Project</a></span></dt>
@@ -96,10 +105,10 @@
                      <dt><span class="section"><a href="fbdg30-firedac-secondary-modules.html">Creating a Secondary Module</a></span></dt>
                      <dt><span class="section"><a href="fbdg30-firedac-proj-result.html">The Result</a></span></dt>
                      <dt><span class="section"><a href="fbdg30-firedac-conclusion.html">Conclusion</a></span></dt>
-                     <dt><span class="section"><a href="fbdevgd30-downloads.html">Downloads</a></span></dt>
+                     <dt><span class="section"><a href="fbdevgd30-firedac-source-code.html">Source Code</a></span></dt>
                   </dl>
                </dd>
-               <dt><span class="chapter"><a href="fbdevgd30-efw.html">3. Developing Firebird Applications with Microsoft Entity Framework</a></span></dt>
+               <dt><span class="chapter"><a href="fbdevgd30-efw.html">4. Developing Firebird Applications with Microsoft Entity Framework</a></span></dt>
                <dd>
                   <dl>
                      <dt><span class="section"><a href="fbdg30-efw-methods.html">Methods of Interacting with a Database</a></span></dt>
@@ -120,43 +129,44 @@
          <div class="list-of-figures">
             <p><b>List of Figures</b></p>
             <dl>
-               <dt>2.1. <a href="fbdg30-firedac-connparams.html#tfdcon-prop-ed">TFDConnection property editor</a></dt>
-               <dt>2.2. <a href="fbdg30-firedac-datasets.html#tfdupdsql-prop-ed">TFDUpdateSQL property editor</a></dt>
-               <dt>2.3. <a href="fbdg30-firedac-datasets.html#updsql-cmd-editor">TFDUpdateSQL SQL command editor</a></dt>
-               <dt>2.4. <a href="fbdg30-firedac-primary-modules.html#dcust-datamodule">dCustomers datamodule</a></dt>
-               <dt>2.5. <a href="fbdg30-firedac-primary-modules.html#cust-form-init">Customers form, initial view</a></dt>
-               <dt>2.6. <a href="fbdg30-firedac-secondary-modules.html#inv-module-config">The Invoice form tab</a></dt>
-               <dt>2.7. <a href="fbdg30-firedac-secondary-modules.html#inv-datamodule">The Invoice data module tab</a></dt>
-               <dt>2.8. <a href="fbdg30-firedac-secondary-modules.html#cust-input-form">The Customer input form</a></dt>
-               <dt>2.9. <a href="fbdg30-firedac-proj-result.html#delphi-project-result">Screenshot of the sample application</a></dt>
-               <dt>3.1. <a href="fbdg30-efw-vs-prepare.html#efw-test-install">Choose data source for testing installation</a></dt>
-               <dt>3.2. <a href="fbdg30-efw-vs-prepare.html#efw-database-locate">Locate a database</a></dt>
-               <dt>3.3. <a href="fbdg30-efw-vs-prepare.html#efw-data-src-test-confirm">Test and confirm the connection</a></dt>
-               <dt>3.4. <a href="fbdg30-efw-vs-crtproject.html#efw-nuget-select-pkgs">Solution Explorer&#8212;&gt;select NuGet packages</a></dt>
-               <dt>3.5. <a href="fbdg30-efw-vs-crtproject.html#efw-nuget-install-pkgs">Select and install packages from NuGet catalogue</a></dt>
-               <dt>3.6. <a href="fbdg30-efw-vs-crt-edm.html#efw-add-new-item">Solution Explorer - Add&#8212;&gt;New Item</a></dt>
-               <dt>3.7. <a href="fbdg30-efw-vs-crt-edm.html#efw-select-ado-net">Add New Item wizard - select ADO.NET Entity Data Model</a></dt>
-               <dt>3.8. <a href="fbdg30-efw-vs-crt-edm.html#efw-select-code-first">Add New Item wizard - select 'Code First from database'</a></dt>
-               <dt>3.9. <a href="fbdg30-efw-vs-crt-edm.html#efw-choose-connection">Add New Item wizard - choose Connection</a></dt>
-               <dt>3.10. <a href="fbdg30-efw-vs-crt-edm.html#efw-conn-properties">Add Connection wizard - Connection properties</a></dt>
-               <dt>3.11. <a href="fbdg30-efw-vs-crt-edm.html#efw-adv-conn-props">Add Connection wizard - Advanced connection properties</a></dt>
-               <dt>3.12. <a href="fbdg30-efw-vs-crt-edm.html#efw-conn-str-storage">EDM wizard - connection string storage</a></dt>
-               <dt>3.13. <a href="fbdg30-efw-vs-crt-edm.html#d0e160099">EDM wizard - select tables and views</a></dt>
-               <dt>3.14. <a href="fbdg30-efw-vs-crt-gui.html#efw-forn-cust-entty">A form for the Customer entity</a></dt>
-               <dt>3.15. <a href="fbdg30-efw-work-with-data.html#efw-cust-edit-form">Customer edit form</a></dt>
-               <dt>3.16. <a href="fbdg30-efw-secondary-modules.html#efw-inv-form">Invoice form</a></dt>
-               <dt>3.17. <a href="fbdg30-efw-secondary-modules.html#efw-product-form">Product form</a></dt>
-               <dt>3.18. <a href="fbdg30-efw-result.html#efw-project-result">The result of the Entity Framework project</a></dt>
+               <dt>2.1. <a href="fbdevgd30-database.html#db-diagram">Model of the examples.fdb database</a></dt>
+               <dt>3.1. <a href="fbdg30-firedac-connparams.html#tfdcon-prop-ed">TFDConnection property editor</a></dt>
+               <dt>3.2. <a href="fbdg30-firedac-datasets.html#tfdupdsql-prop-ed">TFDUpdateSQL property editor</a></dt>
+               <dt>3.3. <a href="fbdg30-firedac-datasets.html#updsql-cmd-editor">TFDUpdateSQL SQL command editor</a></dt>
+               <dt>3.4. <a href="fbdg30-firedac-primary-modules.html#dcust-datamodule">dCustomers datamodule</a></dt>
+               <dt>3.5. <a href="fbdg30-firedac-primary-modules.html#cust-form-init">Customers form, initial view</a></dt>
+               <dt>3.6. <a href="fbdg30-firedac-secondary-modules.html#inv-module-config">The Invoice form tab</a></dt>
+               <dt>3.7. <a href="fbdg30-firedac-secondary-modules.html#inv-datamodule">The Invoice data module tab</a></dt>
+               <dt>3.8. <a href="fbdg30-firedac-secondary-modules.html#cust-input-form">The Customer input form</a></dt>
+               <dt>3.9. <a href="fbdg30-firedac-proj-result.html#delphi-project-result">Screenshot of the sample application</a></dt>
+               <dt>4.1. <a href="fbdg30-efw-vs-prepare.html#efw-test-install">Choose data source for testing installation</a></dt>
+               <dt>4.2. <a href="fbdg30-efw-vs-prepare.html#efw-database-locate">Locate a database</a></dt>
+               <dt>4.3. <a href="fbdg30-efw-vs-prepare.html#efw-data-src-test-confirm">Test and confirm the connection</a></dt>
+               <dt>4.4. <a href="fbdg30-efw-vs-crtproject.html#efw-nuget-select-pkgs">Solution Explorer&#8212;&gt;select NuGet packages</a></dt>
+               <dt>4.5. <a href="fbdg30-efw-vs-crtproject.html#efw-nuget-install-pkgs">Select and install packages from NuGet catalogue</a></dt>
+               <dt>4.6. <a href="fbdg30-efw-vs-crt-edm.html#efw-add-new-item">Solution Explorer - Add&#8212;&gt;New Item</a></dt>
+               <dt>4.7. <a href="fbdg30-efw-vs-crt-edm.html#efw-select-ado-net">Add New Item wizard - select ADO.NET Entity Data Model</a></dt>
+               <dt>4.8. <a href="fbdg30-efw-vs-crt-edm.html#efw-select-code-first">Add New Item wizard - select 'Code First from database'</a></dt>
+               <dt>4.9. <a href="fbdg30-efw-vs-crt-edm.html#efw-choose-connection">Add New Item wizard - choose Connection</a></dt>
+               <dt>4.10. <a href="fbdg30-efw-vs-crt-edm.html#efw-conn-properties">Add Connection wizard - Connection properties</a></dt>
+               <dt>4.11. <a href="fbdg30-efw-vs-crt-edm.html#efw-adv-conn-props">Add Connection wizard - Advanced connection properties</a></dt>
+               <dt>4.12. <a href="fbdg30-efw-vs-crt-edm.html#efw-conn-str-storage">EDM wizard - connection string storage</a></dt>
+               <dt>4.13. <a href="fbdg30-efw-vs-crt-edm.html#d0e160479">EDM wizard - select tables and views</a></dt>
+               <dt>4.14. <a href="fbdg30-efw-vs-crt-gui.html#efw-forn-cust-entty">A form for the Customer entity</a></dt>
+               <dt>4.15. <a href="fbdg30-efw-work-with-data.html#efw-cust-edit-form">Customer edit form</a></dt>
+               <dt>4.16. <a href="fbdg30-efw-secondary-modules.html#efw-inv-form">Invoice form</a></dt>
+               <dt>4.17. <a href="fbdg30-efw-secondary-modules.html#efw-product-form">Product form</a></dt>
+               <dt>4.18. <a href="fbdg30-efw-result.html#efw-project-result">The result of the Entity Framework project</a></dt>
             </dl>
          </div>
          <div class="list-of-tables">
             <p><b>List of Tables</b></p>
             <dl>
-               <dt>2.1. <a href="fbdg30-firedac-connparams.html#fbdg30-firedac-tbl-connprops">TFDConnection component main properties</a></dt>
-               <dt>2.2. <a href="fbdg30-firedac-transactions.html#fbdg30-firedac-tbl-transprops">TFDTransaction component main properties</a></dt>
-               <dt>2.3. <a href="fbdg30-firedac-datasets.html#fbdg30-firedac-tbl-queryprops">TFDQuery component main properties</a></dt>
-               <dt>2.4. <a href="fbdg30-firedac-datasets.html#fbdg30-firedac-tbl-updsqlprops">TFDUpdateSQL component main properties</a></dt>
-               <dt>2.5. <a href="fbdg30-firedac-tfdcommand.html#fbdg30-firedac-tbl-tfdcommand">TFDCommand component main properties</a></dt>
+               <dt>3.1. <a href="fbdg30-firedac-connparams.html#fbdg30-firedac-tbl-connprops">TFDConnection component main properties</a></dt>
+               <dt>3.2. <a href="fbdg30-firedac-transactions.html#fbdg30-firedac-tbl-transprops">TFDTransaction component main properties</a></dt>
+               <dt>3.3. <a href="fbdg30-firedac-datasets.html#fbdg30-firedac-tbl-queryprops">TFDQuery component main properties</a></dt>
+               <dt>3.4. <a href="fbdg30-firedac-datasets.html#fbdg30-firedac-tbl-updsqlprops">TFDUpdateSQL component main properties</a></dt>
+               <dt>3.5. <a href="fbdg30-firedac-tfdcommand.html#fbdg30-firedac-tbl-tfdcommand">TFDCommand component main properties</a></dt>
             </dl>
          </div>
       </div>

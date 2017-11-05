@@ -1,0 +1,97 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Saving and Running the Script</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-database.html" title="Chapter 2: The examples.fdb Database">
+      <link rel="prev" href="fbdevg30-db-crt-db-objects.html" title="Creating the Database Objects">
+      <link rel="next" href="fbdevg30-db-load-test-data.html" title="Loading Test Data">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-database.html">The examples.fdb Database</a> &rarr; Saving and Running the Script
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdevg30-db-crt-db-objects.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Creating the Database Objects" alt="Prev: Creating the Database Objects"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-database.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: The examples.fdb Database" alt="Up: The examples.fdb Database"></a><a href="fbdevg30-db-load-test-data.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Loading Test Data" alt="Next: Loading Test Data"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdevg30-db-run-script"></a>Saving and Running the Script
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <p>Save our script to a text file named <code class="filename">examples.sql</code>.
+         </p>
+         <p>Now you have three choices: you can
+                    
+         </p>
+         <div class="itemizedlist">
+            <ul type="disc">
+               <li>download the ready-made script files using the following links:
+                              
+                  <div class="literallayout">
+                     <p><a xmlns:xlink="http://www.w3.org/1999/xlink" href="https://github.com/sim1984/example-db_2_5/archive/1.0.zip" target="_top">https://github.com/sim1984/example-db_2_5/archive/1.0.zip</a><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;<a xmlns:xlink="http://www.w3.org/1999/xlink" href="https://github.com/sim1984/example-db_3_0/archive/1.0.zip" target="_top">https://github.com/sim1984/example-db_3_0/archive/1.0.zip</a></p>
+                  </div>
+               </li>
+               <li>OR run the script examples.sql that you just created yourself;</li>
+               <li>OR download the ready-made database, complete with sample data.
+                            Links are provided at the end of this chapter.
+               </li>
+            </ul>
+         </div>
+         <p>
+                  
+         </p>
+         <p>Now, to run our script in the database created earlier:
+                    
+         </p><pre class="programlisting">
+  isql -user sysdba -password masterkey "localhost:examples" 
+                                   -i "d:\examples-db\examples.sql"
+        </pre><p>
+                    
+         </p>
+         <div class="warning">
+            <h3 class="title">Warning</h3>Do not split this command!
+         </div>
+         <p>
+                  
+         </p>
+         <p>The argument "localhost:examples" uses an alias in place of the file path.
+                  It assumes that an alias named 'examples' actually exists, of course! The <code class="code">-i</code>
+                  switch is an abbreviation of <code class="code">-input</code> and its argument should be the path
+                  to the script file you just saved.
+         </p>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdevg30-db-crt-db-objects.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Creating the Database Objects" alt="Prev: Creating the Database Objects"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-database.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: The examples.fdb Database" alt="Up: The examples.fdb Database"></a><a href="fbdevg30-db-load-test-data.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Loading Test Data" alt="Next: Loading Test Data"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-database.html">The examples.fdb Database</a> &rarr; Saving and Running the Script
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

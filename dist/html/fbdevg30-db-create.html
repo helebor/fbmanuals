@@ -1,0 +1,154 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Database Creation Script</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-database.html" title="Chapter 2: The examples.fdb Database">
+      <link rel="prev" href="fbdevgd30-database.html" title="Chapter 2: The examples.fdb Database">
+      <link rel="next" href="fbdevg30-db-crt-db-objects.html" title="Creating the Database Objects">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-database.html">The examples.fdb Database</a> &rarr; Database Creation Script
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdevgd30-database.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: The examples.fdb Database" alt="Prev: The examples.fdb Database"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-database.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: The examples.fdb Database" alt="Up: The examples.fdb Database"></a><a href="fbdevg30-db-crt-db-objects.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Creating the Database Objects" alt="Next: Creating the Database Objects"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdevg30-db-create"></a>Database Creation Script
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdevg30-db-create.html#fbdevg30-db-aliases">Database Aliases</a></span></dt>
+            </dl>
+         </div>
+         <p>The tool used here to create the database from a script is <span class="emphasis"><em>isql</em></span>,
+                  that is installed with all the other executables in every Firebird server installation.
+                  You could use any other administration tool for Firebird, such as FlameRobin,
+                  SQLLY Studio, IBExpert or others.
+         </p>
+         <p>We will assume that you are working in Windows.  Obviously, the formats of
+                  path names will differ on other file systems (Linux, Apple Mac, etc.) but the
+                  <span class="emphasis"><em>isql</em></span> tool works the same on all platforms.
+         </p>
+         <p>Run <span class="emphasis"><em>isql</em></span> and enter the following script after the
+                  <code class="code">SQL&gt;</code> prompt appears :
+                    
+         </p><pre class="programlisting">
+CREATE DATABASE 'localhost:D:\fbdata\2.5\examples.fdb'
+USER 'SYSDBA' PASSWORD 'masterkey'
+PAGE_SIZE 8192 DEFAULT CHARACTER SET UTF8;
+        </pre><p>
+                     
+         </p>
+         <div class="important">
+            <h3 class="title">Important</h3>The straight single quotes around the user and password arguments
+                       are not optional and are not interchangeable with curly quotes, double quotes
+                       or any other kind of quotes.
+                     
+         </div>
+         <p>
+                  
+         </p>
+         <p>The user whose name and password are cited in the CREATE DATABASE statement
+                  becomes the owner of the database and has full access to all metadata objects.
+                  It is not essential that SYSDBA be the owner of a database.  Any user can be the
+                  owner, which has the same access as SYSDBA in this database.
+         </p>
+         <p>The actively supported versions of Firebird support the following page sizes:
+                  4096, 8192 and 16384. The page size of 8192 is good for most cases.
+         </p>
+         <p>The optional DEFAULT CHARACTER SET clause specifies the default character
+                  set for string data types. Character sets are applied to the CHAR, VARCHAR and
+                  BLOB TEXT data types. You can study the list of available language encodings in an
+            <a xmlns:xlink="http://www.w3.org/1999/xlink" href="https://www.firebirdsql.org/file/documentation/reference_manuals/fblangref25-en/html/fblangref25-appx06-charsets.html#fblangref25-appx06-tbl-charsets" target="_top">Appendix
+                     to the Firebird Language Reference</a> manual. All up-to-date programming
+                  languages support UTF8 so we choose this encoding.
+         </p>
+         <p>Now we can exit the <span class="emphasis"><em>isql</em></span> session by typing the
+                  following command:
+                    
+         </p><pre class="literallayout">
+   EXIT;
+        </pre><p>
+            
+                  
+         </p>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdevg30-db-aliases"></a>Database Aliases
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <p>Databases are accessed locally and remotely by their physical file path on the
+                       server. Before you start to use a database, it is useful and wise to register an alias
+                       for its file path and to use the alias for all connections.  It saves typing and,
+                       to some degree, it offers a little extra security from snoopers by obscuring the
+                       physical location of your database file in the connection string.
+            </p>
+            <p>In Firebird 2.5, the alias of a database is registered in the <code class="filename">aliases.conf</code>
+                       file as follows:
+                         
+            </p><pre class="literallayout">
+  examples = D:\fbdata\2.5\examples.fdb
+          </pre><p>
+                       In Firebird 3.0, the alias of a database is registered in the <code class="filename">databases.conf</code>
+                       file. Along with the alias for the database, some database-level parameters can be configured
+                       there: page cache size, the size of RAM for sorting and several others, e.g.,
+                         
+            </p><pre class="literallayout">
+  examples = D:\fbdata\3.0\examples.fdb
+  {
+      DefaultDbCachePages = 16K
+      TempCacheLimit = 512M
+  }
+          </pre><p>
+                       
+            </p>
+            <div class="tip">
+               <h3 class="title">Tip</h3>
+               <p>You can use an alias even before the database exists.  It is valid to
+                            substitute the full file path with the alias in the CREATE DATABASE statement.
+               </p>
+            </div>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdevgd30-database.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: The examples.fdb Database" alt="Prev: The examples.fdb Database"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-database.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: The examples.fdb Database" alt="Up: The examples.fdb Database"></a><a href="fbdevg30-db-crt-db-objects.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Creating the Database Objects" alt="Next: Creating the Database Objects"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-database.html">The examples.fdb Database</a> &rarr; Database Creation Script
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>
