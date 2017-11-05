@@ -5,7 +5,7 @@
   <bookinfo>
     <title>Firebird 3.0 Developer's Guide PRE-BETA</title>
     <subtitle>Release 0.1</subtitle>
-    <edition>3 November 2017, document version 0.101</edition>
+    <edition>5 November 2017, document version 0.102</edition>
     <authorgroup>
       <author>
         <firstname>Denis</firstname>
@@ -41,6 +41,8 @@
   </bookinfo>
 
   <xi:include href="fbdevgd30-intro.xml" xpointer="element(/1)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+  <xi:include href="fbdevgd30-db.xml" xpointer="element(/1)"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
   <xi:include href="fbdevgd30-FireDac.xml" xpointer="element(/1)"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
