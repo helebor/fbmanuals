@@ -48,9 +48,17 @@ CREATE DATABASE 'localhost:D:\fbdata\2.5\examples.fdb'
 USER 'SYSDBA' PASSWORD 'masterkey'
 PAGE_SIZE 8192 DEFAULT CHARACTER SET UTF8;
         </programlisting>
-         <important>The straight single quotes around the user and password arguments
-           are not optional and are not interchangeable with curly quotes, double quotes
-           or any other kind of quotes.
+         <important>
+           <para>The straight single quotes around the user and password arguments
+           are not optional in Firebird 2.5 and lower versions because, in the
+           <database>CREATE DATABASE</database> syntax, both are strings.</para>
+           <para>In Firebird 3, the rules changed.  User names became identifiers
+           and no longer require single quotes. They can be made case-sensitive
+           by enclosing the name in DOUBLE quotes, so you need to be aware of how
+           that user is registered in the security database.  Passwords are still
+           strings.</para>
+           <para>Quotes in the statement are not interchangeable with curly quotes,
+           angle quotes or any other kind of quotes.</para>
          </important>
       </para>
 

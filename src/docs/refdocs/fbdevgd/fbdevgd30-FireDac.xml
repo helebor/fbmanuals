@@ -2090,10 +2090,12 @@ end;
 
   <section id="fbdevgd30-firedac-source-code">
     <title>Source Code</title>
-    <para>Source code for the sample project is available for download using the
+    <para>ObjectPascal source code for the sample project is available for download using the
      following link:
      <ulink url="https://github.com/sim1984/FireDacEx">https://github.com/sim1984/FireDacEx</ulink>.
-
+    </para>
+    <para>For links to the database scripts and ready-to-use databases, refer to the 
+    <link linkend="fbdevg30-db-run-script">final sections of the database chapter</link>.
     </para>
   </section>
 
