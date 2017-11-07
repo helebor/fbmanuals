@@ -1,0 +1,1300 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Creating a UI for Secondary Modules</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-MVC.html" title="Chapter 5: Creating Web Applications in Entity Framework with MVC">
+      <link rel="prev" href="fbdevgd30-mvc-controller-views.html" title="Views">
+      <link rel="next" href="fbdevgd30-mvc-authentication.html" title="Authentication">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-MVC.html">Creating Web Applications in Entity Framework with MVC</a> &rarr; Creating a UI for Secondary Modules
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdevgd30-mvc-controller-views.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Views" alt="Prev: Views"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-MVC.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating Web Applications in Entity Framework with MVC" alt="Up: Creating Web Applications in Entity Framework with MVC"></a><a href="fbdevgd30-mvc-authentication.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Authentication" alt="Next: Authentication"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdevgd30-mvc-secondary-ui"></a>Creating a UI for Secondary Modules
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdevgd30-mvc-secondary-ui.html#fbdevgd30-mvc-secondary-controllers">Controllers for Invoices</a></span></dt>
+               <dt><span class="section"><a href="fbdevgd30-mvc-secondary-ui.html#fbdevgd30-mvc-secondary-views">Views for Invoices</a></span></dt>
+               <dt><span class="section"><a href="fbdevgd30-mvc-secondary-ui.html#fbdevgd30-mvc-secondary-dialogs">Dialog Boxes for Invoices</a></span></dt>
+            </dl>
+         </div>
+         <p>Our application will have only one secondary module, called &#8220;<span class="quote">Invoices</span>&#8221;. 
+                Unlike our primary modules, the secondary module is likely to contain numerous records and 
+                new records are added more frequently.
+         </p>
+         <p>An invoice consists of a header where some general attributes are described (number, date, 
+                customer &#8230;) and invoice detail lines with the list of products sold, their quantities, 
+                prices, etc. To save space on the page, we will hide the detail grid and display it only in 
+                response to a click on the icon with the '+' sign on it. Thus, our detail grid will be
+                embedded in the main one.
+         </p>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdevgd30-mvc-secondary-controllers"></a>Controllers for Invoices
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <p>The controller of the invoice module must be able to return data for both invoice 
+                     headers and the associated invoice lines. The same applies to the methods for adding,
+                     editing and deleting records.
+                       
+            </p><pre class="programlisting">
+[Authorize(Roles = "manager")]
+public class InvoiceController : Controller
+{
+  private DbModel db = new DbModel();
+
+  // display view
+  public ActionResult Index()
+  {
+    return View();
+  }
+
+  // Receiving data in the JSON format for the main grid
+  public ActionResult GetData(int? rows, int? page, string sidx, string sord,
+string searchField, string searchString, string searchOper)
+  {
+    // get the page number, the number of data displayed
+    int pageNo = page ?? 1;
+    int limit = rows ?? 20;
+    // calculate offset
+    int offset = (pageNo - 1) * limit;
+    // building a request for receipt of invoices
+    var invoicesQuery =
+        from invoice in db.INVOICES
+        where (invoice.INVOICE_DATE &gt;= AppVariables.StartDate) &amp;&amp;
+              (invoice.INVOICE_DATE &lt;= AppVariables.FinishDate)
+        select new
+        {
+          INVOICE_ID = invoice.INVOICE_ID,
+          CUSTOMER_ID = invoice.CUSTOMER_ID,
+          CUSTOMER_NAME = invoice.CUSTOMER.NAME,
+          INVOICE_DATE = invoice.INVOICE_DATE,
+          TOTAL_SALE = invoice.TOTAL_SALE,
+          PAID = invoice.PAID
+        };
+    // adding a search condition to the query, if it is produced
+    // for different fields, different comparison operators 
+    // are available when searching
+    if (searchField == "CUSTOMER_NAME")
+    {
+      switch (searchOper)
+      {
+        case "eq": // equal
+          invoicesQuery = invoicesQuery.Where(
+          c =&gt; c.CUSTOMER_NAME == searchString);
+          break;
+        case "bw": // starting with
+          invoicesQuery = invoicesQuery.Where(
+          c =&gt; c.CUSTOMER_NAME.StartsWith(searchString));
+          break;
+        case "cn": // containing
+          invoicesQuery = invoicesQuery.Where(
+          c =&gt; c.CUSTOMER_NAME.Contains(searchString));
+          break;
+      }
+    }
+    if (searchField == "INVOICE_DATE")
+    {
+      var dateValue = DateTime.Parse(searchString);
+      switch (searchOper)
+      {
+        case "eq": // =
+          invoicesQuery = invoicesQuery.Where(
+          c =&gt; c.INVOICE_DATE == dateValue);
+          break;
+        case "lt": // &lt;
+          invoicesQuery = invoicesQuery.Where(
+          c =&gt; c.INVOICE_DATE &lt; dateValue);
+          break;
+        case "le": // &lt;=
+          invoicesQuery = invoicesQuery.Where(
+          c =&gt; c.INVOICE_DATE &lt;= dateValue);
+          break;
+        case "gt": // &gt;
+          invoicesQuery = invoicesQuery.Where(
+          c =&gt; c.INVOICE_DATE &gt; dateValue);
+          break;
+        case "ge": // &gt;=
+          invoicesQuery = invoicesQuery.Where(
+          c =&gt; c.INVOICE_DATE &gt;= dateValue);
+          break;
+      }
+    }
+    if (searchField == "PAID")
+    {
+      int iVal = (searchString == "on") ? 1 : 0;
+      invoicesQuery = invoicesQuery.Where(c =&gt; c.PAID == iVal);
+    }
+    // get the total number of invoices
+    int totalRows = invoicesQuery.Count();
+    // add sorting
+    switch (sord)
+    {
+      case "asc":
+        invoicesQuery = invoicesQuery.OrderBy(
+        invoice =&gt; invoice.INVOICE_DATE);
+        break;
+      case "desc":
+        invoicesQuery = invoicesQuery.OrderByDescending(
+        invoice =&gt; invoice.INVOICE_DATE);
+        break;
+    }
+    // get invoice list
+    var invoices = invoicesQuery
+       .Skip(offset)
+       .Take(limit)
+       .ToList();
+    // calculate the total number of pages
+    int totalPages = totalRows / limit + 1;
+    // create the result for jqGrid
+    var result = new
+      {
+        page = pageNo,
+        total = totalPages,
+        records = totalRows,
+        rows = invoices
+      };
+    // convert the result to JSON
+    return Json(result, JsonRequestBehavior.AllowGet);
+  }
+
+  // Receiving data in the form of JSON for the detail grid
+  public ActionResult GetDetailData(int? invoice_id)
+  {
+    // build a LINQ query for receiving invoice items
+    // filtered by invoice id
+    var lines =
+        from line in db.INVOICE_LINES
+        where line.INVOICE_ID == invoice_id
+        select new
+      {
+        INVOICE_LINE_ID = line.INVOICE_LINE_ID,
+        INVOICE_ID = line.INVOICE_ID,
+        PRODUCT_ID = line.PRODUCT_ID,
+        Product = line.PRODUCT.NAME,
+        Quantity = line.QUANTITY,
+        Price = line.SALE_PRICE,
+        Total = line.QUANTITY * line.SALE_PRICE
+      };
+    // get invoice position list
+    var invoices = lines
+        .ToList();
+    // create the result for jqGrid
+    var result = new
+    {
+      rows = invoices
+    };
+    // convert the result to JSON
+    return Json(result, JsonRequestBehavior.AllowGet);
+  }
+
+  // Add new invoice
+  [HttpPost]
+  [ValidateAntiForgeryToken]
+  public ActionResult Create(
+  [Bind(Include = "CUSTOMER_ID,INVOICE_DATE")] INVOICE invoice)
+  {
+    // check the correctness of the model
+    if (ModelState.IsValid)
+    {
+      try
+      {
+        var INVOICE_ID = new FbParameter("INVOICE_ID", FbDbType.Integer);
+        var CUSTOMER_ID = new FbParameter("CUSTOMER_ID", FbDbType.Integer);
+        var INVOICE_DATE = new FbParameter("INVOICE_DATE",
+                               FbDbType.TimeStamp);
+        // initialize parameters query
+        INVOICE_ID.Value = db.NextValueFor("GEN_INVOICE_ID");
+        CUSTOMER_ID.Value = invoice.CUSTOMER_ID;
+        INVOICE_DATE.Value = invoice.INVOICE_DATE;
+        // execute stored procedure
+        db.Database.ExecuteSqlCommand(
+          "EXECUTE PROCEDURE SP_ADD_INVOICE(@INVOICE_ID, @CUSTOMER_ID, @INVOICE_DATE)",
+          INVOICE_ID,
+          CUSTOMER_ID,
+          INVOICE_DATE);
+        // return success in JSON format
+        return Json(true);
+      }
+      catch (Exception ex)
+      {
+        // return error in JSON format
+        return Json(new { error = ex.Message });
+      }
+    }
+    else {
+      string messages = string.Join("; ", ModelState.Values
+                       .SelectMany(x =&gt; x.Errors)
+                       .Select(x =&gt; x.ErrorMessage));
+      // return error in JSON format
+      return Json(new { error = messages });
+    }
+  }
+
+  // Edit invoice
+  [HttpPost]
+  [ValidateAntiForgeryToken]
+  public ActionResult Edit(
+  [Bind(Include = "INVOICE_ID,CUSTOMER_ID,INVOICE_DATE")] INVOICE invoice)
+  {
+    // check the correctness of the model
+    if (ModelState.IsValid)
+    {
+      try
+      {
+        var INVOICE_ID = new FbParameter("INVOICE_ID", FbDbType.Integer);
+        var CUSTOMER_ID = new FbParameter("CUSTOMER_ID", FbDbType.Integer);
+        var INVOICE_DATE = new FbParameter("INVOICE_DATE",
+                                           FbDbType.TimeStamp);
+        // initialize parameters query
+        INVOICE_ID.Value = invoice.INVOICE_ID;
+        CUSTOMER_ID.Value = invoice.CUSTOMER_ID;
+        INVOICE_DATE.Value = invoice.INVOICE_DATE;
+        // execute stored procedure
+        db.Database.ExecuteSqlCommand(
+          "EXECUTE PROCEDURE SP_EDIT_INVOICE(@INVOICE_ID, @CUSTOMER_ID, @INVOICE_DATE)",
+          INVOICE_ID,
+          CUSTOMER_ID,
+          INVOICE_DATE);
+        // return success in JSON format
+        return Json(true);
+      }
+      catch (Exception ex)
+      {
+        // return error in JSON format
+        return Json(new { error = ex.Message });
+      }
+    }
+    else {
+      string messages = string.Join("; ", ModelState.Values
+                       .SelectMany(x =&gt; x.Errors)
+                       .Select(x =&gt; x.ErrorMessage));
+      // return error in JSON format
+      return Json(new { error = messages });
+    }
+  }
+
+  // Delete invoice
+  [HttpPost]
+  [ValidateAntiForgeryToken]
+  public ActionResult Delete(int id)
+  {
+    try
+    {
+      var INVOICE_ID = new FbParameter("INVOICE_ID", FbDbType.Integer);
+      // initialize parameters query
+      INVOICE_ID.Value = id;
+      // execute stored procedure
+      db.Database.ExecuteSqlCommand(
+        "EXECUTE PROCEDURE SP_DELETE_INVOICE(@INVOICE_ID)",
+        INVOICE_ID);
+      // return success in JSON format
+      return Json(true);
+    }
+    catch (Exception ex)
+    {
+      // return error in JSON format
+      return Json(new { error = ex.Message });
+    }
+  }
+
+  // Payment of invoice
+  [HttpPost]
+  [ValidateAntiForgeryToken]
+  public ActionResult Pay(int id)
+  {
+    try
+    {
+      var INVOICE_ID = new FbParameter("INVOICE_ID", FbDbType.Integer);
+      // initialize parameters query
+      INVOICE_ID.Value = id;
+      // execute stored procedure
+      db.Database.ExecuteSqlCommand(
+        "EXECUTE PROCEDURE SP_PAY_FOR_INOVICE(@INVOICE_ID)",
+        INVOICE_ID);
+      // return success in JSON format
+      return Json(true);
+    }
+    catch (Exception ex)
+    {
+      // return error in JSON format
+      return Json(new { error = ex.Message });
+    }
+  }
+
+  // Add invoice position
+  [HttpPost]
+  [ValidateAntiForgeryToken]
+  public ActionResult CreateDetail(
+  [Bind(Include = "INVOICE_ID,PRODUCT_ID,QUANTITY")] INVOICE_LINE invoiceLine)
+  {
+    // check the correctness of the model
+    if (ModelState.IsValid)
+    {
+      try
+      {
+        var INVOICE_ID = new FbParameter("INVOICE_ID", FbDbType.Integer);
+        var PRODUCT_ID = new FbParameter("PRODUCT_ID", FbDbType.Integer);
+        var QUANTITY = new FbParameter("QUANTITY", FbDbType.Integer);
+        // initialize parameters query
+        INVOICE_ID.Value = invoiceLine.INVOICE_ID;
+        PRODUCT_ID.Value = invoiceLine.PRODUCT_ID;
+        QUANTITY.Value = invoiceLine.QUANTITY;
+        // execute stored procedure
+        db.Database.ExecuteSqlCommand(
+          ""EXECUTE PROCEDURE SP_ADD_INVOICE_LINE(@INVOICE_ID, @PRODUCT_ID, @QUANTITY)",
+          INVOICE_ID,
+          PRODUCT_ID,
+          QUANTITY);
+        // return success in JSON format
+        return Json(true);
+      }
+      catch (Exception ex)
+      {
+        // return error in JSON format
+        return Json(new { error = ex.Message });
+      }
+    }
+    else {
+      string messages = string.Join("; ", ModelState.Values
+                       .SelectMany(x =&gt; x.Errors)
+                       .Select(x =&gt; x.ErrorMessage));
+      // return error in JSON format
+      return Json(new { error = messages });
+    }
+  }
+
+  // Edit invoice position
+  [HttpPost]
+  [ValidateAntiForgeryToken]
+  public ActionResult EditDetail(
+  [Bind(Include = "INVOICE_LINE_ID,INVOICE_ID,PRODUCT_ID,QUANTITY")]
+    INVOICE_LINE invoiceLine)
+  {
+    // check the correctness of the model
+    if (ModelState.IsValid)
+    {
+      try
+      {
+        // Create parameters
+        var INVOICE_LINE_ID = new FbParameter("INVOICE_LINE_ID",
+                                              FbDbType.Integer);
+        var QUANTITY = new FbParameter("QUANTITY", FbDbType.Integer);
+        // initialize parameters query
+        INVOICE_LINE_ID.Value = invoiceLine.INVOICE_LINE_ID;
+        QUANTITY.Value = invoiceLine.QUANTITY;
+        // execute stored procedure
+        db.Database.ExecuteSqlCommand(
+          "EXECUTE PROCEDURE SP_EDIT_INVOICE_LINE(@INVOICE_LINE_ID, @QUANTITY)",
+          INVOICE_LINE_ID,
+          QUANTITY);
+        // return success in JSON format
+        return Json(true);
+      }
+      catch (Exception ex)
+      {
+        // return error in JSON format
+        return Json(new { error = ex.Message });
+      }
+    }
+    else {
+      string messages = string.Join("; ", ModelState.Values
+                       .SelectMany(x =&gt; x.Errors)
+                       .Select(x =&gt; x.ErrorMessage));
+      // return error in JSON format
+      return Json(new { error = messages });
+    }
+  }
+
+  // Delete invoice position
+  [HttpPost]
+  [ValidateAntiForgeryToken]
+  public ActionResult DeleteDetail(int id)
+  {
+    try
+    {
+      // create parameters
+      var INVOICE_LINE_ID = new FbParameter("INVOICE_LINE_ID",
+                                            FbDbType.Integer);
+      // initialize parameters query
+      INVOICE_LINE_ID.Value = id;
+      // execute stored procedure
+      db.Database.ExecuteSqlCommand(
+        "EXECUTE PROCEDURE SP_DELETE_INVOICE_LINE(@INVOICE_LINE_ID)",
+        INVOICE_LINE_ID);
+      // return success in JSON format
+      return Json(true);
+    }
+    catch (Exception ex)
+    {
+      // return error in JSON format
+      return Json(new { error = ex.Message });
+    }
+  }
+
+  protected override void Dispose(bool disposing)
+  {
+    if (disposing)
+    {
+      db.Dispose();
+    }
+    base.Dispose(disposing);
+  }
+}
+        </pre><p>
+                     
+            </p>
+            <p>The GetDetailData method for retrieving the list of lines in an invoice lacks 
+                     the code for page-by-page navigation. Realistically, a typical invoice does not have 
+                     enough lines  to justify using page-by-page navigation for them. Omitting it simplifies 
+                     and speeds up the code.
+            </p>
+            <p>In our project, all data modification operations are performed in stored procedures,
+                     but you could do the same work using Entity Framework. 
+                     <a href="fbdevg30-db-crt-db-objects.html#fbdevg30-db-stored-procs" title="Stored Procedures">DDL code for the stored procedures</a> can
+                     be found in the database creation script in an earlier chapter and also in the .zip archives
+                     of all the DDL scripts: 
+            </p>
+            <div class="literallayout">
+               <p><a xmlns:xlink="http://www.w3.org/1999/xlink" href="https://github.com/sim1984/example-db_2_5/archive/1.0.zip" target="_top">https://github.com/sim1984/example-db_2_5/archive/1.0.zip</a><br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;<a xmlns:xlink="http://www.w3.org/1999/xlink" href="https://github.com/sim1984/example-db_3_0/archive/1.0.zip" target="_top">https://github.com/sim1984/example-db_3_0/archive/1.0.zip</a></p>
+            </div>
+            <p>
+                     
+            </p>
+         </div>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdevgd30-mvc-secondary-views"></a>Views for Invoices
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <p>As with the Customer controller, only one view, <code class="filename">View/Invoice/Index.cshtml</code> 
+                     is needed. The others can be deleted from this folder. The layout of the view is very simple, but 
+                     the JavaScript code is quite extensive. We will examine the js code piece-by-piece.
+                       
+            </p><pre class="programlisting">
+@{
+    ViewBag.Title = "Index";
+}
+
+&lt;h2&gt;Invoices&lt;/h2&gt;
+&lt;table id="jqg"&gt;&lt;/table&gt;
+&lt;div id="jpager"&gt;&lt;/div&gt;
+
+&lt;script type="text/javascript"&gt;
+  /**
+    * The code to work with jqGrid
+    */
+&lt;/script&gt;
+        </pre><p>
+                     
+            </p>
+            <p>To begin with, we will take the code for working with the main grid. All we 
+                     have to write into it is the properties of the model (field types and sizes, search, 
+                     sorting, visibility parameters. etc.).
+                       
+            </p><pre class="programlisting">
+// invoice grid
+var dbGrid = $("#jqg").jqGrid({
+  url: '@Url.Action("GetData")', URL to retrieve data
+  datatype: "json", // format data
+  mtype: "GET", // type of http request
+  // model description
+  colModel: [
+  {
+    label: 'Id', 
+    name: 'INVOICE_ID', 
+    key: true,
+    hidden: true 
+  },
+  {
+    label: 'CUSTOMER_ID', 
+    name: 'CUSTOMER_ID', 
+    hidden: true, 
+    editrules: { edithidden: true, required: true }, 
+    editable: true, 
+    edittype:'custom', // own type
+    editoptions: {
+      custom_element: function (value, options) {
+        // add hidden input
+        return $("&lt;input&gt;")
+            .attr('type', 'hidden')
+            .attr('rowid', options.rowId)
+            .addClass("FormElement")
+            .addClass("form-control")
+            .val(value)
+            .get(0);
+      }
+    }
+  },
+  {
+    label: 'Date',
+    name: 'INVOICE_DATE',
+    width: 60, 
+    sortable: true, 
+    editable: true, 
+    search: true, 
+    edittype: "text", // type of input
+    align: "right",
+    formatter: 'date', // formatted as date
+    sorttype: 'date', // sorted as date
+    formatoptions: { // date format
+      srcformat: 'd.m.Y H:i:s',
+      newformat: 'd.m.Y H:i:s'
+    },
+    editoptions: {
+      // initializing the form element for editing
+      dataInit: function (element) {
+        // create datepicker
+        $(element).datepicker({
+          id: 'invoiceDate_datePicker',
+          dateFormat: 'dd.mm.yy',
+          minDate: new Date(2000, 0, 1),
+          maxDate: new Date(2030, 0, 1)
+        });
+      }
+    },
+    searchoptions: {
+      // initializing the form element for searching
+      dataInit: function (element) {
+        // create datepicker
+        $(element).datepicker({
+          id: 'invoiceDate_datePicker',
+          dateFormat: 'dd.mm.yy',
+          minDate: new Date(2000, 0, 1),
+          maxDate: new Date(2030, 0, 1)
+        });
+      },
+      searchoptions: { // searching types
+        sopt: ['eq', 'lt', 'le', 'gt', 'ge']
+      },
+    }
+  },
+  {
+    label: 'Customer',
+    name: 'CUSTOMER_NAME',
+    width: 250,
+    editable: true,
+    edittype: "text",
+    editoptions: {
+      size: 50,
+      maxlength: 60,
+      readonly: true 
+    },
+    editrules: { required: true },
+    search: true,
+    searchoptions: {
+      sopt: ['eq', 'bw', 'cn']
+    },
+  },
+  {
+    label: 'Amount',
+    name: 'TOTAL_SALE',
+    width: 60,
+    sortable: false,
+    editable: false,
+    search: false,
+    align: "right",
+    formatter: 'currency', // format as currency
+    sorttype: 'number',
+    searchrules: {
+      "required": true,
+      "number": true,
+      "minValue": 0
+    }
+  },
+  {
+    label: 'Paid',
+    name: 'PAID',
+    width: 30,
+    sortable: false,
+    editable: true,
+    search: true,
+    searchoptions: {
+      sopt: ['eq']
+    },
+    edittype: "checkbox",
+    formatter: "checkbox",
+    stype: "checkbox",
+    align: "center",
+    editoptions: {
+      value: "1",
+      offval: "0"
+    }
+  }
+  ],
+  rowNum: 500, // number of rows displayed
+  loadonce: false, 
+  sortname: 'INVOICE_DATE', // sort by default by NAME column
+  sortorder: "desc",
+  width: window.innerWidth - 80, // grid width
+  height: 500, // grid height
+  viewrecords: true, // display the number of records
+  caption: "Invoices", // grid caption
+  pager: '#jpager', // pagination element
+  subGrid: true, // show subgrid
+  // javascript function for displaying the parent grid
+  subGridRowExpanded: showChildGrid,
+  subGridOptions: { 
+    // upload data only once
+    reloadOnExpand: false,
+    // load the subgrid rows only when you click on the icon "+"
+    selectOnExpand: true
+  },
+});
+
+// display the navigation bar
+dbGrid.jqGrid('navGrid', '#jpager',
+  {
+    search: true, 
+    add: true, 
+    edit: true, 
+    del: true, 
+    view: false, 
+    refresh: true, 
+    searchtext: "Search",
+    addtext: "Add",
+    edittext: "Edit",
+    deltext: "Delete",
+    viewtext: "View",
+    viewtitle: "Selected record",
+    refreshtext: "Refresh"
+  },
+  update("edit"),
+  update("add"),
+  update("del")
+);
+        </pre><p>
+                     
+            </p>
+            <p>We'll add one more &#8220;<span class="quote">custom</span>&#8221; button to the main grid, 
+                     for paying the invoice.
+                       
+            </p><pre class="programlisting">
+// Add a button to pay the invoice
+dbGrid.navButtonAdd('#jpager',
+{
+  buttonicon: "glyphicon-usd",
+  title: "Pay",
+  caption: "Pay",
+  position: "last",
+  onClickButton: function () {
+    // get the current record ID
+    var id = dbGrid.getGridParam("selrow");
+    if (id) {
+      var url = '@Url.Action("Pay")';
+      $.ajax({
+        url: url,
+        type: 'POST',
+        data: { id: id },
+        success: function (data) {
+          // check if an error has occurred
+          if (data.hasOwnProperty("error")) {
+            alertDialog('Error', data.error);
+          }
+          else {
+            // refresh grid
+            $("#jqg").jqGrid(
+              'setGridParam',
+              {
+                datatype: 'json'
+              }
+            ).trigger('reloadGrid');
+          }
+        }
+      });
+    }
+  }
+});
+        </pre><p>
+                     
+            </p>
+         </div>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdevgd30-mvc-secondary-dialogs"></a>Dialog Boxes for Invoices
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <p>The dialog boxes for editing secondary sets of data are much more complicated 
+                     than for the primary sets. Since they often use options selected from other modules, 
+                     it will not be possible to use the standard jqGrid methods to build these edit dialog 
+                     boxes. However,  this library has an option to build dialog boxes using templates, 
+                     which we will use.
+            </p>
+            <p>To enable customer selection, we will create a read-only field with a button at 
+                     its right hand side for opening the form displaying the customer selection grid.
+                       
+            </p><pre class="programlisting">
+// returns properties to create edit dialogs
+function update(act) {
+  // editing dialog template
+  var template = "&lt;div style='margin-left:15px;' id='dlgEditInvoice'&gt;";
+  template += "&lt;div&gt;{CUSTOMER_ID} &lt;/div&gt;";
+  template += "&lt;div&gt; Date: &lt;/div&gt;&lt;div&gt;{INVOICE_DATE} &lt;/div&gt;";
+  // customer input field with a button
+  template += "&lt;div&gt; Customer &lt;sup&gt;*&lt;/sup&gt;:&lt;/div&gt;";
+  template += "&lt;div&gt;";
+  template += "&lt;div style='float: left;'&gt;{CUSTOMER_NAME}&lt;/div&gt; ";
+  template += "&lt;a style='margin-left: 0.2em;' class='btn'";
+  template += " onclick='showCustomerWindow(); return false;'&gt;";
+  template += "&lt;span class='glyphicon glyphicon-folder-open'&gt;&lt;/span&gt;";
+  template += " Select&lt;/a&gt; ";
+  template += "&lt;div style='clear: both;'&gt;&lt;/div&gt;";
+  template += "&lt;/div&gt;";
+  template += "&lt;div&gt; {PAID} Paid &lt;/div&gt;";
+  template += "&lt;hr style='width: 100%;'/&gt;";
+  template += "&lt;div&gt; {sData} {cData} &lt;/div&gt;";
+  template += "&lt;/div&gt;";
+  return {
+    top: $(".container.body-content").position().top + 150,
+    left: $(".container.body-content").position().left + 150,
+    modal: true,
+    drag: true,
+    closeOnEscape: true,
+    closeAfterAdd: true, 
+    closeAfterEdit: true, 
+    reloadAfterSubmit: true, 
+    template: (act != "del") ? template : null,
+    onclickSubmit: function (params, postdata) {
+      // get row id
+      var selectedRow = dbGrid.getGridParam("selrow");
+      switch (act) {
+        case "add": 
+          params.url = '@Url.Action("Create")';
+          // get customer id for current row
+          postdata.CUSTOMER_ID =
+            $('#dlgEditInvoice input[name=CUSTOMER_ID]').val();
+          break;
+        case "edit":
+          params.url = '@Url.Action("Edit")';
+          postdata.INVOICE_ID = selectedRow;
+          // get customer id for current row
+          postdata.CUSTOMER_ID =
+            $('#dlgEditInvoice input[name=CUSTOMER_ID]').val();
+          break;
+        case "del":
+          params.url = '@Url.Action("Delete")';
+          postdata.INVOICE_ID = selectedRow;
+          break;
+      }
+    },
+    afterSubmit: function (response, postdata) {
+      var responseData = response.responseJSON;
+      // check the result for error messages
+      if (responseData.hasOwnProperty("error")) {
+        if (responseData.error.length) {
+          return [false, responseData.error];
+        }
+        }
+        else {
+          // refresh grid
+          $(this).jqGrid(
+            'setGridParam',
+            {
+              datatype: 'json'
+            }
+          ).trigger('reloadGrid');
+        }
+        return [true, "", 0];
+      }
+    };
+  };
+}
+        </pre><p>
+                     
+            </p>
+            <p>Now we will write a function for opening the customer module that invokes
+                     the Bootstrap library to create a dialog box containing the grid from which a 
+                     customer can be selected. It is actually the same grid we used earlier but, this 
+                     time, it is enclosed by a dialog box. A click on the OK button will place the 
+                     customer identifier and the customer name into the input fields of the parent 
+                     dialog box for editing invoices.
+                       
+            </p><pre class="programlisting">
+/**
+ * Display a window for selecting a customer
+ */
+function showCustomerWindow() {
+  // the main block of the dialog
+  var dlg = $('&lt;div&gt;')
+     .attr('id', 'dlgChooseCustomer')
+     .attr('aria-hidden', 'true')
+     .attr('role', 'dialog')
+     .attr('data-backdrop', 'static')
+     .css("z-index", '2000')
+     .addClass('modal')
+     .appendTo($('body'));
+
+  // block with the contents of the dialog
+  var dlgContent = $("&lt;div&gt;")
+     .addClass("modal-content")
+     .css('width', '730px')
+     .appendTo($('&lt;div&gt;')
+     .addClass('modal-dialog')
+     .appendTo(dlg));
+
+  // block with dialogue header
+  var dlgHeader = $('&lt;div&gt;').addClass("modal-header").appendTo(dlgContent);
+
+  // button "X" for closing
+  $("&lt;button&gt;")
+    .addClass("close")
+    .attr('type', 'button')
+    .attr('aria-hidden', 'true')
+    .attr('data-dismiss', 'modal')
+    .html("times;")
+    .appendTo(dlgHeader);
+
+  // title
+  $("&lt;h5&gt;").addClass("modal-title")
+           .html("Select customer")
+           .appendTo(dlgHeader);
+
+  // body of dialogue
+  var dlgBody = $('&lt;div&gt;')
+     .addClass("modal-body")
+     .appendTo(dlgContent);
+
+  // footer of the dialogue
+  var dlgFooter = $('&lt;div&gt;').addClass("modal-footer").appendTo(dlgContent);
+
+  // button "OK"
+  $("&lt;button&gt;")
+    .attr('type', 'button')
+    .addClass('btn')
+    .html('OK')
+    .on('click', function () {
+       var rowId = $("#jqgCustomer").jqGrid("getGridParam", "selrow");
+       var row = $("#jqgCustomer").jqGrid("getRowData", rowId);
+       // To save the identifier and customer name
+       // to the input elements of the parent form
+       $('#dlgEditInvoice input[name=CUSTOMER_ID]').val(rowId);
+       $('#dlgEditInvoice input[name=CUSTOMER_NAME]').val(row["NAME"]);
+       dlg.modal('hide');
+  })
+  .appendTo(dlgFooter);
+  
+  // button "Cancel"
+  $("&lt;button&gt;")
+    .attr('type', 'button')
+    .addClass('btn')
+    .html('Cancel')
+    .on('click', function () { dlg.modal('hide'); })
+    .appendTo(dlgFooter);
+
+  // add a table to display the customers in the body of the dialog
+  $('&lt;table&gt;')
+    .attr('id', 'jqgCustomer')
+    .appendTo(dlgBody);
+
+  // add the navigation bar
+  $('&lt;div&gt;')
+    .attr('id', 'jqgCustomerPager')
+    .appendTo(dlgBody);
+
+  dlg.on('hidden.bs.modal', function () {
+    dlg.remove();
+  });
+
+  // show dialog
+  dlg.modal();
+
+  // create and initialize jqGrid
+  var dbGrid = $("#jqgCustomer").jqGrid({
+    url: '@Url.Action("GetData", "Customer")', // URL to retrieve data
+    mtype: "GET", // http type of request
+    datatype: "json", // data format
+    page: 1,
+    width: '100%',
+    // view description
+    colModel: [
+    {
+      label: 'Id', 
+      name: 'CUSTOMER_ID', 
+      key: true, 
+      hidden: true 
+    },
+    {
+      label: 'Name',
+      name: 'NAME',
+      width: 250, 
+      sortable: true, 
+      editable: true, 
+      edittype: "text", // input type
+      search: true, 
+      searchoptions: {
+        sopt: ['eq', 'bw', 'cn'] // allowed search operators
+      },
+      // size and maximum length for the input field
+      editoptions: { size: 30, maxlength: 60 },
+      // required input
+      editrules: { required: true }
+    },
+    {
+      label: 'Address',
+      name: 'ADDRESS',
+      width: 300,
+      sortable: false, 
+      editable: true, 
+      search: false, 
+      edittype: "textarea",
+      editoptions: { maxlength: 250, cols: 30, rows: 4 }
+    },
+    {
+      label: 'Zip Code',
+      name: 'ZIPCODE',
+      width: 60,
+      sortable: false,
+      editable: true,
+      search: false,
+      edittype: "text",
+      editoptions: { size: 30, maxlength: 10 },
+    },
+    {
+      label: 'Phone',
+      name: 'PHONE',
+      width: 85,
+      sortable: false,
+      editable: true,
+      search: false,
+      edittype: "text",
+      editoptions: { size: 30, maxlength: 14 },
+    }
+    ],
+    loadonce: false,
+    pager: '#jqgCustomerPager',
+    rowNum: 500, // number of rows displayed
+    sortname: 'NAME', // sort by default by NAME column
+    sortorder: "asc", 
+    height: 500
+  });
+
+  dbGrid.jqGrid('navGrid', '#jqgCustomerPager',
+    {
+      search: true, 
+      add: false, 
+      edit: false, 
+      del: false, 
+      view: false, 
+      refresh: true, 
+      searchtext: "Search",
+      viewtext: "View",
+      viewtitle: "Selected record",
+      refreshtext: "Refresh"
+    }
+  );
+}
+        </pre><p>
+                     
+            </p>
+            <p>All that is left to write for the invoice module is the 
+                     <code class="classname">showChildGrid</code> function that enables the invoice lines 
+                     to be displayed and edited. Our function will create a grid with invoice lines 
+                     dynamically after a click on the '+' button to show the details.
+            </p>
+            <p>Loading data for the lines requires passing the primary key from the selected
+                     invoice header.
+                       
+            </p><pre class="programlisting">
+// handler of the event of opening the parent grid
+// takes two parameters: the identifier of the parent record
+// and the value of the primary key
+function showChildGrid(parentRowID, parentRowKey) {
+  var childGridID = parentRowID + "_table";
+  var childGridPagerID = parentRowID + "_pager";
+  // send the primary key of the parent record
+  // to filter the entries of the invoice items
+  var childGridURL = '@Url.Action("GetDetailData")';
+  childGridURL = childGridURL + "?invoice_id="
+    + encodeURIComponent(parentRowKey)
+  
+  // add HTML elements to display the table and page navigation
+  // as children for the selected row in the master grid
+  $('&lt;table&gt;')
+    .attr('id', childGridID)
+    .appendTo($('#' + parentRowID));
+
+  $('&lt;div&gt;')
+    .attr('id', childGridPagerID)
+    .addClass('scroll')
+    .appendTo($('#' + parentRowID));
+  
+  // create and initialize the child grid
+  var detailGrid = $("#" + childGridID).jqGrid({
+    url: childGridURL,
+    mtype: "GET",
+    datatype: "json",
+    page: 1,
+    colModel: [
+    {
+      label: 'Invoice Line ID',
+      name: 'INVOICE_LINE_ID',
+      key: true,
+      hidden: true
+    },
+    {
+      label: 'Invoice ID',
+      name: 'INVOICE_ID',
+      hidden: true,
+      editrules: { edithidden: true, required: true },
+      editable: true,
+      edittype: 'custom',
+      editoptions: {
+        custom_element: function (value, options) {
+          // create hidden input
+          return $("&lt;input&gt;")
+                 .attr('type', 'hidden')
+                 .attr('rowid', options.rowId)
+                 .addClass("FormElement")
+                 .addClass("form-control")
+                 .val(parentRowKey)
+                 .get(0);
+        }
+      }
+    },
+    {
+      label: 'Product ID', 
+      name: 'PRODUCT_ID',
+      hidden: true,
+      editrules: { edithidden: true, required: true },
+      editable: true,
+      edittype: 'custom',
+      editoptions: {
+        custom_element: function (value, options) {
+          // create hidden input
+          return $("&lt;input&gt;")
+                 .attr('type', 'hidden')
+                 .attr('rowid', options.rowId)
+                 .addClass("FormElement")
+                 .addClass("form-control")
+                 .val(value)
+                 .get(0);
+        }
+      }
+    },
+    {
+      label: 'Product',
+      name: 'Product',
+      width: 300,
+      editable: true,
+      edittype: "text",
+      editoptions: {
+        size: 50,
+        maxlength: 60,
+        readonly: true
+      },
+      editrules: { required: true }
+    },
+    {
+      label: 'Price',
+      name: 'Price',
+      formatter: 'currency',
+      editable: true,
+      editoptions: {
+        readonly: true
+      },
+      align: "right",
+      width: 100
+    },
+    {
+      label: 'Quantity',
+      name: 'Quantity',
+      align: "right",
+      width: 100,
+      editable: true,
+      editrules: { required: true, number: true, minValue: 1 },
+      editoptions: {
+        dataEvents: [
+        {
+          type: 'change',
+          fn: function (e) {
+            var quantity = $(this).val() - 0;
+            var price =
+              $('#dlgEditInvoiceLine input[name=Price]').val() - 0;
+            $('#dlgEditInvoiceLine input[name=Total]').val(quantity * price);
+          }
+        }
+        ],
+        defaultValue: 1
+      }
+    },
+    {
+      label: 'Total',
+      name: 'Total',
+      formatter: 'currency',
+      align: "right",
+      width: 100,
+      editable: true,
+      editoptions: {
+        readonly: true
+      }
+    }
+    ],
+    loadonce: false,
+    width: '100%',
+    height: '100%',
+    pager: "#" + childGridPagerID
+  });
+
+  // displaying the toolbar
+  $("#" + childGridID).jqGrid('navGrid', '#' + childGridPagerID,
+    {
+      search: false, 
+      add: true, 
+      edit: true, 
+      del: true, 
+      refresh: true 
+    },
+    updateDetail("edit"), 
+    updateDetail("add"), 
+    updateDetail("del") 
+  );
+
+  // function that returns settings for the editing dialog
+  function updateDetail(act) {
+    // editing dialog template
+    var template = "&lt;div style='margin-left:15px;' id='dlgEditInvoiceLine'&gt;";
+    template += "&lt;div&gt;{INVOICE_ID} &lt;/div&gt;";
+    template += "&lt;div&gt;{PRODUCT_ID} &lt;/div&gt;";
+    // input field for goods with a button
+    template += "&lt;div&gt; Product &lt;sup&gt;*&lt;/sup&gt;:&lt;/div&gt;";
+    template += "&lt;div&gt;";
+    template += "&lt;div style='float: left;'&gt;{Product}&lt;/div&gt; ";
+    template += "&lt;a style='margin-left: 0.2em;' class='btn' ";
+    template += "onclick='showProductWindow(); return false;'&gt;";
+    template += "&lt;span class='glyphicon glyphicon-folder-open'&gt;&lt;/span&gt;";
+    template += " ???????&lt;/a&gt; ";
+    template += "&lt;div style='clear: both;'&gt;&lt;/div&gt;";
+    template += "&lt;/div&gt;";
+    template += "&lt;div&gt; Quantity: &lt;/div&gt;&lt;div&gt;{Quantity} &lt;/div&gt;";
+    template += "&lt;div&gt; Price: &lt;/div&gt;&lt;div&gt;{Price} &lt;/div&gt;";
+    template += "&lt;div&gt; Total: &lt;/div&gt;&lt;div&gt;{Total} &lt;/div&gt;";
+    template += "&lt;hr style='width: 100%;'/&gt;";
+    template += "&lt;div&gt; {sData} {cData} &lt;/div&gt;";
+    template += "&lt;/div&gt;";
+    return {
+      top: $(".container.body-content").position().top + 150,
+      left: $(".container.body-content").position().left + 150,
+      modal: true,
+      drag: true,
+      closeOnEscape: true,
+      closeAfterAdd: true, 
+      closeAfterEdit: true, 
+      reloadAfterSubmit: true, 
+      template: (act != "del") ? template : null,
+      onclickSubmit: function (params, postdata) {
+        var selectedRow = detailGrid.getGridParam("selrow");
+        switch (act) {
+          case "add":
+            params.url = '@Url.Action("CreateDetail")';
+            // get invoice id
+            postdata.INVOICE_ID =
+              $('#dlgEditInvoiceLine input[name=INVOICE_ID]').val();
+            // get the product ID for the current record
+            postdata.PRODUCT_ID =
+              $('#dlgEditInvoiceLine input[name=PRODUCT_ID]').val();
+            break;
+          case "edit":
+            params.url = '@Url.Action("EditDetail")';
+            // get current record id
+            postdata.INVOICE_LINE_ID = selectedRow;
+            break;
+          case "del":
+            params.url = '@Url.Action("DeleteDetail")';
+            // get current record id
+            postdata.INVOICE_LINE_ID = selectedRow;
+            break;
+        }
+      },
+      afterSubmit: function (response, postdata) {
+        var responseData = response.responseJSON;
+        // check the result for error messages
+        if (responseData.hasOwnProperty("error")) {
+          if (responseData.error.length) {
+            return [false, responseData.error];
+          }
+        }
+        else {
+          // refresh grid
+          $(this).jqGrid(
+            'setGridParam',
+            {
+              datatype: 'json'
+            }
+          ).trigger('reloadGrid');
+        }
+        return [true, "", 0];
+      }
+    };
+  };
+}
+        </pre><p>
+                     
+            </p>
+            <p>Now we are done with creating the invoice module. Although the 
+                     <code class="classname">showProductWindow function</code> that is used to select a product 
+                     from the list while filling out invoice lines is not examined here, it is totally 
+                     similar to the <code class="classname">showCustomerWindow</code> function that we examined 
+                     earlier to implement the selection of customers from the customer module.
+            </p>
+            <p>An observant reader might have noticed that the functions for displaying the 
+                     selection from the module and for displaying the module itself were almost identical. 
+                     Something you could do yourself to improve the code is to move these functions into 
+                     separate .js script files.
+            </p>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdevgd30-mvc-controller-views.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Views" alt="Prev: Views"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-MVC.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating Web Applications in Entity Framework with MVC" alt="Up: Creating Web Applications in Entity Framework with MVC"></a><a href="fbdevgd30-mvc-authentication.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Authentication" alt="Next: Authentication"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-MVC.html">Creating Web Applications in Entity Framework with MVC</a> &rarr; Creating a UI for Secondary Modules
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

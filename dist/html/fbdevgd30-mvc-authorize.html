@@ -1,0 +1,90 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Authorizing Access to Controller Methods</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-MVC.html" title="Chapter 5: Creating Web Applications in Entity Framework with MVC">
+      <link rel="prev" href="fbdevgd30-mvc-authentication.html" title="Authentication">
+      <link rel="next" href="fbdg30-mvc-get-source-code.html" title="Source Code">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-MVC.html">Creating Web Applications in Entity Framework with MVC</a> &rarr; Authorizing Access to Controller Methods
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdevgd30-mvc-authentication.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Authentication" alt="Prev: Authentication"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-MVC.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating Web Applications in Entity Framework with MVC" alt="Up: Creating Web Applications in Entity Framework with MVC"></a><a href="fbdg30-mvc-get-source-code.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Source Code" alt="Next: Source Code"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdevgd30-mvc-authorize"></a>Authorizing Access to Controller Methods
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <p>Now we can limit (filter) access to the methods of various controllers using the
+                <code class="classname">Authorize</code> attribute. We have already seen how it is used 
+                in the AccountController controller:
+                  
+         </p><pre class="programlisting">
+[Authorize(Roles = "admin")]
+public ActionResult Register()
+{&#8230;
+      </pre><p>
+                
+         </p>
+         <p>This filter can be used at two levels: on a controller <span class="emphasis"><em>as a whole</em></span>
+                and on an individual operation of a controller. We will set different rights for our main 
+                controllers: CustomerController, InvoiceController and ProductController. In our project, 
+                a user with the <span class="database">MANAGER</span> role can view and edit data in all three tables. 
+                Setting a filter for the InvoiceController controller would be coded as follows:
+                  
+         </p><pre class="programlisting">
+[Authorize(Roles = "manager")]
+public class InvoiceController : Controller
+{
+  private DbModel db = new DbModel();
+  
+  // Show view
+  public ActionResult Index()
+  {
+    return View();
+  }
+&#8230;
+      </pre><p>
+                
+         </p>
+         <p>Setting filters in the other controllers can be implemented in a
+                similar manner.
+         </p>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdevgd30-mvc-authentication.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Authentication" alt="Prev: Authentication"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-MVC.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating Web Applications in Entity Framework with MVC" alt="Up: Creating Web Applications in Entity Framework with MVC"></a><a href="fbdg30-mvc-get-source-code.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Source Code" alt="Next: Source Code"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-MVC.html">Creating Web Applications in Entity Framework with MVC</a> &rarr; Authorizing Access to Controller Methods
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

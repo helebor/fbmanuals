@@ -1,0 +1,874 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Authentication</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-MVC.html" title="Chapter 5: Creating Web Applications in Entity Framework with MVC">
+      <link rel="prev" href="fbdevgd30-mvc-secondary-ui.html" title="Creating a UI for Secondary Modules">
+      <link rel="next" href="fbdevgd30-mvc-authorize.html" title="Authorizing Access to Controller Methods">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-MVC.html">Creating Web Applications in Entity Framework with MVC</a> &rarr; Authentication
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdevgd30-mvc-secondary-ui.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Creating a UI for Secondary Modules" alt="Prev: Creating a UI for Secondary Modules"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-MVC.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating Web Applications in Entity Framework with MVC" alt="Up: Creating Web Applications in Entity Framework with MVC"></a><a href="fbdevgd30-mvc-authorize.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Authorizing Access to Controller Methods" alt="Next: Authorizing Access to Controller Methods"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdevgd30-mvc-authentication"></a>Authentication
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdevgd30-mvc-authentication.html#fbdevgd30-mvc-auth-infrastructure">Infrastructure for Authentication</a></span></dt>
+            </dl>
+         </div>
+         <p>The ASP.NET technology has a powerful mechanism for managing authentication 
+                in .NET applications called <em class="firstterm">ASP.NET Identity</em>. The infrastructure 
+                of OWIN and AspNet Identity make it possible to perform both standard authentication and 
+                authentication via external services through accounts in Google, Twitter, Facebook, et al.
+                
+         </p>
+         <p>The description of the ASP.NET Identity technology is quite comprehensive and goes 
+                beyond the scope of this publication but you can read about it at 
+                <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.asp.net/identity" target="_top">http://www.asp.net/identity</a>.
+         </p>
+         <p>For our application, we will take a less complicated approach based on form 
+                authentication. Enabling form authentication entails some changes in the 
+                <code class="filename">web.config</code> configuration file. Find the &lt;system.web&gt; 
+                section and insert the following subsection inside it:
+                  
+         </p><pre class="literallayout">
+&lt;authentication mode="Forms"&gt;
+  &lt;forms name="cookies" timeout="2880" loginUrl="~/Account/Login"
+         defaultUrl="~/Invoice/Index"/&gt;
+&lt;/authentication&gt;
+      </pre><p>
+                
+         </p>
+         <p>Setting <code class="code">mode="Forms"</code> enables form authentication. Some parameters 
+                need to follow it. The following list of parameters is available:
+                  
+         </p>
+         <div class="variablelist">
+            <dl>
+               <dt><span class="term">cookieless</span></dt>
+               <dd>specifies whether cookie sets are used and how they are used. It 
+                            can take the following values:
+                              
+                  <div class="itemizedlist">
+                     <ul type="disc" compact>
+                        <li><code class="classname">UseCookies</code>&#8212;specifies that the cookie sets will always be used,
+                                         regardless of the device
+                        </li>
+                        <li><code class="classname">UseUri</code>&#8212;cookies sets are never used
+                        </li>
+                        <li><code class="classname">AutoDetect</code>&#8212;if the device supports cookie sets, they are used,
+                                         otherwise, they are not used; a test determining their support is run for this setting.
+                        </li>
+                        <li><code class="classname">UseDeviceProfile</code>&#8212;if the device supports cookie sets, they
+                                         are used, otherwise, they are not used; no detection test is run. Used by default.
+                        </li>
+                     </ul>
+                  </div>
+               </dd>
+               <dt><span class="term">defaultUrl</span></dt>
+               <dd>specifies the URL to redirect to after authentication</dd>
+               <dt><span class="term">domain</span></dt>
+               <dd>specifies cookie sets for the entire domain, allowing for the same 
+                            cookie sets to be used for the main domain and its sub-domains.
+                            By default, its value is an empty string.
+               </dd>
+               <dt><span class="term">loginUrl</span></dt>
+               <dd>the URL for user authentication. The default value 
+                            is <code class="code">"~/Account/Login"</code>.
+               </dd>
+               <dt><span class="term">name</span></dt>
+               <dd>specifies the name for the cookie set. The default value 
+                            is <code class="code">".ASPXAUTH"</code>.
+               </dd>
+               <dt><span class="term">path</span></dt>
+               <dd>specifies the path for the cookie set. The default value is "/".</dd>
+               <dt><span class="term">requireSSL</span></dt>
+               <dd>specifies whether an SSL connection is required for sending cookie sets. 
+                            The default value is false
+               </dd>
+               <dt><span class="term">timeout</span></dt>
+               <dd>specifies the timeout for cookies in minutes.</dd>
+            </dl>
+         </div>
+         <p>
+                
+         </p>
+         <p>In our application, we will store authentication data in the same database that
+                stores all other data to avoid the need for an additional connection string.
+         </p>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdevgd30-mvc-auth-infrastructure"></a>Infrastructure for Authentication
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <div class="toc">
+               <p><b>Table of Contents</b></p>
+               <dl>
+                  <dt><span class="section"><a href="fbdevgd30-mvc-authentication.html#fbdevgd30-mvc-auth-add-user">Adding a New User</a></span></dt>
+                  <dt><span class="section"><a href="fbdevgd30-mvc-authentication.html#fbdevgd30-mvc-auth-uni-providers">Universal Providers</a></span></dt>
+               </dl>
+            </div>
+            <p>Now we need to create all the infrastructure required for authentication&#8212;models,
+                     controllers and views. The <code class="classname">WebUser</code> model describes the user:
+                       
+            </p><pre class="programlisting">
+[Table("Firebird.WEBUSER")]
+public partial class WEBUSER
+{
+  [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage",
+   "CA2214:DoNotCallOverridableMethodsInConstructors")]
+  public WEBUSER()
+  {
+    WEBUSERINROLES = new HashSet&lt;WEBUSERINROLE&gt;();
+  }
+
+  [Key]
+  [DatabaseGenerated(DatabaseGeneratedOption.None)]
+  public int WEBUSER_ID { get; set; }
+
+  [Required]
+  [StringLength(63)]
+  public string EMAIL { get; set; }
+
+  [Required]
+  [StringLength(63)]
+  public string PASSWD { get; set; }
+
+  [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage",
+   "CA2227:CollectionPropertiesShouldBeReadOnly")]
+  public virtual ICollection&lt;WEBUSERINROLE&gt; WEBUSERINROLES { get; set; }
+}
+We'll add two more models: one for the description of roles (WEBROLE) and another one for binding the roles to users (WEBUSERINROLE).
+[Table("Firebird.WEBROLE")]
+public partial class WEBROLE
+{
+  [Key]
+  [DatabaseGenerated(DatabaseGeneratedOption.None)]
+  public int WEBROLE_ID { get; set; }
+
+  [Required]
+  [StringLength(63)]
+  public string NAME { get; set; }
+}
+
+[Table("Firebird.WEBUSERINROLE")]
+public partial class WEBUSERINROLE
+{
+  [Key]
+  [DatabaseGenerated(DatabaseGeneratedOption.None)]
+  public int ID { get; set; }
+
+  [Required]
+  public int WEBUSER_ID { get; set; }
+
+  [Required]
+  public int WEBROLE_ID { get; set; }
+
+  public virtual WEBUSER WEBUSER { get; set; }
+
+  public virtual WEBROLE WEBROLE { get; set; }
+}
+
+We will use the Fluent API to specify relations between WEBUSER and WEBUSERINROLE in the DbModel class.
+&#8230;
+  public virtual DbSet&lt;WEBUSER&gt; WEBUSERS { get; set; }
+  public virtual DbSet&lt;WEBROLE&gt; WEBROLES { get; set; }
+  public virtual DbSet&lt;WEBUSERINROLE&gt; WEBUSERINROLES { get; set; }
+&#8230;
+  protected override void OnModelCreating(DbModelBuilder modelBuilder)
+  {
+    modelBuilder.Entity&lt;WEBUSER&gt;()
+      .HasMany(e =&gt; e.WEBUSERINROLES)
+      .WithRequired(e =&gt; e.WEBUSER)
+      .WillCascadeOnDelete(false);
+    &#8230;
+  }
+&#8230;
+        </pre><p>
+                     
+            </p>
+            <p>Since we use the Database First technology, tables in the database can be created
+                     automatically.  I prefer to control the process so here is a script for creating the 
+                     additional tables:
+                     
+            </p><pre class="programlisting">
+RECREATE TABLE WEBUSER (
+  WEBUSER_ID INT NOT NULL,
+  EMAIL VARCHAR(63) NOT NULL,
+  PASSWD VARCHAR(63) NOT NULL,
+  CONSTRAINT PK_WEBUSER PRIMARY KEY(WEBUSER_ID),
+  CONSTRAINT UNQ_WEBUSER UNIQUE(EMAIL)
+);
+
+RECREATE TABLE WEBROLE (
+  WEBROLE_ID INT NOT NULL,
+  NAME VARCHAR(63) NOT NULL,
+  CONSTRAINT PK_WEBROLE PRIMARY KEY(WEBROLE_ID),
+  CONSTRAINT UNQ_WEBROLE UNIQUE(NAME)
+);
+
+RECREATE TABLE WEBUSERINROLE (
+  ID INT NOT NULL,
+  WEBUSER_ID INT NOT NULL,
+  WEBROLE_ID INT NOT NULL,
+  CONSTRAINT PK_WEBUSERINROLE PRIMARY KEY(ID)
+);
+
+ALTER TABLE WEBUSERINROLE
+ADD CONSTRAINT FK_WEBUSERINROLE_USER
+FOREIGN KEY (WEBUSER_ID) REFERENCES WEBUSER (WEBUSER_ID);
+
+ALTER TABLE WEBUSERINROLE
+ADD CONSTRAINT FK_WEBUSERINROLE_ROLE
+FOREIGN KEY (WEBROLE_ID) REFERENCES WEBROLE (WEBROLE_ID);
+
+RECREATE SEQUENCE SEQ_WEBUSER;
+RECREATE SEQUENCE SEQ_WEBROLE;
+RECREATE SEQUENCE SEQ_WEBUSERINROLE;
+
+SET TERM ^;
+
+RECREATE TRIGGER TBI_WEBUSER
+FOR WEBUSER
+ACTIVE BEFORE INSERT
+AS
+BEGIN
+  IF (NEW.WEBUSER_ID IS NULL) THEN
+    NEW.WEBUSER_ID = NEXT VALUE FOR SEQ_WEBUSER;
+END^
+
+RECREATE TRIGGER TBI_WEBROLE
+FOR WEBROLE
+ACTIVE BEFORE INSERT
+AS
+BEGIN
+  IF (NEW.WEBROLE_ID IS NULL) THEN
+    NEW.WEBROLE_ID = NEXT VALUE FOR SEQ_WEBROLE;
+END^
+
+RECREATE TRIGGER TBI_WEBUSERINROLE
+FOR WEBUSERINROLE
+ACTIVE BEFORE INSERT
+AS
+BEGIN
+  IF (NEW.ID IS NULL) THEN
+    NEW.ID = NEXT VALUE FOR SEQ_WEBUSERINROLE;
+END^
+
+SET TERM ;^
+        </pre><p>
+                     
+            </p>
+            <p>To test it, we'll add two users and two roles:
+                       
+            </p><pre class="programlisting">
+INSERT INTO WEBUSER (EMAIL, PASSWD) VALUES ('john', '12345');
+INSERT INTO WEBUSER (EMAIL, PASSWD) VALUES ('alex', '123');
+COMMIT;
+
+INSERT INTO WEBROLE (NAME) VALUES ('admin');
+INSERT INTO WEBROLE (NAME) VALUES ('manager');
+COMMIT;
+
+-- Link users and roles
+INSERT INTO WEBUSERINROLE(WEBUSER_ID, WEBROLE_ID) VALUES(1, 1);
+INSERT INTO WEBUSERINROLE(WEBUSER_ID, WEBROLE_ID) VALUES(1, 2);
+INSERT INTO WEBUSERINROLE(WEBUSER_ID, WEBROLE_ID) VALUES(2, 2);
+COMMIT;
+        </pre><p>
+                     
+            </p>
+            <div class="note">
+               <h3 class="title">Comment about passwords</h3>
+               <p>Usually, some hash from the password, rather than the actual
+                          password, is stored in an open form, using the md5 algorithm, for example.
+                          For our example, we have simplified authentication somewhat.
+               </p>
+            </div>
+            <p>Our code will not interact directly with the WebUser model during
+                     registration and authentication. Instead, we will add some special models
+                     to the project:
+                       
+            </p><pre class="programlisting">
+namespace FBMVCExample.Models
+{
+  using System;
+  using System.Collections.Generic;
+  using System.ComponentModel.DataAnnotations;
+  using System.ComponentModel.DataAnnotations.Schema;
+  using System.Data.Entity.Spatial;
+
+  // Login model
+  public class LoginModel
+  {
+    [Required]
+    public string Name { get; set; }
+
+    [Required]
+    [DataType(DataType.Password)]
+    public string Password { get; set; }
+  }
+
+  // Model for registering a new user
+  public class RegisterModel
+  {
+    [Required]
+    public string Name { get; set; }
+
+    [Required]
+    [DataType(DataType.Password)]
+    public string Password { get; set; }
+
+    [Required]
+    [DataType(DataType.Password)]
+    [Compare("Password", ErrorMessage = " Passwords do not match ")]
+    public string ConfirmPassword { get; set; }
+  }
+}
+        </pre><p>
+                     
+            </p>
+            <p>These models will be used for the authentication and registration views, respectively.
+                   The authentication view is coded as follows:
+                       
+            </p><pre class="programlisting">
+@model FBMVCExample.Models.LoginModel
+
+@{
+  ViewBag.Title = "Login";
+}
+
+&lt;h2&gt;Login&lt;/h2&gt;
+
+@using (Html.BeginForm())
+{
+  @Html.AntiForgeryToken()
+  &lt;div class="form-horizontal"&gt;
+
+    @Html.ValidationSummary(true)
+    &lt;div class="form-group"&gt;
+
+      @Html.LabelFor(model =&gt; model.Name,
+        new { @class = "control-label col-md-2" })
+      &lt;div class="col-md-10"&gt;
+        @Html.EditorFor(model =&gt; model.Name)
+        @Html.ValidationMessageFor(model =&gt; model.Name)
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class="form-group"&gt;
+      @Html.LabelFor(model =&gt; model.Password,
+        new { @class = "control-label col-md-2" })
+      &lt;div class="col-md-10"&gt;
+        @Html.EditorFor(model =&gt; model.Password)
+        @Html.ValidationMessageFor(model =&gt; model.Password)
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class="form-group"&gt;
+      &lt;div class="col-md-offset-2 col-md-10"&gt;
+        &lt;input type="submit" value="Logon" class="btn btn-default" /&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+}
+
+@section Scripts {
+  @Scripts.Render("~/bundles/jqueryval")
+}
+
+The registration view, in turn, is coded as follows:
+@model FBMVCExample.Models.RegisterModel
+
+@{
+  ViewBag.Title = "Registration";
+}
+
+&lt;h2&gt;???????????&lt;/h2&gt;
+
+@using (Html.BeginForm())
+{
+  @Html.AntiForgeryToken()
+  &lt;div class="form-horizontal"&gt;
+
+    @Html.ValidationSummary(true)
+    &lt;div class="form-group"&gt;
+      @Html.LabelFor(model =&gt; model.Name,
+        new { @class = "control-label col-md-2" })
+
+      &lt;div class="col-md-10"&gt;
+        @Html.EditorFor(model =&gt; model.Name)
+        @Html.ValidationMessageFor(model =&gt; model.Name)
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class="form-group"&gt;
+      @Html.LabelFor(model =&gt; model.Password,
+        new { @class = "control-label col-md-2" })
+
+      &lt;div class="col-md-10"&gt;
+        @Html.EditorFor(model =&gt; model.Password)
+        @Html.ValidationMessageFor(model =&gt; model.Password)
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class="form-group"&gt;
+      @Html.LabelFor(model =&gt; model.ConfirmPassword,
+        new { @class = "control-label col-md-2" })
+
+      &lt;div class="col-md-10"&gt;
+        @Html.EditorFor(model =&gt; model.ConfirmPassword)
+        @Html.ValidationMessageFor(model =&gt; model.ConfirmPassword)
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class="form-group"&gt;
+      &lt;div class="col-md-offset-2 col-md-10"&gt;
+        &lt;input type="submit" value="Register"
+               class="btn btn-default" /&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+}
+
+@section Scripts {
+  @Scripts.Render("~/bundles/jqueryval")
+}
+        </pre><p>
+                     
+            </p>
+            <div class="note">
+               <h3 class="title">Comment about users</h3>
+               <p>The model, views and controllers for user authentication and registration
+                          are made as simple as possible in this example.  A user usually has a lot more
+                          attributes than just a username and a password.
+               </p>
+            </div>
+            <p>Now let us add one more controller&#8212;AccountController&#8212;with the
+                     following contents:
+                       
+            </p><pre class="programlisting">
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using System.Web.Security;
+using FBMVCExample.Models;
+
+namespace FBMVCExample.Controllers
+{
+  public class AccountController : Controller
+  {
+    public ActionResult Login()
+    {
+      return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public ActionResult Login(LoginModel model)
+    {
+      if (ModelState.IsValid)
+      {
+        // search user in db
+        WEBUSER user = null;
+        using (DbModel db = new DbModel())
+        {
+          user = db.WEBUSERS.FirstOrDefault(
+               u =&gt; u.EMAIL == model.Name &amp;&amp;
+                    u.PASSWD == model.Password);
+        }
+        // if you find a user with a login and password,
+        // then remember it and do a redirect to the start page
+        if (user != null)
+        {
+          FormsAuthentication.SetAuthCookie(model.Name, true);
+          return RedirectToAction("Index", "Invoice");
+        }
+        else
+        {
+          ModelState.AddModelError("",
+            " A user with such a username and password does not exist ");
+        }
+      }
+      return View(model);
+    }
+
+    [Authorize(Roles = "admin")]
+    public ActionResult Register()
+    {
+      return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public ActionResult Register(RegisterModel model)
+    {
+      if (ModelState.IsValid)
+      {
+        WEBUSER user = null;
+        using (DbModel db = new DbModel())
+        {
+          user = db.WEBUSERS.FirstOrDefault(u =&gt; u.EMAIL == model.Name);
+        }
+        if (user == null)
+        {
+          // create a new user
+          using (DbModel db = new DbModel())
+          {
+            // get a new identifier using a sequence
+            int userId = db.NextValueFor("SEQ_WEBUSER");
+            db.WEBUSERS.Add(new WEBUSER {
+              WEBUSER_ID = userId,
+              EMAIL = model.Name,
+              PASSWD = model.Password
+            });
+            db.SaveChanges();
+            user = db.WEBUSERS.Where(u =&gt; u.WEBUSER_ID == userId)
+                     .FirstOrDefault();
+            // find the role of manager
+            // This role will be the default role, i.e.
+            // will be issued automatically upon registration
+            var defaultRole =
+                db.WEBROLES
+                  .Where(r =&gt; r.NAME == "manager")
+                  .FirstOrDefault();
+            // Assign the default role to the newly added user
+            if (user != null &amp;&amp; defaultRole != null)
+            {
+              db.WEBUSERINROLES.Add(new WEBUSERINROLE
+                {
+                  WEBUSER_ID = user.WEBUSER_ID,
+                  WEBROLE_ID = defaultRole.WEBROLE_ID
+                });
+              db.SaveChanges();
+            }
+          }
+          // if the user is successfully added to the database
+          if (user != null)
+          {
+            FormsAuthentication.SetAuthCookie(model.Name, true);
+            return RedirectToAction("Login", "Account");
+          }
+        }
+        else
+        {
+          ModelState.AddModelError("",
+            "User with such login already exists");
+        }
+      }
+      return View(model);
+    }
+
+    public ActionResult Logoff()
+    {
+      FormsAuthentication.SignOut();
+      return RedirectToAction("Login", "Account");
+    }
+  }
+}
+        </pre><p>
+                     
+            </p>
+            <p>Note the attribute <code class="code">[Authorize(Roles = "admin")]</code> to stipulate
+                     that only a user with the admin role can perform the user registration operation. This
+                     mechanism is called an <em class="firstterm">authentication filter</em>. We will get back to
+                     it <a href="fbdevgd30-mvc-authorize.html" title="Authorizing Access to Controller Methods">a bit later</a>.
+            </p>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdevgd30-mvc-auth-add-user"></a>Adding a New User
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>We add a new user to the database during registration and check during 
+                          authentication as to whether that user exists. If the user is found, we use 
+                          form authentication to set a cookie, as follows:
+                            
+               </p><pre class="programlisting">
+FormsAuthentication.SetAuthCookie(model.Name, true);
+          </pre><p>
+                          
+               </p>
+               <p>All information about a user in Asp.Net MVC is stored in the proprty 
+                          <code class="classname">HttpContext.User</code> that implements the <code class="classname">IPrincipal</code> 
+                          interface defined in the <code class="classname">System.Security.Principal</code> namespace.
+               </p>
+               <p>The IPrincipal interface defines the <code class="classname">Identity</code> property that
+                          stores the object of the IIdentity interface describing the current user.
+               </p>
+               <p>The <code class="classname">IIdentity</code> interface has the following properties:
+                            
+               </p>
+               <div class="itemizedlist">
+                  <ul type="disc" compact>
+                     <li>AuthenticationType: authentication type</li>
+                     <li>IsAuthenticated: returns true if the user is logged in</li>
+                     <li>Name: the username in the system</li>
+                  </ul>
+               </div>
+               <p>
+                          
+               </p>
+               <p>To determine whether a user is logged in, ASP.NET MVC receives cookies from the 
+                          browser and if the user is logged in, the property <code class="classname">IIdentity.IsAuthenticated</code> 
+                          is set to true and the <code class="classname">Name</code> property gets the username as its value.
+               </p>
+               <p>Next, we will add authentication items using the <em class="firstterm">universal providers</em> 
+                          mechanism.
+               </p>
+            </div>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdevgd30-mvc-auth-uni-providers"></a>Universal Providers
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>Universal providers offer a ready-made authentication functionality. At the same 
+                          time, these providers are flexible enough that we can redefine them to work in whatever 
+                          way we need them to. It is not necessary to redefine and use all four providers.  That is 
+                          handy if we do not need all of the fancy ASP.NET Identity features, but just a very 
+                          simple authentication system.
+               </p>
+               <p>So, our next step is to redefine the role provider. To do this, we need to add the 
+                          Microsoft.AspNet.Providers package using NuGet.
+               </p>
+               <div class="section" lang="en">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h5 class="title"><a name="fbdevgd30-mvc-auth-role-provider"></a>Defining the Role Provider
+                           </h5>
+                        </div>
+                     </div>
+                  </div>
+                  <p>To define the role provider, first we add the <code class="filename">Providers</code> folder 
+                               to the project and then add a new <code class="classname">MyRoleProvider</code> class to it:
+                                 
+                  </p><pre class="programlisting">
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Security;
+using FBMVCExample.Models;
+
+namespace FBMVCExample.Providers
+{
+  public class MyRoleProvider : RoleProvider
+  {
+    /// &lt;summary&gt;
+    /// Returns the list of user roles
+    /// &lt;/summary&gt;
+    /// &lt;param name="username"&gt;Username&lt;/param&gt;
+    /// &lt;returns&gt;&lt;/returns&gt;
+    public override string[] GetRolesForUser(string username)
+    {
+      string[] roles = new string[] { };
+      using (DbModel db = new DbModel())
+      {
+        // Get the user
+        WEBUSER user = db.WEBUSERS.FirstOrDefault(
+                         u =&gt; u.EMAIL == username);
+        if (user != null)
+        {
+          // fill in an array of available roles
+          int i = 0;
+          roles = new string[user.WEBUSERINROLES.Count];
+          foreach (var rolesInUser in user.WEBUSERINROLES)
+          {
+            roles[i] = rolesInUser.WEBROLE.NAME;
+            i++;
+          }
+        }
+      }
+      return roles;
+    }
+
+    /// &lt;summary&gt;
+    /// Creating a new role
+    /// &lt;/summary&gt;
+    /// &lt;param name="roleName"&gt;Role name&lt;/param&gt;
+    public override void CreateRole(string roleName)
+    {
+      using (DbModel db = new DbModel())
+      {
+        WEBROLE newRole = new WEBROLE() { NAME = roleName };
+        db.WEBROLES.Add(newRole);
+        db.SaveChanges();
+      }
+    }
+
+    /// &lt;summary&gt;
+    /// Returns whether the user role is present
+    /// &lt;/summary&gt;
+    /// &lt;param name="username"&gt;User name&lt;/param&gt;
+    /// &lt;param name="roleName"&gt;Role name&lt;/param&gt;
+    /// &lt;returns&gt;&lt;/returns&gt;
+    public override bool IsUserInRole(string username, string roleName)
+    {
+      bool outputResult = false;
+      using (DbModel db = new DbModel())
+      {
+        var userInRole =
+            from ur in db.WEBUSERINROLES
+            where ur.WEBUSER.EMAIL == username &amp;&amp;
+                  ur.WEBROLE.NAME == roleName
+            select new { id = ur.ID };
+        outputResult = userInRole.Count() &gt; 0;
+      }
+      return outputResult;
+    }
+
+    public override void AddUsersToRoles(string[] usernames,
+string[] roleNames)
+    {
+      throw new NotImplementedException();
+    }
+
+    public override string ApplicationName
+    {
+      get { throw new NotImplementedException(); }
+      set { throw new NotImplementedException(); }
+    }
+
+    public override bool DeleteRole(string roleName,
+bool throwOnPopulatedRole)
+    {
+      throw new NotImplementedException();
+    }
+
+    public override string[] FindUsersInRole(string roleName,
+string usernameToMatch)
+    {
+      throw new NotImplementedException();
+    }
+
+    public override string[] GetAllRoles()
+    {
+      throw new NotImplementedException();
+    }
+
+    public override string[] GetUsersInRole(string roleName)
+    {
+      throw new NotImplementedException();
+    }
+
+    public override void RemoveUsersFromRoles(string[] usernames,
+string[] roleNames)
+    {
+      throw new NotImplementedException();
+    }
+
+    public override bool RoleExists(string roleName)
+    {
+      throw new NotImplementedException();
+    }
+  }
+}
+            </pre><p>
+                               
+                  </p>
+                  <p>For the purpose of illustration, three methods are redefined:
+                                 
+                  </p>
+                  <div class="itemizedlist">
+                     <ul type="disc" compact>
+                        <li>GetRolesForUser&#8212;for obtaining a set of roles for a specified user</li>
+                        <li>CreateRole&#8212;for creating a role</li>
+                        <li>IsUserInRole&#8212;determines whether the user has a specified role in the system</li>
+                     </ul>
+                  </div>
+                  <p>
+                               
+                  </p>
+               </div>
+               <div class="section" lang="en">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h5 class="title"><a name="fbdevgd30-mvc-auth-role-provider-config"></a>Configuring the Role Provider for Use
+                           </h5>
+                        </div>
+                     </div>
+                  </div>
+                  <p>To use the role provider in the application, we need to add its definition
+                               to the configuration file. Open the <code class="filename">web.config file</code> and remove 
+                               the definition of providers added automatically during the installation of the
+                                Microsoft.AspNet.Providers package.
+                  </p>
+                  <p>Next, we insert our provider within the system.web section:
+                                  
+                  </p><pre class="literallayout">
+&lt;system.web&gt;
+  &lt;authentication mode="Forms"&gt;
+    &lt;forms name="cookies" timeout="2880" loginUrl="~/Account/Login"
+           defaultUrl="~/Invoice/Index"/&gt;
+  &lt;/authentication&gt;
+  &lt;roleManager enabled="true" defaultProvider="MyRoleProvider"&gt;
+    &lt;providers&gt;
+      &lt;add name="MyRoleProvider"
+           type="FBMVCExample.Providers.MyRoleProvider" /&gt;
+    &lt;/providers&gt;
+  &lt;/roleManager&gt;
+&lt;/system.web&gt;
+            </pre><p>
+                               
+                  </p>
+               </div>
+            </div>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdevgd30-mvc-secondary-ui.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Creating a UI for Secondary Modules" alt="Prev: Creating a UI for Secondary Modules"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-MVC.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating Web Applications in Entity Framework with MVC" alt="Up: Creating Web Applications in Entity Framework with MVC"></a><a href="fbdevgd30-mvc-authorize.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Authorizing Access to Controller Methods" alt="Next: Authorizing Access to Controller Methods"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-MVC.html">Creating Web Applications in Entity Framework with MVC</a> &rarr; Authentication
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

@@ -62,10 +62,20 @@ PAGE_SIZE 8192 DEFAULT CHARACTER SET UTF8;
                      
          </p>
          <div class="important">
-            <h3 class="title">Important</h3>The straight single quotes around the user and password arguments
-                       are not optional and are not interchangeable with curly quotes, double quotes
-                       or any other kind of quotes.
-                     
+            <h3 class="title">Important</h3>
+            <p>The straight single quotes around the user and password arguments
+                          are not optional in Firebird 2.5 and lower versions because, in the
+                          <span class="database">CREATE DATABASE</span> syntax, both are strings.
+            </p>
+            <p>In Firebird 3, the rules changed.  User names became identifiers
+                          and no longer require single quotes. They can be made case-sensitive
+                          by enclosing the name in DOUBLE quotes, so you need to be aware of how
+                          that user is registered in the security database.  Passwords are still
+                          strings.
+            </p>
+            <p>Quotes in the statement are not interchangeable with curly quotes,
+                          angle quotes or any other kind of quotes.
+            </p>
          </div>
          <p>
                   

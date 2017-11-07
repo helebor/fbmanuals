@@ -1,0 +1,124 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Bundles</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-MVC.html" title="Chapter 5: Creating Web Applications in Entity Framework with MVC">
+      <link rel="prev" href="fbdevgd30-mvc-controller-to-jqgrid.html" title="Adapting the Controller to jqGrid">
+      <link rel="next" href="fbdevgd30-mvc-controller-views.html" title="Views">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-MVC.html">Creating Web Applications in Entity Framework with MVC</a> &rarr; Bundles
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdevgd30-mvc-controller-to-jqgrid.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Adapting the Controller to jqGrid" alt="Prev: Adapting the Controller to jqGrid"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-MVC.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating Web Applications in Entity Framework with MVC" alt="Up: Creating Web Applications in Entity Framework with MVC"></a><a href="fbdevgd30-mvc-controller-views.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Views" alt="Next: Views"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdevgd30-mvc-controller-bundles"></a>Bundles
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <p>Bundles are used to make it easier to link JavaScript scripts and
+                CSS files. You can link CSS bundles with the <code class="classname">Styles.Render</code>
+                helper and script bundles with the <code class="classname">Scripts.Render</code>
+                helper.
+         </p>
+         <p>Bundles are registered in the <code class="code">BundleConfig.cs</code> file
+                located in the <code class="code">App_Start</code> folder:
+                  
+         </p><pre class="programlisting">
+public static void RegisterBundles(BundleCollection bundles)
+{
+  bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
+    "~/Scripts/jquery-{version}.js"));
+  bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
+    "~/Scripts/jquery.validate*"));
+  bundles.Add(new ScriptBundle("~/bundles/jquery-ui").Include(
+    "~/Scripts/jquery-ui-{version}.js"));
+  bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
+    "~/Scripts/modernizr-*"));
+  bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
+    "~/Scripts/bootstrap.js",
+    "~/Scripts/respond.js"));
+  bundles.Add(new StyleBundle("~/Content/css").Include(
+    "~/Content/jquery-ui.min.css",
+    "~/Content/themes/ui-darkness/jquery-ui.min.css",
+    "~/Content/themes/ui-darkness/theme.css",
+    "~/Content/bootstrap.min.css",
+    "~/Content/Site.css"
+  ));
+}
+      </pre><p>
+                
+         </p>
+         <p>The <code class="classname">RegisterBundles</code> method adds all created bundles
+                to the bundles collection. A bundle is declared in the following way:
+                  
+         </p><pre class="literallayout">
+  new ScriptBundle("~/bundles/jquery").Include("~/Scripts/jquery-{version}.js")
+      </pre><p>
+                
+         </p>
+         <p>The virtual path of the bundle is passed to the <code class="classname">ScriptBundle</code> 
+                construct. Specific script files are included in this bundle using the <code class="classname">Include</code> 
+                method.
+         </p>
+         <p>The {version} parameter in the &#8220;<span class="quote"><code class="code">~/Scripts/jquery-{version}.js</code></span>&#8221;
+                expression is a placeholder for any string referring to the script version. It is very 
+                handy because it allows the version of the library to be changed later without having to 
+                change anything in the code.  The system will accept the new version automatically.
+         </p>
+         <p>The &#8220;<span class="quote"><code class="code">~/Scripts/jquery.validate*</code></span>&#8221; expression fills out the
+                rest of the string  with the asterisk character as a wildcard. For example, the expression 
+                will include two files at once in the bundle: <code class="code">jquery.validate.js</code> 
+                and <code class="code">jquery.validate.unobtrusive.js</code>,     along with their minimized versions, 
+                because their names both start with &#8220;<span class="quote"><code class="code">jquery.validate</code></span>&#8221;.
+         </p>
+         <p>The same applies when creating CSS bundles, using the 
+                <code class="classname">StyleBundle</code> class.
+         </p>
+         <div class="important">
+            <h3 class="title">Important</h3>
+            <p>The full versions of the scripts and cascading style sheets should be used
+                     in the debug mode and the minimized ones in the release mode. Bundles allow you to solve
+                     this problem. When you run the application in the debug mode, the <code class="code">web.config</code>
+                     files have the <code class="code">&lt;compilation debug="true"&gt;</code> parameter. When you
+                     set this parameter to false (the Release mode), the minimized version of JavaScript modules
+                     and CSS files will be used instead of the full ones.
+            </p>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdevgd30-mvc-controller-to-jqgrid.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Adapting the Controller to jqGrid" alt="Prev: Adapting the Controller to jqGrid"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-MVC.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating Web Applications in Entity Framework with MVC" alt="Up: Creating Web Applications in Entity Framework with MVC"></a><a href="fbdevgd30-mvc-controller-views.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Views" alt="Next: Views"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-MVC.html">Creating Web Applications in Entity Framework with MVC</a> &rarr; Bundles
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

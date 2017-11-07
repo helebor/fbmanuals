@@ -1,0 +1,153 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>The ASP.NET MVC Platform</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-MVC.html" title="Chapter 5: Creating Web Applications in Entity Framework with MVC">
+      <link rel="prev" href="fbdevgd30-dot-net.html" title="The .NET Frameworks">
+      <link rel="next" href="fbdevgd30-mvc-stack.html" title="Software Stack">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-MVC.html">Creating Web Applications in Entity Framework with MVC</a> &rarr; The ASP.NET MVC Platform
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdevgd30-dot-net.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: The .NET Frameworks" alt="Prev: The .NET Frameworks"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-MVC.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating Web Applications in Entity Framework with MVC" alt="Up: Creating Web Applications in Entity Framework with MVC"></a><a href="fbdevgd30-mvc-stack.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Software Stack" alt="Next: Software Stack"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdevgd30-dot-net-mvc"></a>The ASP.NET MVC Platform
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdevgd30-dot-net-mvc.html#fbdevgd30-mvc-interactions">Model-View-Controller Interaction</a></span></dt>
+            </dl>
+         </div>
+         <p>The ASP.NET MVC platform is a framework for creating websites and web applications 
+                on the model-view-controller (MVC) pattern. The concept underlying the MVC pattern breaks 
+                down an application into three parts:
+                  
+         </p>
+         <div class="variablelist">
+            <dl>
+               <dt><span class="term">Controller</span></dt>
+               <dd>
+                  <p>Controllers work with the model and provide interaction with the user.
+                                 They also provide view options for displaying the user interface. In an MVC
+                                 application, views only display data while the controller handles the input and
+                                 responds to user activities.
+                  </p>
+                  <p>As an example, the controller can process string values in a query and
+                                 send them to the model, which can use these values to send a query to the
+                                 database.
+                  </p>
+               </dd>
+               <dt><span class="term">View</span></dt>
+               <dd>
+                  <p>the visual part of application's user interface. The user interface is 
+                                 usually created to reflect the data from the model.
+                  </p>
+               </dd>
+               <dt><span class="term">Model</span></dt>
+               <dd>
+                  <p>Model objects are the parts of the application that implement the 
+                                 logic for working with the application data. Model objects typically receive 
+                                 the status of the model and save it in the database.
+                  </p>
+               </dd>
+            </dl>
+         </div>
+         <p>
+                
+         </p>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdevgd30-mvc-interactions"></a>Model-View-Controller Interaction
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <p>Interaction between these components is illustrated in the following 
+                     general diagram:
+                       
+            </p>
+            <div class="figure"><a name="mvc-diagram"></a><p class="title"><b>Figure&nbsp;5.1.&nbsp;Interaction between M-V-C parts</b></p>
+               <div class="figure-contents">
+                  <div class="mediaobject" align="center">
+                     <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="504">
+                        <tr style="height: 224px">
+                           <td align="center"><img src="images/fbdevgd30_mvc_001_en.png" align="middle" height="224" alt="Interaction between M-V-C parts"></td>
+                        </tr>
+                     </table>
+                  </div>
+               </div>
+               <p></p>
+            </div>
+            <p><br class="figure-break">
+                     
+            </p>
+            <p>The MVC pattern supports the creation of applications whose logical 
+                     aspects&#8212;input, business and interface&#8212;are separated but interact closely
+                     with one another. The diagram illustrates the location of each logic type in 
+                     the application:
+                       
+            </p>
+            <div class="itemizedlist">
+               <ul type="disc" compact>
+                  <li>the user interface in the view</li>
+                  <li>the input logic in the controller</li>
+                  <li>the business logic in the model</li>
+               </ul>
+            </div>
+            <p>
+                     
+            </p>
+            <p>This separation allows you to work with complex structures while developing 
+                     the application because it ensures discrete implementation of each aspect. 
+                     The developer can focus on creating a view separately from implementing the 
+                     business logic.
+            </p>
+            <p>More comprehensive information about the ASP.NET MVC technology can be 
+                     found at the website of the <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.asp.net/mvc/overview" target="_top">ASP.NET 
+                        community</a>.
+                     
+            </p>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdevgd30-dot-net.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: The .NET Frameworks" alt="Prev: The .NET Frameworks"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-MVC.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating Web Applications in Entity Framework with MVC" alt="Up: Creating Web Applications in Entity Framework with MVC"></a><a href="fbdevgd30-mvc-stack.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Software Stack" alt="Next: Software Stack"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-MVC.html">Creating Web Applications in Entity Framework with MVC</a> &rarr; The ASP.NET MVC Platform
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

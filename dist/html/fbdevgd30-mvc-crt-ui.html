@@ -1,0 +1,218 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Creating a User Interface</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-MVC.html" title="Chapter 5: Creating Web Applications in Entity Framework with MVC">
+      <link rel="prev" href="fbdevgd30-mvc-crt-edm.html" title="Creating an EDM">
+      <link rel="next" href="fbdevgd30-mvc-controller-to-jqgrid.html" title="Adapting the Controller to jqGrid">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-MVC.html">Creating Web Applications in Entity Framework with MVC</a> &rarr; Creating a User Interface
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdevgd30-mvc-crt-edm.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Creating an EDM" alt="Prev: Creating an EDM"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-MVC.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating Web Applications in Entity Framework with MVC" alt="Up: Creating Web Applications in Entity Framework with MVC"></a><a href="fbdevgd30-mvc-controller-to-jqgrid.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Adapting the Controller to jqGrid" alt="Next: Adapting the Controller to jqGrid"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdevgd30-mvc-crt-ui"></a>Creating a User Interface
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdevgd30-mvc-crt-ui.html#fbdevgd30-mvc-crt-controller">Creating the Controller for the Customer Interface</a></span></dt>
+            </dl>
+         </div>
+         <p>Our first controller will be used to display customer data and accept 
+                input for searches, inserts, edits and deletes.
+         </p>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdevgd30-mvc-crt-controller"></a>Creating the Controller for the Customer Interface
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <div class="toc">
+               <p><b>Table of Contents</b></p>
+               <dl>
+                  <dt><span class="section"><a href="fbdevgd30-mvc-crt-ui.html#fbdevgd30-mvc-crt-controller-limiting-overhead">Limiting Overhead</a></span></dt>
+               </dl>
+            </div>
+            <p>
+                       
+            </p>
+            <div class="figure"><a name="mvc-crt-controller-01"></a><p class="title"><b>Figure&nbsp;5.8.&nbsp;Select Add&#8212;&gt;Controller</b></p>
+               <div class="figure-contents">
+                  <div class="mediaobject" align="center">
+                     <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="500">
+                        <tr style="height: 234px">
+                           <td align="center"><img src="images/fbdevgd30_mvc_008_en.png" align="middle" height="234" alt="Select Add&#8212;&gt;Controller"></td>
+                        </tr>
+                     </table>
+                  </div>
+               </div>
+               <p></p>
+            </div>
+            <p><br class="figure-break">
+                     
+            </p>
+            <p>
+                       
+            </p>
+            <div class="figure"><a name="mvc-crt-controller-02"></a><p class="title"><b>Figure&nbsp;5.9.&nbsp;Creating a controller (1)</b></p>
+               <div class="figure-contents">
+                  <div class="mediaobject" align="center">
+                     <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="499">
+                        <tr style="height: 214px">
+                           <td align="center"><img src="images/fbdevgd30_mvc_009_en.png" align="middle" height="214" alt="Creating a controller (1)"></td>
+                        </tr>
+                     </table>
+                  </div>
+               </div>
+               <p></p>
+            </div>
+            <p><br class="figure-break">
+                     
+            </p>
+            <p>
+                       
+            </p>
+            <div class="figure"><a name="mvc-crt-controller-03"></a><p class="title"><b>Figure&nbsp;5.10.&nbsp;Creating a controller (2)</b></p>
+               <div class="figure-contents">
+                  <div class="mediaobject" align="center">
+                     <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="498">
+                        <tr style="height: 320px">
+                           <td align="center"><img src="images/fbdevgd30_mvc_010_en.png" align="middle" height="320" alt="Creating a controller (2)"></td>
+                        </tr>
+                     </table>
+                  </div>
+               </div>
+               <p></p>
+            </div>
+            <p><br class="figure-break">
+                     
+            </p>
+            <p>Once it is done, the controller <code class="classname">CustomerController</code> will be
+                     created, along with five views displaying:
+                       
+            </p>
+            <div class="orderedlist">
+               <ol type="1" compact>
+                  <li>the customer list</li>
+                  <li>the customer details for one customer</li>
+                  <li>create (add) customer form</li>
+                  <li>edit customer form</li>
+                  <li>delete  customer form</li>
+               </ol>
+            </div>
+            <p>
+                     
+            </p>
+            <p>Since the Ajax technology and the jqGrid library will be used extensively in our
+                     project, the first view, for displaying the customer list as a table, will be enough
+                     for our purposes. The rest of the operations will be performed with jqGrid.
+            </p>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdevgd30-mvc-crt-controller-limiting-overhead"></a>Limiting Overhead
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>We want to be aware of ways to limit the overhead involved in passing
+                          data and connections back and forth over the wide-area network. There are
+                          techniques that can help us with this.
+               </p>
+               <div class="section" lang="en">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h5 class="title"><a name="fbdevgd30-mvc-crt-controller-limiting-data"></a>Limiting Returned Data
+                           </h5>
+                        </div>
+                     </div>
+                  </div>
+                  <p>The customer list may turn out to be quite big. The entire list from a big table
+                               is usually not returned in web applications because it could make the process of loading
+                               the page seriously slow. Instead, the data are usually split into pages or are dynamically
+                               loaded when the user scrolls down to the end of the page (or grid). We will use the first
+                               option in our project.
+                  </p>
+               </div>
+               <div class="section" lang="en">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h5 class="title"><a name="fbdevgd30-mvc-crt-controller-limiting-connections"></a>Limiting Connections
+                           </h5>
+                        </div>
+                     </div>
+                  </div>
+                  <p>Another characteristic of web applications is that they do not keep any permanent
+                                 connections to the database because the life of the page generation script is no longer
+                                 than the time it takes to generate a response to the user request. A connection to the
+                                  database is actually a rather expensive resource so we have to save it. Of course, there
+                                 is a connection pool for reducing the time it takes to establish a connection to the
+                                 database, but it is still advisable to make a connection to the database only when it is
+                                 really necessary.
+                  </p>
+               </div>
+               <div class="section" lang="en">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h5 class="title"><a name="fbdevgd30-mvc-crt-controller-browser"></a>Let the Browser Help You!
+                           </h5>
+                        </div>
+                     </div>
+                  </div>
+                  <p>One of the ways to reduce the amount of interaction with the database
+                                 is to do the correctness checking on the user input in the browser. Fortunately,
+                                 modern HTML5 and JavaScript libraries can do just that. For example, you can
+                                 make the browser check for the presence of a required field or the maximum length
+                                 of a string field in the input form.
+                  </p>
+               </div>
+            </div>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdevgd30-mvc-crt-edm.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Creating an EDM" alt="Prev: Creating an EDM"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-MVC.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating Web Applications in Entity Framework with MVC" alt="Up: Creating Web Applications in Entity Framework with MVC"></a><a href="fbdevgd30-mvc-controller-to-jqgrid.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Adapting the Controller to jqGrid" alt="Next: Adapting the Controller to jqGrid"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-MVC.html">Creating Web Applications in Entity Framework with MVC</a> &rarr; Creating a User Interface
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

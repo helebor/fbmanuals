@@ -1,0 +1,120 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Chapter 5: Creating Web Applications in Entity Framework with MVC</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30.html" title="Firebird 3.0 Developer's Guide PRE-BETA">
+      <link rel="prev" href="fbdg30-efw-vs-project-sourcecode.html" title="Source Code">
+      <link rel="next" href="fbdevgd30-dot-net.html" title="The .NET Frameworks">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; Creating Web Applications in Entity Framework with MVC
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdg30-efw-vs-project-sourcecode.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Source Code" alt="Prev: Source Code"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Firebird 3.0 Developer's Guide PRE-BETA" alt="Up: Firebird 3.0 Developer's Guide PRE-BETA"></a><a href="fbdevgd30-dot-net.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: The .NET Frameworks" alt="Next: The .NET Frameworks"></a></td>
+         </tr>
+      </table>
+      <div class="chapter" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title"><a name="fbdevgd30-MVC"></a>Chapter 5: Creating Web Applications in Entity Framework with MVC
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdevgd30-dot-net.html">The .NET Frameworks</a></span></dt>
+               <dt><span class="section"><a href="fbdevgd30-dot-net-mvc.html">The ASP.NET MVC Platform</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="fbdevgd30-dot-net-mvc.html#fbdevgd30-mvc-interactions">Model-View-Controller Interaction</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="section"><a href="fbdevgd30-mvc-stack.html">Software Stack</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="fbdevgd30-mvc-stack.html#fbdevgd30-mvc-vs">Preparing Visual Studio 2015 for Firebird Work</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="section"><a href="fbdevgd30-mvc-crt-project.html">Creating a Project</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="fbdevgd30-mvc-crt-project.html#fbdevgd30-mvc-project-structure">Structure of the Project</a></span></dt>
+                     <dt><span class="section"><a href="fbdevgd30-mvc-crt-project.html#fbdevgd30-mvc-add-packages">Adding the Missing Packages</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="section"><a href="fbdevgd30-mvc-crt-edm.html">Creating an EDM</a></span></dt>
+               <dt><span class="section"><a href="fbdevgd30-mvc-crt-ui.html">Creating a User Interface</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="fbdevgd30-mvc-crt-ui.html#fbdevgd30-mvc-crt-controller">Creating the Controller for the Customer Interface</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="section"><a href="fbdevgd30-mvc-controller-to-jqgrid.html">Adapting the Controller to jqGrid</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="fbdevgd30-mvc-controller-to-jqgrid.html#fbdevgd30-mvc-controller-anti-forgery">The Attribute ValidateAntiforgeryToken</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="section"><a href="fbdevgd30-mvc-controller-bundles.html">Bundles</a></span></dt>
+               <dt><span class="section"><a href="fbdevgd30-mvc-controller-views.html">Views</a></span></dt>
+               <dt><span class="section"><a href="fbdevgd30-mvc-secondary-ui.html">Creating a UI for Secondary Modules</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="fbdevgd30-mvc-secondary-ui.html#fbdevgd30-mvc-secondary-controllers">Controllers for Invoices</a></span></dt>
+                     <dt><span class="section"><a href="fbdevgd30-mvc-secondary-ui.html#fbdevgd30-mvc-secondary-views">Views for Invoices</a></span></dt>
+                     <dt><span class="section"><a href="fbdevgd30-mvc-secondary-ui.html#fbdevgd30-mvc-secondary-dialogs">Dialog Boxes for Invoices</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="section"><a href="fbdevgd30-mvc-authentication.html">Authentication</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="fbdevgd30-mvc-authentication.html#fbdevgd30-mvc-auth-infrastructure">Infrastructure for Authentication</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="section"><a href="fbdevgd30-mvc-authorize.html">Authorizing Access to Controller Methods</a></span></dt>
+               <dt><span class="section"><a href="fbdg30-mvc-get-source-code.html">Source Code</a></span></dt>
+            </dl>
+         </div>
+         <p>This chapter will describe how to create web applications with Firebird as the 
+              back-end, using Microsoft&#8482; Entity Framework&#8482; and the Visual Studio 2015 
+              environment.
+         </p>
+         <p>We examine the specifics of creating a web application with this framework.  
+              The basic principles for working with Entity Framework and Firebird are described 
+              in the previous chapter, <a href="fbdevgd30-efw.html" title="Chapter 4: Developing Firebird Applications with Microsoft Entity Framework">Creating Applications with 
+                 Microsoft Entity Framework</a>.
+         </p>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdg30-efw-vs-project-sourcecode.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Source Code" alt="Prev: Source Code"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Firebird 3.0 Developer's Guide PRE-BETA" alt="Up: Firebird 3.0 Developer's Guide PRE-BETA"></a><a href="fbdevgd30-dot-net.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: The .NET Frameworks" alt="Next: The .NET Frameworks"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; Creating Web Applications in Entity Framework with MVC
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

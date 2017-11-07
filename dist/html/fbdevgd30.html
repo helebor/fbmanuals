@@ -51,7 +51,7 @@
                   </div>
                </div>
                <div>
-                  <p class="edition">5 November 2017, document version 0.102</p>
+                  <p class="edition">7 November 2017, document version 0.103</p>
                </div>
                <div>
                   <p class="copyright">Copyright &copy; 2017 Firebird Project and all contributing authors, under the
@@ -123,6 +123,24 @@
                      <dt><span class="section"><a href="fbdg30-efw-vs-project-sourcecode.html">Source Code</a></span></dt>
                   </dl>
                </dd>
+               <dt><span class="chapter"><a href="fbdevgd30-MVC.html">5. Creating Web Applications in Entity Framework with MVC</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="fbdevgd30-dot-net.html">The .NET Frameworks</a></span></dt>
+                     <dt><span class="section"><a href="fbdevgd30-dot-net-mvc.html">The ASP.NET MVC Platform</a></span></dt>
+                     <dt><span class="section"><a href="fbdevgd30-mvc-stack.html">Software Stack</a></span></dt>
+                     <dt><span class="section"><a href="fbdevgd30-mvc-crt-project.html">Creating a Project</a></span></dt>
+                     <dt><span class="section"><a href="fbdevgd30-mvc-crt-edm.html">Creating an EDM</a></span></dt>
+                     <dt><span class="section"><a href="fbdevgd30-mvc-crt-ui.html">Creating a User Interface</a></span></dt>
+                     <dt><span class="section"><a href="fbdevgd30-mvc-controller-to-jqgrid.html">Adapting the Controller to jqGrid</a></span></dt>
+                     <dt><span class="section"><a href="fbdevgd30-mvc-controller-bundles.html">Bundles</a></span></dt>
+                     <dt><span class="section"><a href="fbdevgd30-mvc-controller-views.html">Views</a></span></dt>
+                     <dt><span class="section"><a href="fbdevgd30-mvc-secondary-ui.html">Creating a UI for Secondary Modules</a></span></dt>
+                     <dt><span class="section"><a href="fbdevgd30-mvc-authentication.html">Authentication</a></span></dt>
+                     <dt><span class="section"><a href="fbdevgd30-mvc-authorize.html">Authorizing Access to Controller Methods</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-mvc-get-source-code.html">Source Code</a></span></dt>
+                  </dl>
+               </dd>
                <dt><span class="appendix"><a href="fbdevgd30-license.html">A. License notice</a></span></dt>
             </dl>
          </div>
@@ -151,12 +169,24 @@
                <dt>4.10. <a href="fbdg30-efw-vs-crt-edm.html#efw-conn-properties">Add Connection wizard - Connection properties</a></dt>
                <dt>4.11. <a href="fbdg30-efw-vs-crt-edm.html#efw-adv-conn-props">Add Connection wizard - Advanced connection properties</a></dt>
                <dt>4.12. <a href="fbdg30-efw-vs-crt-edm.html#efw-conn-str-storage">EDM wizard - connection string storage</a></dt>
-               <dt>4.13. <a href="fbdg30-efw-vs-crt-edm.html#d0e160479">EDM wizard - select tables and views</a></dt>
+               <dt>4.13. <a href="fbdg30-efw-vs-crt-edm.html#d0e160492">EDM wizard - select tables and views</a></dt>
                <dt>4.14. <a href="fbdg30-efw-vs-crt-gui.html#efw-forn-cust-entty">A form for the Customer entity</a></dt>
                <dt>4.15. <a href="fbdg30-efw-work-with-data.html#efw-cust-edit-form">Customer edit form</a></dt>
                <dt>4.16. <a href="fbdg30-efw-secondary-modules.html#efw-inv-form">Invoice form</a></dt>
                <dt>4.17. <a href="fbdg30-efw-secondary-modules.html#efw-product-form">Product form</a></dt>
                <dt>4.18. <a href="fbdg30-efw-result.html#efw-project-result">The result of the Entity Framework project</a></dt>
+               <dt>5.1. <a href="fbdevgd30-dot-net-mvc.html#mvc-diagram">Interaction between M-V-C parts</a></dt>
+               <dt>5.2. <a href="fbdevgd30-mvc-crt-project.html#mvc-project-create01">Create the FBMVCExample project</a></dt>
+               <dt>5.3. <a href="fbdevgd30-mvc-crt-project.html#mvc-project-create02">Change authentication setting</a></dt>
+               <dt>5.4. <a href="fbdevgd30-mvc-crt-project.html#mvc-project-create-03">Disable authentication for now</a></dt>
+               <dt>5.5. <a href="fbdevgd30-mvc-crt-project.html#mvc-install-pkgs-01">Select Manage NuGet Packages</a></dt>
+               <dt>5.6. <a href="fbdevgd30-mvc-crt-project.html#mvc-install-pkgs-02">Select packages for installing</a></dt>
+               <dt>5.7. <a href="fbdevgd30-mvc-crt-edm.html#mvc-crt-edm-01">Configuring connection string storage</a></dt>
+               <dt>5.8. <a href="fbdevgd30-mvc-crt-ui.html#mvc-crt-controller-01">Select Add&#8212;&gt;Controller</a></dt>
+               <dt>5.9. <a href="fbdevgd30-mvc-crt-ui.html#mvc-crt-controller-02">Creating a controller (1)</a></dt>
+               <dt>5.10. <a href="fbdevgd30-mvc-crt-ui.html#mvc-crt-controller-03">Creating a controller (2)</a></dt>
+               <dt>5.11. <a href="fbdevgd30-mvc-controller-views.html#mvc-view-cust-list">Customer list view</a></dt>
+               <dt>5.12. <a href="fbdevgd30-mvc-controller-views.html#mvc-view-cust-selected">A customer selected for editing</a></dt>
             </dl>
          </div>
          <div class="list-of-tables">
@@ -167,6 +197,7 @@
                <dt>3.3. <a href="fbdg30-firedac-datasets.html#fbdg30-firedac-tbl-queryprops">TFDQuery component main properties</a></dt>
                <dt>3.4. <a href="fbdg30-firedac-datasets.html#fbdg30-firedac-tbl-updsqlprops">TFDUpdateSQL component main properties</a></dt>
                <dt>3.5. <a href="fbdg30-firedac-tfdcommand.html#fbdg30-firedac-tbl-tfdcommand">TFDCommand component main properties</a></dt>
+               <dt>5.1. <a href="fbdevgd30-mvc-crt-project.html#fbdevgd30-tbl-project-structure">Basic Structure of the MVC Project</a></dt>
             </dl>
          </div>
       </div>

@@ -1,0 +1,385 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Adapting the Controller to jqGrid</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-MVC.html" title="Chapter 5: Creating Web Applications in Entity Framework with MVC">
+      <link rel="prev" href="fbdevgd30-mvc-crt-ui.html" title="Creating a User Interface">
+      <link rel="next" href="fbdevgd30-mvc-controller-bundles.html" title="Bundles">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-MVC.html">Creating Web Applications in Entity Framework with MVC</a> &rarr; Adapting the Controller to jqGrid
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdevgd30-mvc-crt-ui.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Creating a User Interface" alt="Prev: Creating a User Interface"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-MVC.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating Web Applications in Entity Framework with MVC" alt="Up: Creating Web Applications in Entity Framework with MVC"></a><a href="fbdevgd30-mvc-controller-bundles.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Bundles" alt="Next: Bundles"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdevgd30-mvc-controller-to-jqgrid"></a>Adapting the Controller to jqGrid
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdevgd30-mvc-controller-to-jqgrid.html#fbdevgd30-mvc-controller-anti-forgery">The Attribute ValidateAntiforgeryToken</a></span></dt>
+            </dl>
+         </div>
+         <p>Now, we are going to change the CustomerController controller so that it works
+                with jqGrid. The code is quite lengthy, so track the comments to get a sense of the way
+                the controller works.
+                  
+         </p><pre class="programlisting">
+public class CustomerController : Controller
+{
+  private DbModel db = new DbModel();
+
+  // Display view
+  public ActionResult Index()
+  {
+    return View();
+  }
+
+  // Receiving data in JSON for grid
+  public ActionResult GetData(int? rows, int? page, string sidx, string sord,
+string searchField, string searchString, string searchOper)
+  {
+    // get the page number, the number of data displayed
+    int pageNo = page ?? 1;
+    int limit = rows ?? 20;
+    // calculate the offset
+    int offset = (pageNo - 1) * limit;
+
+    // building a query for suppliers
+    var customersQuery =
+        from customer in db.CUSTOMERS
+        select new
+    {
+        CUSTOMER_ID = customer.CUSTOMER_ID,
+        NAME = customer.NAME,
+        ADDRESS = customer.ADDRESS,
+        ZIPCODE = customer.ZIPCODE,
+        PHONE = customer.PHONE
+    };
+    // adding a search condition to the query, if it is produced
+    if (searchField != null)
+    {
+      switch (searchOper)
+      {
+        case "eq":
+          customersQuery = customersQuery.Where(
+            c =&gt; c.NAME == searchString);
+          break;
+        case "bw":
+          customersQuery = customersQuery.Where(
+            c =&gt; c.NAME.StartsWith(searchString));
+          break;
+        case "cn":
+          customersQuery = customersQuery.Where(
+            c =&gt; c.NAME.Contains(searchString));
+          break;
+      }
+    }
+    // get the total number of suppliers
+    int totalRows = customersQuery.Count();
+    // add sorting
+    switch (sord) {
+      case "asc":
+        customersQuery = customersQuery.OrderBy(
+          customer =&gt; customer.NAME);
+        break;
+      case "desc":
+       customersQuery = customersQuery.OrderByDescending(
+         customer =&gt; customer.NAME);
+      break;
+    }
+
+    // get the list of suppliers
+    var customers = customersQuery
+          .Skip(offset)
+          .Take(limit)
+          .ToList();
+
+    // calculate the total number of pages
+    int totalPages = totalRows / limit + 1;
+    // create the result for jqGrid
+    var result = new
+      {
+        page = pageNo,
+        total = totalPages,
+        records = totalRows,
+        rows = customers
+      };
+    // convert the result to JSON
+    return Json(result, JsonRequestBehavior.AllowGet);
+  }
+
+  // Adding a new supplier
+  [HttpPost]
+  [ValidateAntiForgeryToken]
+  public ActionResult Create(
+[Bind(Include = "NAME,ADDRESS,ZIPCODE,PHONE")] CUSTOMER customer)
+  {
+    // check the correctness of the model
+    if (ModelState.IsValid)
+    {
+      // get a new identifier using a generator
+      customer.CUSTOMER_ID = db.NextValueFor("GEN_CUSTOMER_ID");
+      // add the model to the list
+      db.CUSTOMERS.Add(customer);
+      // save model
+      db.SaveChanges();
+      // return success in JSON format
+      return Json(true);
+    }
+    else {
+      // join model errors in one string
+      string messages = string.Join("; ", ModelState.Values
+        .SelectMany(x =&gt; x.Errors)
+        .Select(x =&gt; x.ErrorMessage));
+      // return error in JSON format
+      return Json(new { error = messages });
+    }
+  }
+
+  // Editing supplier
+  [HttpPost]
+  [ValidateAntiForgeryToken]
+  public ActionResult Edit(
+[Bind(Include = "CUSTOMER_ID,NAME,ADDRESS,ZIPCODE,PHONE")] CUSTOMER customer)
+  {
+    // check the correctness of the model
+    if (ModelState.IsValid)
+    {
+      // mark the model as modified
+      db.Entry(customer).State = EntityState.Modified;
+      // save model
+      db.SaveChanges();
+      // return success in JSON format
+      return Json(true);
+    }
+    else {
+      // join model errors in one string
+      string messages = string.Join("; ", ModelState.Values
+        .SelectMany(x =&gt; x.Errors)
+        .Select(x =&gt; x.ErrorMessage));
+      // return error in JSON format
+      return Json(new { error = messages });
+    }
+  }
+
+  // Deleting supplier
+  [HttpPost]
+  [ValidateAntiForgeryToken]
+  public ActionResult Delete(int id)
+  {
+    // find supplier by id
+    CUSTOMER customer = db.CUSTOMERS.Find(id);
+    // delete supplier
+    db.CUSTOMERS.Remove(customer);
+    // save model
+    db.SaveChanges();
+    // return success in JSON format
+    return Json(true);
+  }
+
+  protected override void Dispose(bool disposing)
+  {
+    if (disposing)
+    {
+      db.Dispose();
+    }
+    base.Dispose(disposing);
+  }
+}
+      </pre><p>
+                
+         </p>
+         <p>The <code class="classname">Index</code> method is used to display the 
+                <code class="filename">Views/Customer/Index.cshtml</code> view. The view itself will be 
+                <a href="fbdevgd30-mvc-controller-views.html" title="Views">presented a bit later</a>.
+                This view is actually an html page template with markup and JavaScript for initiating 
+                jqGrid. The data itself will be obtained asynchronously in the JSON format,
+                using the Ajax technology. The selected type of sorting, the page number and
+                the search parameters will determine the format of an HTTP request that will be handled 
+                by the <code class="classname">GetData</code> action. The parameters of the HTTP request are displayed 
+                in the input parameters of the <code class="classname">GetData</code> method. We generate a LINQ query 
+                based on these parameters and send the retrieved result in the JSON format.
+                  
+         </p>
+         <div class="note">
+            <h3 class="title">Note</h3>
+            <p>Various libraries can assist with parsing the parameters of a query generated by jqGrid
+                       and make it easier to build the model. We have not used them in our examples so the code might
+                       be somewhat cumbersome. You can always improve it, of course.
+            </p>
+         </div>
+         <p>
+                
+         </p>
+         <p>The <code class="classname">Create</code> method is used to add a new customer record. The method has 
+                the <code class="code">[HttpPost]</code> attribute specified for it to indicate that the parameters of the
+                <code class="code">HTTP POST request ()</code> are to be displayed on the Customer model. Examine the following 
+                line:
+                  
+         </p><pre class="programlisting">
+[Bind(Include = "NAME,ADDRESS,ZIPCODE,PHONE")] CUSTOMER customer
+      </pre><p>
+                Here <code class="classname">Bind</code> specifies which parameters of the HTTP request are to be displayed 
+                in the properties of the model.
+                
+         </p>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdevgd30-mvc-controller-anti-forgery"></a>The Attribute ValidateAntiforgeryToken
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <p>Note the ValidateAntiforgeryToken attribute. It is used to prevent forging requests 
+                     between websites by verifying the tokens when the action method is called. The presence 
+                     of this attribute requires that the HTTP request has an additional parameter named
+                     <code class="code">__RequestVerificationToken</code>.
+            </p>
+            <p>This parameter is automatically added to each form where the <code class="code">@Html.AntiForgeryToken()</code> 
+                     helper is specified. However, the jqGrid library uses dynamically generated Ajax requests 
+                     rather than previously created web forms.  To fix that, we need to change the shared view 
+                     <code class="code">Views/Shared/_Layout.cshtml</code> as follows:
+                       
+            </p><pre class="literallayout">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8"/&gt;
+  &lt;meta charset="utf-8" /&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;title&gt;@ViewBag.Title - ASP.NET application&lt;/title&gt;
+  @Styles.Render("~/Content/css")
+  @Scripts.Render("~/bundles/modernizr")
+  @Scripts.Render("~/bundles/jquery")
+  @Scripts.Render("~/bundles/jquery-ui")
+  &lt;link href="~/Content/jquery.jqGrid/ui.jqgrid.css"
+        rel="stylesheet" type="text/css" /&gt;
+   &lt;link href="~/Content/jquery.jqGrid/ui.jqgrid-bootstrap.css"
+         rel="stylesheet" type="text/css" /&gt;
+   &lt;link href="~/Content/jquery.jqGrid/ui.jqgrid-bootstrap-ui.css"
+         rel="stylesheet" type="text/css" /&gt;
+   &lt;script src="~/Scripts/jquery.jqGrid.min.js"
+           type="text/javascript"&gt;&lt;/script&gt;
+    &lt;script src="~/Scripts/i18n/grid.locale-en.js"
+            type="text/javascript"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  @Html.AntiForgeryToken()
+  &lt;script&gt;
+    
+    function GetAntiForgeryToken() {
+      var tokenField =
+        $("input[type='hidden'][name$='RequestVerificationToken']");
+      if (tokenField.length == 0) {
+        return null;
+      } else {
+        return {
+          name: tokenField[0].name,
+          value: tokenField[0].value
+        };
+      }
+    }
+
+    // add prefilter to all ajax requests
+    // it will add to any POST ajax request
+    // AntiForgery token
+    $.ajaxPrefilter(
+      function (options, localOptions, jqXHR) {
+        if (options.type !== "GET") {
+          var token = GetAntiForgeryToken();
+          if (token !== null) {
+            if (options.data.indexOf(""X-Requested-With") === -1) {
+              options.data = "X-Requested-With=XMLHttpRequest"
+              + ((options.data === "") ? "" : "&amp;" + options.data);
+            }
+            options.data = options.data + "&amp;" + token.name + '='
+                         + token.value;
+          }
+        }
+      }
+    );
+    // initialize the general properties of the jqGrid module
+    $.jgrid.defaults.width = 780;
+    $.jgrid.defaults.responsive = true;
+    $.jgrid.defaults.styleUI = 'Bootstrap';
+  &lt;/script&gt;
+
+  &lt;!-- <span class="emphasis"><em>Navigation menu</em></span> --&gt;
+  &lt;div class="navbar navbar-inverse navbar-fixed-top"&gt;
+    &lt;div class="container"&gt;
+      &lt;div class="navbar-header"&gt;
+        &lt;button type="button" class="navbar-toggle" data-toggle="collapse"
+                data-target=".navbar-collapse"&gt;
+          &lt;span class="icon-bar"&gt;&lt;/span&gt;
+          &lt;span class="icon-bar"&gt;&lt;/span&gt;
+          &lt;span class="icon-bar"7gt;&lt;/span&gt;
+        &lt;/button&gt;
+      &lt;/div&gt;&gt;
+      &lt;div class="navbar-collapse collapse"&gt;
+        &lt;ul class="nav navbar-nav"&gt;
+          &lt;li&gt;@Html.ActionLink("Customers", "Index", "Customer")&lt;/li&gt;
+          &lt;li&gt;@Html.ActionLink("Goods", "Index", "Product")&lt;/li&gt;
+          &lt;li&gt;@Html.ActionLink("Invoices", "Index", "Invoice")&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class="container body-content"&gt;
+    @RenderBody()
+    &lt;hr /&gt;
+    &lt;footer&gt;
+      &lt;p&gt;&amp;copy; @DateTime.Now.Year - ASP.NET application&lt;/p&gt;
+    &lt;/footer&gt;
+  &lt;/div&gt;
+
+  @Scripts.Render("~/bundles/bootstrap")
+  @RenderSection("scripts", required: false)
+&lt;/body&gt;
+&lt;/html&gt;
+        </pre><p>
+                     
+            </p>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdevgd30-mvc-crt-ui.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Creating a User Interface" alt="Prev: Creating a User Interface"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-MVC.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating Web Applications in Entity Framework with MVC" alt="Up: Creating Web Applications in Entity Framework with MVC"></a><a href="fbdevgd30-mvc-controller-bundles.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Bundles" alt="Next: Bundles"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-MVC.html">Creating Web Applications in Entity Framework with MVC</a> &rarr; Adapting the Controller to jqGrid
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

@@ -1,0 +1,103 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Creating an EDM</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-MVC.html" title="Chapter 5: Creating Web Applications in Entity Framework with MVC">
+      <link rel="prev" href="fbdevgd30-mvc-crt-project.html" title="Creating a Project">
+      <link rel="next" href="fbdevgd30-mvc-crt-ui.html" title="Creating a User Interface">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-MVC.html">Creating Web Applications in Entity Framework with MVC</a> &rarr; Creating an EDM
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdevgd30-mvc-crt-project.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Creating a Project" alt="Prev: Creating a Project"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-MVC.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating Web Applications in Entity Framework with MVC" alt="Up: Creating Web Applications in Entity Framework with MVC"></a><a href="fbdevgd30-mvc-crt-ui.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Creating a User Interface" alt="Next: Creating a User Interface"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdevgd30-mvc-crt-edm"></a>Creating an EDM
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <p>If you already have a Windows Forms application that uses Entity Framework, 
+                you can just model classes to the <code class="filename">Models</code> folder. Otherwise, 
+                you have to create them from scratch. The process of creating an EDM is described 
+                in the previous chapter in the topic <a href="fbdg30-efw-vs-crt-edm.html" title="Creating an Entity Data Model (EDM)">Creating an Entity
+                   Data Model (EDM)</a>.
+         </p>
+         <p>There is one more small difference:  your response to the EDM wizard's 
+                question about how to store the connection string:
+                  
+         </p>
+         <div class="figure"><a name="mvc-crt-edm-01"></a><p class="title"><b>Figure&nbsp;5.7.&nbsp;Configuring connection string storage</b></p>
+            <div class="figure-contents">
+               <div class="mediaobject" align="center">
+                  <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="494">
+                     <tr style="height: 447px">
+                        <td align="center"><img src="images/fbdevgd30_mvc_007_en.png" align="middle" width="494" alt="Configuring connection string storage"></td>
+                     </tr>
+                  </table>
+               </div>
+            </div>
+            <p></p>
+         </div>
+         <p><br class="figure-break">
+                
+         </p>
+         <p>When we create a web application, all users will work with the database
+                using a single account, so select <code class="classname">Yes</code> for this question.
+                Any user with enough privileges can be specified as the username. It is advisable
+                not to use the SYSDBA user because it has more privileges than are required for
+                a web application to work.
+         </p>
+         <p>You can always change the username in the application when it is ready
+                for testing and deployment, by just editing the connection string in the
+                <code class="filename">AppName.exe.conf</code> application configuration file.
+         </p>
+         <p>The connection string will be stored in the <code class="classname">connectionStrings</code>
+                section and will look approximately as follows:
+                  
+         </p><pre class="literallayout">
+&lt;add name="DbModel"
+     connectionString="character set=UTF8; data source=localhost;
+     initial catalog=examples; port number=3050;
+     user id=sysdba; dialect=3; isolationlevel=Snapshot;
+     pooling=True; password=masterkey;"
+     providerName="FirebirdSql.Data.FirebirdClient" /&gt;
+      </pre><p>
+                
+         </p>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdevgd30-mvc-crt-project.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Creating a Project" alt="Prev: Creating a Project"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-MVC.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating Web Applications in Entity Framework with MVC" alt="Up: Creating Web Applications in Entity Framework with MVC"></a><a href="fbdevgd30-mvc-crt-ui.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Creating a User Interface" alt="Next: Creating a User Interface"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-MVC.html">Creating Web Applications in Entity Framework with MVC</a> &rarr; Creating an EDM
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

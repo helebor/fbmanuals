@@ -1,0 +1,284 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Views</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-MVC.html" title="Chapter 5: Creating Web Applications in Entity Framework with MVC">
+      <link rel="prev" href="fbdevgd30-mvc-controller-bundles.html" title="Bundles">
+      <link rel="next" href="fbdevgd30-mvc-secondary-ui.html" title="Creating a UI for Secondary Modules">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-MVC.html">Creating Web Applications in Entity Framework with MVC</a> &rarr; Views
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdevgd30-mvc-controller-bundles.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Bundles" alt="Prev: Bundles"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-MVC.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating Web Applications in Entity Framework with MVC" alt="Up: Creating Web Applications in Entity Framework with MVC"></a><a href="fbdevgd30-mvc-secondary-ui.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Creating a UI for Secondary Modules" alt="Next: Creating a UI for Secondary Modules"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdevgd30-mvc-controller-views"></a>Views
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <p>Since we need only the <code class="filename">View/Customer/Index.cshtml</code> view out of the
+                  five created for the Customer controller, you can delete the others from the folder.
+         </p>
+         <p>You can see that the entire view consists of the header, the jqg table and
+                  the jqg-pager block for displaying the navigation bar. The rest is occupied by
+                  the script for initiating the grid, the navigation bar and the dialog box for
+                  editing records.
+                    
+         </p><pre class="programlisting">
+@{
+  ViewBag.Title = "Index";
+}
+
+&lt;h2&gt;Customers&lt;/h2&gt;
+&lt;table id="jqg"&gt;&lt;/table&gt;
+&lt;div id="jqg-pager"&gt;&lt;/div&gt;
+
+&lt;script type="text/javascript"&gt;
+  $(document).ready(function () {
+    var dbGrid = $("#jqg").jqGrid({
+      url: '@Url.Action("GetData")', // URL to retrieve data
+      datatype: "json", // data format
+      mtype: "GET", // http type request
+      // model description
+      colModel: [
+      {
+        label: 'Id',
+        name: 'CUSTOMER_ID', // field name
+        key: true,
+        hidden: true
+      },
+      {
+        label: 'Name',
+        name: 'NAME',
+        width: 250,
+        sortable: true,
+        editable: true,
+        edittype: "text", // field type in the editor
+        search: true,
+        searchoptions: {
+          sopt: ['eq', 'bw', 'cn'] // allowed search operators
+        },
+        // size and maximum length for the input field
+        editoptions: { size: 30, maxlength: 60 },
+        // mandatory field
+        editrules: { required: true }
+      },
+      {
+        label: 'Address',
+        name: 'ADDRESS',
+        width: 300,
+        sortable: false, // prohibit sorting
+        editable: true,
+        search: false, // prohibit searching
+        edittype: "textarea",
+        editoptions: { maxlength: 250, cols: 30, rows: 4 }
+      },
+      {
+        label: 'Zip Code',
+        name: 'ZIPCODE',
+        width: 30,
+        sortable: false,
+        editable: true,
+        search: false,
+        edittype: "text",
+        editoptions: { size: 30, maxlength: 10 },
+      },
+      {
+        label: 'Phone',
+        name: 'PHONE',
+        width: 80,
+        sortable: false,
+        editable: true,
+        search: false,
+        edittype: "text",
+        editoptions: { size: 30, maxlength: 14 },
+      }
+      ],
+      rowNum: 500, // number of rows displayed
+      loadonce: false, // load only once
+      sortname: 'NAME', // sort by default by NAME column
+      sortorder: "asc",
+      width: window.innerWidth - 80, // grid width
+      height: 500, // grid height
+      viewrecords: true, // display the number of records
+      caption: "Customers",
+      pager: 'jqg-pager' // navigation item id
+    });
+
+    dbGrid.jqGrid('navGrid', '#jqg-pager', {
+        search: true,
+        add: true,
+        edit: true,
+        del: true,
+        view: true,
+        refresh: true,
+        // button labels
+        searchtext: "Find",
+        addtext: "Add",
+        edittext: "Edit",
+        deltext: "Delete",
+        viewtext: "View",
+        viewtitle: "Selected record",
+        refreshtext: "Refresh"
+      },
+      update("edit"),
+      update("add"),
+      update("del")
+    );
+
+    // function that returns the settings of the editor
+    function update(act) {
+      return {
+        closeAfterAdd: true,
+        closeAfterEdit: true, 
+        width: 400, // editor width
+        reloadAfterSubmit: true, 
+        drag: true, 
+        // handler for sending the form of editing / deleting / adding
+        onclickSubmit: function (params, postdata) {
+          // get row id
+          var selectedRow = dbGrid.getGridParam("selrow");
+          // set URL depending on the operation
+          switch (act) {
+            case "add":
+              params.url = '@Url.Action("Create")';
+              break;
+            case "edit":
+              params.url = '@Url.Action("Edit")';
+              postdata.CUSTOMER_ID = selectedRow;
+              break;
+            case "del":
+              params.url = '@Url.Action("Delete")';
+              postdata.CUSTOMER_ID = selectedRow;
+              break;
+          }
+        },
+        // processing results of sending forms (operations)
+        afterSubmit: function (response, postdata) {
+          var responseData = response.responseJSON;
+          // check the result for error messages
+          if (responseData.hasOwnProperty("error")) {
+            if (responseData.error.length) {
+              return [false, responseData.error];
+            }
+          }
+          else {
+            // refresh grid
+            $(this).jqGrid(
+              'setGridParam',
+              {
+                datatype: 'json'
+              }
+            ).trigger('reloadGrid');
+          }
+          return [true, "", 0];
+        }
+      };
+    };
+  });
+&lt;/script&gt;
+      </pre><p>
+                
+         </p>
+         <p>It is important to configure the model properties correctly in order to display 
+                the grid properly, position input items on the edit form, configure validation for 
+                input forms and configure the sorting and search options. This configuration is not 
+                simple and has a lot of parameters. In the comments I have tried to describe the 
+                parameters being used. The full description of the model parameters can be found in 
+                the documentation for the jqGrid library in the ColModel API section.
+         </p>
+         <p>Note that jqGrid does not automatically add hidden grid columns to the input
+                form, though I think it would make sense at least for key fields.  Consequently, 
+                we have to add the customer identifier to the request parameters for editing and 
+                deleting:
+                  
+         </p><pre class="programlisting">
+case "edit":
+  params.url = '@Url.Action("Edit")';
+  postdata.CUSTOMER_ID = selectedRow;
+  break;
+case "del":
+  params.url = '@Url.Action("Delete")';
+  postdata.CUSTOMER_ID = selectedRow;
+  break;
+      </pre><p>
+                
+         </p>
+         <p>The working page with the list of customers will look like this:
+                  
+         </p>
+         <div class="figure"><a name="mvc-view-cust-list"></a><p class="title"><b>Figure&nbsp;5.11.&nbsp;Customer list view</b></p>
+            <div class="figure-contents">
+               <div class="mediaobject" align="center">
+                  <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="497">
+                     <tr style="height: 336px">
+                        <td align="center"><img src="images/fbdevgd30_mvc_011_en.png" align="middle" width="497" alt="Customer list view"></td>
+                     </tr>
+                  </table>
+               </div>
+            </div>
+            <p></p>
+         </div>
+         <p><br class="figure-break">
+                
+         </p>
+         <p>
+                  
+         </p>
+         <div class="figure"><a name="mvc-view-cust-selected"></a><p class="title"><b>Figure&nbsp;5.12.&nbsp;A customer selected for editing</b></p>
+            <div class="figure-contents">
+               <div class="mediaobject" align="center">
+                  <table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="497">
+                     <tr style="height: 333px">
+                        <td align="center"><img src="images/fbdevgd30_mvc_012_en.png" align="middle" width="497" alt="A customer selected for editing"></td>
+                     </tr>
+                  </table>
+               </div>
+            </div>
+            <p></p>
+         </div>
+         <p><br class="figure-break">
+                
+         </p>
+         <p>The controller and view for the product UI are implemented in a similar way. 
+                We will not describe them here in detail. You can either write them yourself or use 
+                the source code linked at the <a href="fbdg30-mvc-get-source-code.html" title="Source Code">end of 
+                   this chapter</a>.
+         </p>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdevgd30-mvc-controller-bundles.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Bundles" alt="Prev: Bundles"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-MVC.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating Web Applications in Entity Framework with MVC" alt="Up: Creating Web Applications in Entity Framework with MVC"></a><a href="fbdevgd30-mvc-secondary-ui.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Creating a UI for Secondary Modules" alt="Next: Creating a UI for Secondary Modules"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-MVC.html">Creating Web Applications in Entity Framework with MVC</a> &rarr; Views
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>
