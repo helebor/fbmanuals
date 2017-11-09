@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"../../../../tools/docbook-dtd/docbookx.dtd">
+<chapter id="fbdevgd30-php">
+  <title>Developing Firebird Applications in PHP</title>
+  <para>PHP is...</para>
+  
+  <para>Interfacing PHP with Firebird</para>
+  
+</chapter>
