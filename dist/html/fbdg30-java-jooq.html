@@ -1,0 +1,215 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Generating classes for jOOQ</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-java.html" title="Chapter 7: Creating an Application with jOOQ and Spring MVC">
+      <link rel="prev" href="fbdg30-java-web-init.html" title="Start-up Code&#8212;WebInitializer">
+      <link rel="next" href="fbdg30-java-di.html" title="Dependency Injection">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-java.html">Creating an Application with jOOQ and Spring MVC</a> &rarr; Generating classes for jOOQ
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdg30-java-web-init.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Start-up Code&#8212;WebInitializer" alt="Prev: Start-up Code&#8212;WebInitializer"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-java.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating an Application with jOOQ and Spring MVC" alt="Up: Creating an Application with jOOQ and Spring MVC"></a><a href="fbdg30-java-di.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Dependency Injection" alt="Next: Dependency Injection"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdg30-java-jooq"></a>Generating classes for jOOQ
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdg30-java-jooq.html#fbdg30-java-jooq-classes">jOOQ Classes</a></span></dt>
+            </dl>
+         </div>
+         <p>Work with the database will be carried out using the jOOQ library. jOOQ
+            builds SQL queries from jOOQ objects and code (similarly to LINQ). jOOQ is more 
+            closely integrated with the database than ORM, enabling more database features 
+                to be utilized, rather than just the simple CRUD SQL queries used in Active Record. 
+                jOOQ can work with stored procedures and functions, sequences, and use window 
+                functions and other Firebird-specific features.
+         </p>
+         <p>You can find the full documentation for jOOQ at 
+                <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.jooq.org/doc/3.9/manual-single-page/" target="_top">http://www.jooq.org/doc/3.9/manual-single-page/</a>.
+                
+         </p>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-java-jooq-classes"></a>jOOQ Classes
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <div class="toc">
+               <p><b>Table of Contents</b></p>
+               <dl>
+                  <dt><span class="section"><a href="fbdg30-java-jooq.html#fbdg30-java-jooq-classes-db-schema-config">Configuration for Database Schema Classes</a></span></dt>
+                  <dt><span class="section"><a href="fbdg30-java-jooq.html#fbdg30-java-jooq-classes-db-schema-classes">Generating the Schema Classes</a></span></dt>
+               </dl>
+            </div>
+            <p>jOOQ classes for working with the database are generated on the basis 
+                     of the database schema described in the earlier chapter, 
+                     <a href="fbdevgd30-database.html" title="Chapter 2: The examples.fdb Database">The examples.fdb Database</a>.
+            </p>
+            <p>To generate jOOQ classes for working with our database, you will need to 
+                     download these binary files at 
+                     <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.jooq.org/download" target="_top">http://www.jooq.org/download</a> 
+                     or via the maven repository:
+                       
+            </p>
+            <div class="itemizedlist">
+               <ul type="disc" compact>
+                  <li>jooq-3.9.2.jarThe main library included in our application 
+                               for working with jOOQ
+                  </li>
+                  <li>jooq-meta-3.9.2.jar&#8212;The tool included in your build for 
+                               navigating the database schema via generated objects
+                  </li>
+                  <li>jooq-codegen-3.9.2.jar&#8212;The tool included in your build for 
+                               generating the database schema
+                  </li>
+               </ul>
+            </div>
+            <p>
+                     
+            </p>
+            <p>Along with those, of course, you will need to download the Jaybird driver 
+                     for connecting to the Firebird database via JDBC: 
+                     <code class="filename">jaybird-full-3.0.0.jar</code>.
+            </p>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-java-jooq-classes-db-schema-config"></a>Configuration for Database Schema Classes
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>For generating the classes for the database schema, we 
+                          create the configuration file example.xml:
+                            
+               </p><pre class="literallayout">
+&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;configuration xmlns="http://www.jooq.org/xsd/jooq-codegen-3.8.0.xsd"&gt;
+  &lt;!-- Configuration of connection to the database --&gt;
+  &lt;jdbc&gt;
+    &lt;driver&gt;org.firebirdsql.jdbc.FBDriver&lt;/driver&gt;
+    &lt;url&gt;jdbc:firebirdsql://localhost:3050/examples&lt;/url&gt;
+    &lt;user&gt;SYSDBA&lt;/user&gt;
+    &lt;password&gt;masterkey&lt;/password&gt;
+    &lt;properties&gt;
+      &lt;property&gt;
+        &lt;key&gt;charSet&lt;/key&gt;
+        &lt;value&gt;utf-8&lt;/value&gt;
+      &lt;/property&gt;
+    &lt;/properties&gt;
+  &lt;/jdbc&gt;
+
+  &lt;generator&gt;
+    &lt;name&gt;org.jooq.util.JavaGenerator&lt;/name&gt;
+
+    &lt;database&gt;
+      &lt;!-- The type of the database. Format:
+           org.util.[database].[database]Database --&gt;
+      &lt;name&gt;org.jooq.util.firebird.FirebirdDatabase&lt;/name&gt;
+
+      &lt;inputSchema&gt;&lt;/inputSchema&gt;
+
+      &lt;!-- All objects that are generated from your schema 
+           (Java regular expression. Use filters to limit number of objects).  
+           Watch for sensitivity to the register. Depending on your database, 
+           this can be important! 
+       --&gt;
+      &lt;includes&gt;.*&lt;/includes&gt;
+
+      &lt;!-- Objects that are excluded when generating from your schema.
+           (Java regular expression).
+           In this case, we exclude system tables RDB$, monitoring tables MON$ 
+           and security pseudo-tables SEC$. 
+      --&gt;
+      &lt;excludes&gt;
+          RDB\$.*
+        | MON\$.*
+        | SEC\$.*
+      &lt;/excludes&gt;
+    &lt;/database&gt;
+
+    &lt;target&gt;
+      &lt;!-- The name of the package to which the generated --&gt;
+      &lt;packageName&gt;ru.ibase.fbjavaex.exampledb&lt;/packageName&gt;
+
+      &lt;!-- Directory for posting the generated classes.
+           Here, the Maven directory structure is used. --&gt;
+      &lt;directory&gt;e:/OpenServer/domains/localhost/fbjavaex/src/main/java/&lt;/directory&gt;
+    &lt;/target&gt;
+  &lt;/generator&gt;
+&lt;/configuration&gt;
+          </pre><p>
+                          
+               </p>
+            </div>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-java-jooq-classes-db-schema-classes"></a>Generating the Schema Classes
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>In the the command shell, execute the following command to create 
+                          the classes needed for writing queries to database objects in Java:
+                            
+               </p><pre class="literallayout">
+java -cp jooq-3.9.2.jar;jooq-meta-3.9.2.jar;jooq-codegen-3.9.2.jar;
+jaybird-full-3.0.0.jar;. org.jooq.util.GenerationTool example.xml
+          </pre><p>
+                          
+               </p>
+               <p>You can find more details about the process of generating
+                          classes at 
+                  <a xmlns:xlink="http://www.w3.org/1999/xlink" href="https://www.jooq.org/doc/3.9/manual-single-page/#code-generation" target="_top">https://www.jooq.org/doc/3.9/manual-single-page/#code-generation</a>.
+                          
+               </p>
+            </div>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdg30-java-web-init.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Start-up Code&#8212;WebInitializer" alt="Prev: Start-up Code&#8212;WebInitializer"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-java.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating an Application with jOOQ and Spring MVC" alt="Up: Creating an Application with jOOQ and Spring MVC"></a><a href="fbdg30-java-di.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Dependency Injection" alt="Next: Dependency Injection"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-java.html">Creating an Application with jOOQ and Spring MVC</a> &rarr; Generating classes for jOOQ
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

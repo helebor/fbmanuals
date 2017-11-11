@@ -1,0 +1,92 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Start-up Code&#8212;WebInitializer</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-java.html" title="Chapter 7: Creating an Application with jOOQ and Spring MVC">
+      <link rel="prev" href="fbdg30-java-config-class.html" title="Coding the Configuration">
+      <link rel="next" href="fbdg30-java-jooq.html" title="Generating classes for jOOQ">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-java.html">Creating an Application with jOOQ and Spring MVC</a> &rarr; Start-up Code&#8212;WebInitializer
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdg30-java-config-class.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Coding the Configuration" alt="Prev: Coding the Configuration"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-java.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating an Application with jOOQ and Spring MVC" alt="Up: Creating an Application with jOOQ and Spring MVC"></a><a href="fbdg30-java-jooq.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Generating classes for jOOQ" alt="Next: Generating classes for jOOQ"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdg30-java-web-init"></a>Start-up Code&#8212;WebInitializer
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <p>Now we'll get rid of the <code class="filename">Web.xml</code> file and 
+                create the WebInitializer.java class in its place:
+                  
+         </p><pre class="programlisting">
+package ru.ibase.fbjavaex.config;
+
+import javax.servlet.ServletContext;  
+import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration.Dynamic;  
+  
+import org.springframework.web.WebApplicationInitializer;  
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;  
+import org.springframework.web.servlet.DispatcherServlet;  
+  
+public class WebInitializer implements WebApplicationInitializer {
+    
+    @Override
+    public void onStartup(ServletContext servletContext) throws ServletException {        
+        AnnotationConfigWebApplicationContext ctx = 
+            new AnnotationConfigWebApplicationContext();  
+        ctx.register(WebAppConfig.class);  
+        ctx.setServletContext(servletContext);    
+        Dynamic servlet = servletContext.addServlet("dispatcher", 
+                                                    new DispatcherServlet(ctx));  
+        servlet.addMapping("/");  
+        servlet.setLoadOnStartup(1);
+    }
+    
+}
+      </pre><p>
+                
+         </p>
+         <p>All that is left to configure is IoC containers for injecting dependencies, 
+                a step we will <a href="fbdg30-java-di.html#fbdg30-java-di-config" title="Configuring IoC Containers for Dependency Injection">return to later</a>. 
+                We proceed next to generating classes for working with the database via Java 
+                Object-Oriented Querying (jOOQ).
+         </p>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdg30-java-config-class.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Coding the Configuration" alt="Prev: Coding the Configuration"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-java.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating an Application with jOOQ and Spring MVC" alt="Up: Creating an Application with jOOQ and Spring MVC"></a><a href="fbdg30-java-jooq.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Generating classes for jOOQ" alt="Next: Generating classes for jOOQ"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-java.html">Creating an Application with jOOQ and Spring MVC</a> &rarr; Start-up Code&#8212;WebInitializer
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

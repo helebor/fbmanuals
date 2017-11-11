@@ -1,0 +1,328 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Dependency Injection</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-java.html" title="Chapter 7: Creating an Application with jOOQ and Spring MVC">
+      <link rel="prev" href="fbdg30-java-jooq.html" title="Generating classes for jOOQ">
+      <link rel="next" href="fbdg30-java-jooq-crt-qry.html" title="Creating SQL Queries Using jOOQ">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-java.html">Creating an Application with jOOQ and Spring MVC</a> &rarr; Dependency Injection
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdg30-java-jooq.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Generating classes for jOOQ" alt="Prev: Generating classes for jOOQ"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-java.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating an Application with jOOQ and Spring MVC" alt="Up: Creating an Application with jOOQ and Spring MVC"></a><a href="fbdg30-java-jooq-crt-qry.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Creating SQL Queries Using jOOQ" alt="Next: Creating SQL Queries Using jOOQ"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdg30-java-di"></a>Dependency Injection
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdg30-java-di.html#fbdg30-java-di-config">Configuring IoC Containers for Dependency Injection</a></span></dt>
+            </dl>
+         </div>
+         <p>Dependency injection is a process whereby objects define their dependencies,
+            that is, the other objects they work with.  It is done only through constructor
+                arguments, arguments to a factory method, or properties set or returned using a
+                factory method. The container then injects those dependencies when it creates
+                the bean. You can find more details about dependency injection at
+            <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#beans" target="_top">http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#beans</a>.
+                
+         </p>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-java-di-config"></a>Configuring IoC Containers for Dependency Injection
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <div class="toc">
+               <p><b>Table of Contents</b></p>
+               <dl>
+                  <dt><span class="section"><a href="fbdg30-java-di.html#fbdg30-java-di-bean">The @Bean Annotation</a></span></dt>
+               </dl>
+            </div>
+            <p>In Spring, dependency injection (DI) is carried out through the 
+                     Spring IoC (Inversion of Control) container.
+            </p>
+            <p>As before, we will avoid xml configuration and base our approach 
+                     on annotations and Java configuration.
+            </p>
+            <p>The main attributes and parts of the Java configuration of an IoC 
+                     container are classes with the @Configuration annotation and methods with 
+                     the @Bean annotation.
+            </p>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-java-di-bean"></a>The @Bean Annotation
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>The @Bean annotation is used to define a method's activity in 
+                          creating, configuring and initiating a new object controlled by the 
+                          Spring IoC container. Methods so defined can be used the same way as 
+                          classes with the @Configuration annotation.
+               </p>
+               <p>Our IoC container will return
+                            
+               </p>
+               <div class="itemizedlist">
+                  <ul type="disc" compact>
+                     <li>the connection pool</li>
+                     <li>the transaction manager</li>
+                     <li>the exception translator  thattranslates SQLException 
+                                    exceptions into Spring-specific DataAccessException exceptions
+                     </li>
+                     <li>the DSL context that is the starting point for building all queries using the Fluent API</li>
+                     <li>managers for implementing the business logic</li>
+                     <li>grids for displaying data</li>
+                  </ul>
+               </div>
+               <p>
+                          
+               </p>
+               <p>
+                            
+               </p><pre class="programlisting">
+/**
+ * IoC container configuration
+ * to implement dependency injection.
+ */
+
+package ru.ibase.fbjavaex.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import javax.sql.DataSource;
+import org.apache.commons.dbcp.BasicDataSource;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
+import org.jooq.impl.DataSourceConnectionProvider;
+import org.jooq.DSLContext;
+import org.jooq.impl.DefaultDSLContext;
+import org.jooq.impl.DefaultConfiguration;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DefaultExecuteListenerProvider;
+
+import ru.ibase.fbjavaex.exception.ExceptionTranslator;
+
+import ru.ibase.fbjavaex.managers.*;
+import ru.ibase.fbjavaex.jqgrid.*;
+
+/**
+ * The Spring IoC configuration class of the container 
+ */
+@Configuration
+public class JooqConfig {
+
+
+    /**
+     * Return connection pool
+     *
+     * @return 
+     */
+    @Bean(name = "dataSource")
+    public DataSource getDataSource() {
+        BasicDataSource dataSource = new BasicDataSource();
+        // ?????????? ???????????? ???????????
+        dataSource.setUrl("jdbc:firebirdsql://localhost:3050/examples");
+        dataSource.setDriverClassName("org.firebirdsql.jdbc.FBDriver");
+        dataSource.setUsername("SYSDBA");
+        dataSource.setPassword("masterkey");
+        dataSource.setConnectionProperties("charSet=utf-8");
+        return dataSource;
+    }
+
+    /**
+     * Return transaction manager
+     * 
+     * @return 
+     */
+    @Bean(name = "transactionManager")
+    public DataSourceTransactionManager getTransactionManager() {
+        return new DataSourceTransactionManager(getDataSource());
+    }
+
+    @Bean(name = "transactionAwareDataSource")
+    public TransactionAwareDataSourceProxy getTransactionAwareDataSource() {
+        return new TransactionAwareDataSourceProxy(getDataSource());
+    }
+
+    /**
+     * Return connection provider
+     * 
+     * @return 
+     */
+    @Bean(name = "connectionProvider")
+    public DataSourceConnectionProvider getConnectionProvider() {
+        return new DataSourceConnectionProvider(getTransactionAwareDataSource());
+    }
+
+    /**
+     * Return exception translator
+     * 
+     * @return 
+     */
+    @Bean(name = "exceptionTranslator")
+    public ExceptionTranslator getExceptionTranslator() {
+        return new ExceptionTranslator();
+    }
+
+    /**
+     * Returns the DSL context configuration
+     *
+     * @return 
+     */
+    @Bean(name = "dslConfig")
+    public org.jooq.Configuration getDslConfig() {
+        DefaultConfiguration config = new DefaultConfiguration();
+        // ?????????? ??????? SQL ???? Firebird
+        config.setSQLDialect(SQLDialect.FIREBIRD);
+        config.setConnectionProvider(getConnectionProvider());
+        DefaultExecuteListenerProvider listenerProvider = 
+          new DefaultExecuteListenerProvider(getExceptionTranslator());
+        config.setExecuteListenerProvider(listenerProvider);
+        return config;
+    }
+
+    /**
+     * Return DSL context
+     *
+     * @return 
+     */
+    @Bean(name = "dsl")
+    public DSLContext getDsl() {
+        org.jooq.Configuration config = this.getDslConfig();
+        return new DefaultDSLContext(config);
+    }
+
+    /**
+     * Return customer manager
+     * 
+     * @return 
+     */
+    @Bean(name = "customerManager")
+    public CustomerManager getCustomerManager() {
+        return new CustomerManager();
+    }
+
+    /**
+     * Return customer grid
+     * 
+     * @return 
+     */
+    @Bean(name = "customerGrid")
+    public JqGridCustomer getCustomerGrid() {
+        return new JqGridCustomer();
+    }
+
+    /**
+     * Return product manager
+     * 
+     * @return 
+     */
+    @Bean(name = "productManager")
+    public ProductManager getProductManager() {
+        return new ProductManager();
+    }
+
+    /**
+     * Return product grid
+     * 
+     * @return 
+     */
+    @Bean(name = "productGrid")
+    public JqGridProduct getProductGrid() {
+        return new JqGridProduct();
+    }
+
+    /**
+     * Return invoice manager
+     * 
+     * @return 
+     */
+    @Bean(name = "invoiceManager")
+    public InvoiceManager getInvoiceManager() {
+        return new InvoiceManager();
+    }
+
+    /**
+     * Return invoice grid
+     * 
+     * @return 
+     */
+    @Bean(name = "invoiceGrid")
+    public JqGridInvoice getInvoiceGrid() {
+        return new JqGridInvoice();
+    }
+
+    /**
+     * Return invoice items grid
+     * 
+     * @return 
+     */
+    @Bean(name = "invoiceLineGrid")
+    public JqGridInvoiceLine getInvoiceLineGrid() {
+        return new JqGridInvoiceLine();
+    }
+
+    /**
+     * Return working period
+     * 
+     * @return 
+     */
+    @Bean(name = "workingPeriod")
+    public WorkingPeriod getWorkingPeriod() {
+        return new WorkingPeriod();
+    }
+
+}
+          </pre><p>
+                          
+               </p>
+            </div>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdg30-java-jooq.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Generating classes for jOOQ" alt="Prev: Generating classes for jOOQ"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-java.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating an Application with jOOQ and Spring MVC" alt="Up: Creating an Application with jOOQ and Spring MVC"></a><a href="fbdg30-java-jooq-crt-qry.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Creating SQL Queries Using jOOQ" alt="Next: Creating SQL Queries Using jOOQ"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-java.html">Creating an Application with jOOQ and Spring MVC</a> &rarr; Dependency Injection
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

@@ -1,0 +1,125 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Chapter 7: Creating an Application with jOOQ and Spring MVC</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30.html" title="Firebird 3.0 Developer's Guide PRE-BETA">
+      <link rel="prev" href="fbdevgd30-php.html" title="Chapter 6: Developing Firebird Applications in PHP">
+      <link rel="next" href="fbdg30-java-structure.html" title="Organising the Folder Structure">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; Creating an Application with jOOQ and Spring MVC
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdevgd30-php.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Developing Firebird Applications in PHP" alt="Prev: Developing Firebird Applications in PHP"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Firebird 3.0 Developer's Guide PRE-BETA" alt="Up: Firebird 3.0 Developer's Guide PRE-BETA"></a><a href="fbdg30-java-structure.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Organising the Folder Structure" alt="Next: Organising the Folder Structure"></a></td>
+         </tr>
+      </table>
+      <div class="chapter" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title"><a name="fbdevgd30-java"></a>Chapter 7: Creating an Application with jOOQ and Spring MVC
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdg30-java-structure.html">Organising the Folder Structure</a></span></dt>
+               <dt><span class="section"><a href="fbdg30-java-config-class.html">Coding the Configuration</a></span></dt>
+               <dt><span class="section"><a href="fbdg30-java-web-init.html">Start-up Code&#8212;WebInitializer</a></span></dt>
+               <dt><span class="section"><a href="fbdg30-java-jooq.html">Generating classes for jOOQ</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="fbdg30-java-jooq.html#fbdg30-java-jooq-classes">jOOQ Classes</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="section"><a href="fbdg30-java-di.html">Dependency Injection</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="fbdg30-java-di.html#fbdg30-java-di-config">Configuring IoC Containers for Dependency Injection</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="section"><a href="fbdg30-java-jooq-crt-qry.html">Creating SQL Queries Using jOOQ</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="fbdg30-java-jooq-crt-qry.html#fbdg30-java-jooq-dsl">The jOOQ DSL</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-java-jooq-crt-qry.html#fbdg30-java-jooq-parameters">Named and Unnamed Parameters</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-java-jooq-crt-qry.html#fbdg30-java-jooq-selects">Returning Values from SELECT Queries</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-java-jooq-crt-qry.html#fbdg30-java-jooq-others">Other Types of Queries</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-java-jooq-crt-qry.html#fbdg30-java-jooq-stored-procs">Stored Procedures with jOOQ</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="section"><a href="fbdg30-java-jooq-txn.html">Working with Transactions</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="fbdg30-java-jooq-txn.html#fbdg30-java-jooq-txn-explicit">Explicit Transactions</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="section"><a href="fbdg30-java-jooq-app-code.html">Writing the Application Code</a></span></dt>
+               <dt><span class="section"><a href="fbdg30-java-jooq-crt-pri-modules.html">Creating the Primary Modules</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="fbdg30-java-jooq-crt-pri-modules.html#fbdg30-java-jooq-class-custmgr">CustomerManager Class</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-java-jooq-crt-pri-modules.html#fbdg30-java-jooq-class-custctrlr">Customer Controller Class</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="section"><a href="fbdg30-java-jooq-crt-sec-modules.html">Creating Secondary Modules</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="fbdg30-java-jooq-crt-sec-modules.html#fbdg30-java-jooq-inv-items">Invoice Items</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-java-jooq-crt-sec-modules.html#fbdg30-java-jooq-class-invmgr">InvoiceManager Class</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-java-jooq-crt-sec-modules.html#fbdg30-java-jooq-class-invctrlr">Invoice Controller Class</a></span></dt>
+                     <dt><span class="section"><a href="fbdg30-java-jooq-crt-sec-modules.html#fbdg30-java-invoice-display">Displaying the Invoices</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="section"><a href="fbdg30-java-project-result.html">The Result</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="fbdg30-java-project-result.html#fbdg30-java-project-sourcecode">Source Code</a></span></dt>
+                  </dl>
+               </dd>
+            </dl>
+         </div>
+         <p>This chapter will describe how to create a web application in the Java 
+              language using the Spring MVC framework, the jOOQ library and a Firebird 
+              sample database.
+         </p>
+         <p>To make development easier, you can use one of the popular IDEs for Java 
+              (NetBeans, IntelliJ IDEA, Eclipse, JDeveloper and others). I used NetBeans.
+         </p>
+         <p>For testing and debugging purposes, we will also need to install one of the 
+              web servers or application servers (Apache Tomcat or GlassFish). We are basing 
+              our project on the Maven web application templates.
+         </p>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdevgd30-php.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Developing Firebird Applications in PHP" alt="Prev: Developing Firebird Applications in PHP"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Firebird 3.0 Developer's Guide PRE-BETA" alt="Up: Firebird 3.0 Developer's Guide PRE-BETA"></a><a href="fbdg30-java-structure.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Organising the Folder Structure" alt="Next: Organising the Folder Structure"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; Creating an Application with jOOQ and Spring MVC
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

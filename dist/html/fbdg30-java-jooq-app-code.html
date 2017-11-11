@@ -1,0 +1,391 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Writing the Application Code</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-java.html" title="Chapter 7: Creating an Application with jOOQ and Spring MVC">
+      <link rel="prev" href="fbdg30-java-jooq-txn.html" title="Working with Transactions">
+      <link rel="next" href="fbdg30-java-jooq-crt-pri-modules.html" title="Creating the Primary Modules">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-java.html">Creating an Application with jOOQ and Spring MVC</a> &rarr; Writing the Application Code
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdg30-java-jooq-txn.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Working with Transactions" alt="Prev: Working with Transactions"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-java.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating an Application with jOOQ and Spring MVC" alt="Up: Creating an Application with jOOQ and Spring MVC"></a><a href="fbdg30-java-jooq-crt-pri-modules.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Creating the Primary Modules" alt="Next: Creating the Primary Modules"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdg30-java-jooq-app-code"></a>Writing the Application Code
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <p>We will display the data of our application using the JavaScript component jqGrid. 
+                Currently, jqGrid is distributed under a commercial licence, but it is free for
+                non-commercial purposes. You can use the free-jqGrid fork instead.
+         </p>
+         <p>To display data and page-by-page navigation elements in this grid, we need to 
+                return data in the JSON format, the structure of which looks like this:
+                  
+         </p><pre class="programlisting">
+{
+    total: 100,
+    page: 3,
+    records: 3000,
+    rows: [
+       {id: 1, name: "Ada"},
+       {id: 2, name: "Smith"},
+      &#8230;
+    ]
+}
+      </pre><p>
+                where
+                  
+         </p>
+         <div class="itemizedlist">
+            <ul type="disc">
+               <li>total&#8212;the total number of pages</li>
+               <li>page&#8212;the number of the current page</li>
+               <li>records&#8212;the total number of records</li>
+               <li>rows&#8212;the count of records on the current page array</li>
+            </ul>
+         </div>
+         <p>
+                
+         </p>
+         <p>The following code creates a class demonstrating this structure:
+                  
+         </p><pre class="programlisting">
+package ru.ibase.fbjavaex.jqgrid;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * A class describing the structure that is used in jqGrid
+ * Designed for JSON serialization
+ *
+ * @author Simonov Denis
+ */
+public class JqGridData {
+
+    /**
+     * Total number of pages
+     */
+    private final int total;
+
+    /**
+     * The current page number
+     */
+    private final int page;
+
+    /**
+     * Total number of records
+     */
+    private final int records;
+
+    /**
+     * The actual data
+     */
+    private final List&lt;Map&lt;String, Object&gt;&gt; rows;
+
+    /**
+     * Constructor
+     *
+     * @param total
+     * @param page
+     * @param records
+     * @param rows
+     */
+    public JqGridData(int total, int page, int records,
+                      List&lt;Map&lt;String, Object&gt;&gt; rows) {
+        this.total = total;
+        this.page = page;
+        this.records = records;
+        this.rows = rows;
+    }
+
+    /**
+     * Returns the total number of pages
+     *
+     * @return
+     */
+    public int getTotal() {
+        return total;
+    }
+
+    /**
+     * Returns the current page
+     *
+     * @return
+     */
+    public int getPage() {
+        return page;
+    }
+
+    /**
+     * Returns the total number of records
+     *
+     * @return
+     */
+    public int getRecords() {
+        return records;
+    }
+
+    /**
+     * Return list of map
+     * This is an array of data to display in the grid
+     *
+     * @return
+     */
+    public List&lt;Map&lt;String, Object&gt;&gt; getRows() {
+        return rows;
+    }
+}
+        </pre><p>
+                  
+         </p>
+         <p>Now we will write an abstract class that will return that structure depending
+                  on the search and sorting conditions. It will be a parent class for the entity-specific
+                  classes that return similar structures.
+                    
+         </p><pre class="programlisting">
+/*
+ * Abstract class for working with JqGrid
+ */
+package ru.ibase.fbjavaex.jqgrid;
+
+import java.util.Map;
+import java.util.List;
+import org.jooq.DSLContext;
+import org.springframework.beans.factory.annotation.Autowired;
+
+/**
+ * Working with JqGrid
+ *
+ * @author Simonov Denis
+ */
+public abstract class JqGrid {
+
+
+    @Autowired(required = true)
+    protected DSLContext dsl;
+
+    protected String searchField = "";
+    protected String searchString = "";
+    protected String searchOper = "eq";
+    protected Boolean searchFlag = false;
+    protected int pageNo = 0;
+    protected int limit = 0;
+    protected int offset = 0;
+    protected String sIdx = "";
+    protected String sOrd = "asc";
+
+    /**
+     * Returns the total number of records
+     *
+     * @return
+     */
+    public abstract int getCountRecord();
+
+    /**
+     * Returns the structure for JSON serialization
+     *
+     * @return
+     */
+    public JqGridData getJqGridData() {
+        int recordCount = this.getCountRecord();
+        List&lt;Map&lt;String, Object&gt;&gt; records = this.getRecords();
+
+        int total = 0;
+        if (this.limit &gt; 0) {
+            total = recordCount / this.limit + 1;
+        }
+
+        JqGridData jqGridData = new JqGridData(
+            total,
+            this.pageNo,
+            recordCount,
+            records);
+        return jqGridData;
+    }
+
+
+    /**
+     * Returns the number of records per page
+     *
+     * @return
+     */
+    public int getLimit() {
+        return this.limit;
+    }
+
+    /**
+     * Returns the offset to retrieve the first record on the page
+     *
+     * @return
+     */
+    public int getOffset() {
+        return this.offset;
+    }
+
+    /**
+     * Returns field name for sorting
+     *
+     * @return
+     */
+    public String getIdx() {
+        return this.sIdx;
+    }
+
+    /**
+     * Returns the sort order
+     *
+     * @return
+     */
+    public String getOrd() {
+        return this.sOrd;
+    }
+
+    /**
+     * Returns the current page number
+     *
+     * @return
+     */
+    public int getPageNo() {
+        return this.pageNo;
+    }
+
+    /**
+     * Returns an array of records as a list of maps
+     *
+     * @return
+     */
+    public abstract List&lt;Map&lt;String, Object&gt;&gt; getRecords();
+
+    /**
+     * Returns field name for search
+     *
+     * @return
+     */
+    public String getSearchField() {
+        return this.searchField;
+    }
+
+    /**
+     * Returns value for search
+     *
+     * @return
+     */
+    public String getSearchString() {
+        return this.searchString;
+    }
+
+    /**
+     * Returns the search operation
+     *
+     * @return
+     */
+    public String getSearchOper() {
+        return this.searchOper;
+    }
+
+    /**
+     * Sets the limit on the number of display records
+     *
+     * @param limit
+     */
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
+
+    /**
+     * Sets the number of records to skip
+     *
+     * @param offset
+     */
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+
+    /**
+     * Sets the sorting
+     *
+     * @param sIdx
+     * @param sOrd
+     */
+    public void setOrderBy(String sIdx, String sOrd) {
+        this.sIdx = sIdx;
+        this.sOrd = sOrd;
+    }
+
+    /**
+     * Sets the current page number
+     *
+     * @param pageNo
+     */
+    public void setPageNo(int pageNo) {
+        this.pageNo = pageNo;
+        this.offset = (pageNo - 1) * this.limit;
+    }
+
+    /**
+     * Sets the search condition
+     *
+     * @param searchField
+     * @param searchString
+     * @param searchOper
+     */
+    public void setSearchCondition(String searchField, String searchString,
+                                   String searchOper) {
+        this.searchFlag = true;
+        this.searchField = searchField;
+        this.searchString = searchString;
+        this.searchOper = searchOper;
+    }
+}
+      </pre><p>
+                  
+         </p>
+         <div class="note">
+            <h3 class="title">Note</h3>
+            <p>Notice that this class contains the DSLContext dsl property that will be used
+                       to build jOOQ queries for retrieving data.
+            </p>
+         </div>
+         <p>
+                
+         </p>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdg30-java-jooq-txn.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Working with Transactions" alt="Prev: Working with Transactions"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-java.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating an Application with jOOQ and Spring MVC" alt="Up: Creating an Application with jOOQ and Spring MVC"></a><a href="fbdg30-java-jooq-crt-pri-modules.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Creating the Primary Modules" alt="Next: Creating the Primary Modules"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-java.html">Creating an Application with jOOQ and Spring MVC</a> &rarr; Writing the Application Code
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

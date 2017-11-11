@@ -1,0 +1,934 @@
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+      <title>Creating the Primary Modules</title>
+      <link rel="stylesheet" href="firebirddocs.css" type="text/css">
+      <meta name="generator" content="DocBook XSL Stylesheets V1.72.0">
+      <link rel="start" href="index.html" title="Firebird Reference Documentation">
+      <link rel="up" href="fbdevgd30-java.html" title="Chapter 7: Creating an Application with jOOQ and Spring MVC">
+      <link rel="prev" href="fbdg30-java-jooq-app-code.html" title="Writing the Application Code">
+      <link rel="next" href="fbdg30-java-jooq-crt-sec-modules.html" title="Creating Secondary Modules">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-java.html">Creating an Application with jOOQ and Spring MVC</a> &rarr; Creating the Primary Modules
+            </td>
+         </tr>
+         <tr height="8">
+            <td></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td><a href="http://www.firebirdsql.org"><img src="images/firebirdlogo.png" alt="Firebird Home" title="Firebird Home" border="0" width="85" height="84"></a></td>
+            <td width="100%"><a href="http://www.firebirdsql.org"><img src="images/titleblackgill.gif" alt="Firebird Home" title="Firebird Home" border="0" width="215" height="40"></a></td>
+            <td align="right" height="64" valign="top"><a href="fbdg30-java-jooq-app-code.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Writing the Application Code" alt="Prev: Writing the Application Code"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-java.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating an Application with jOOQ and Spring MVC" alt="Up: Creating an Application with jOOQ and Spring MVC"></a><a href="fbdg30-java-jooq-crt-sec-modules.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Creating Secondary Modules" alt="Next: Creating Secondary Modules"></a></td>
+         </tr>
+      </table>
+      <div class="section" lang="en">
+         <div class="titlepage">
+            <div>
+               <div>
+                  <h2 class="title" style="clear: both"><a name="fbdg30-java-jooq-crt-pri-modules"></a>Creating the Primary Modules
+                  </h2>
+               </div>
+            </div>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="section"><a href="fbdg30-java-jooq-crt-pri-modules.html#fbdg30-java-jooq-class-custmgr">CustomerManager Class</a></span></dt>
+               <dt><span class="section"><a href="fbdg30-java-jooq-crt-pri-modules.html#fbdg30-java-jooq-class-custctrlr">Customer Controller Class</a></span></dt>
+            </dl>
+         </div>
+         <p>Now we can start creating modules. The process of creating modules is described here,
+                using the customer module as an example. Creating the product module is similar and,
+                if you are interested, you can examine its source code in the .zip download linked at the
+                <a href="fbdg30-java-project-result.html#fbdg30-java-project-sourcecode" title="Source Code">end of this chapter</a>.
+         </p>
+         <p>First, we implement a class for working with jqGrid, inheriting it from
+                our abstract class <code class="classname">ru.ibase.fbjavaex.jqgrid.JqGrid</code>. It will be
+                able to search and sort by the NAME field in reversing order. Track the source code below
+                for explanatory comments.
+                  
+         </p><pre class="programlisting">
+package ru.ibase.fbjavaex.jqgrid;
+
+import org.jooq.*;
+import java.util.List;
+import java.util.Map;
+
+import static ru.ibase.fbjavaex.exampledb.Tables.CUSTOMER;
+
+/**
+ * Customer grid
+ *
+ * @author Simonov Denis
+ */
+public class JqGridCustomer extends JqGrid {
+
+    /**
+     * Adding a search condition
+     *
+     * @param query
+     */
+    private void makeSearchCondition(SelectQuery&lt;?&gt; query) {
+        switch (this.searchOper) {
+            case "eq":
+                // CUSTOMER.NAME = ?
+               query.addConditions(CUSTOMER.NAME.eq(this.searchString));
+               break;
+            case "bw":
+                // CUSTOMER.NAME STARTING WITH ?
+               query.addConditions(CUSTOMER.NAME.startsWith(this.searchString));
+               break;
+            case "cn":
+                // CUSTOMER.NAME CONTAINING ?
+               query.addConditions(CUSTOMER.NAME.contains(this.searchString));
+               break;
+        }
+    }
+
+
+    /**
+     * Returns the total number of records
+     *
+     * @return
+     */
+    @Override
+    public int getCountRecord() {
+        // query that returns the number of records
+        SelectFinalStep&lt;?&gt; select
+            = dsl.selectCount()
+                 .from(CUSTOMER);
+
+        SelectQuery&lt;?&gt; query = select.getQuery();
+        // if perform a search, then add the search condition
+        if (this.searchFlag) {
+            makeSearchCondition(query);
+        }
+
+        return (int) query.fetch().getValue(0, 0);
+    }
+
+    /**
+     * Returns the grid records
+     *
+     * @return
+     */
+    @Override
+    public List&lt;Map&lt;String, Object&gt;&gt; getRecords() {
+        // Basic selection query
+        SelectFinalStep&lt;?&gt; select =
+            dsl.select()
+               .from(CUSTOMER);
+
+        SelectQuery&lt;?&gt; query = select.getQuery();
+        // if perform a search, then add the search condition
+        if (this.searchFlag) {
+            makeSearchCondition(query);
+        }
+        // set the sort order
+        switch (this.sOrd) {
+            case "asc":
+                query.addOrderBy(CUSTOMER.NAME.asc());
+                break;
+            case "desc":
+                query.addOrderBy(CUSTOMER.NAME.desc());
+                break;
+        }
+        // limit the number of records
+        if (this.limit != 0) {
+            query.addLimit(this.limit);
+        }
+
+        if (this.offset != 0) {
+            query.addOffset(this.offset);
+        }
+        // return an array of maps
+        return query.fetchMaps();
+    }
+}
+      </pre><p>
+                
+         </p>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-java-jooq-class-custmgr"></a>CustomerManager Class
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <p>The CustomerManager class that is defined next is a kind of business
+                     layer between the corresponding controller and the database. We will use
+                     it for adding, editing and deleting a customer. All operations in this layer
+                     will be performed in a SNAPSHOT-level transaction.
+                       
+            </p><pre class="programlisting">
+package ru.ibase.fbjavaex.managers;
+
+import org.jooq.DSLContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Isolation;
+
+import static ru.ibase.fbjavaex.exampledb.Tables.CUSTOMER;
+import static ru.ibase.fbjavaex.exampledb.Sequences.GEN_CUSTOMER_ID;
+
+/**
+ * Customer manager
+ *
+ * @author Simonov Denis
+ */
+public class CustomerManager {
+
+    @Autowired(required = true)
+    private DSLContext dsl;
+
+    /**
+     * Adding a customer
+     *
+     * @param name
+     * @param address
+     * @param zipcode
+     * @param phone
+     */
+    @Transactional(propagation = Propagation.REQUIRED,
+                   isolation = Isolation.REPEATABLE_READ)
+    public void create(String name, String address, String zipcode, String phone) {
+        if (zipcode != null) {
+            if (zipcode.trim().isEmpty()) {
+                zipcode = null;
+            }
+        }
+
+        int customerId = this.dsl.nextval(GEN_CUSTOMER_ID).intValue();
+
+        this.dsl
+                .insertInto(CUSTOMER,
+                        CUSTOMER.CUSTOMER_ID,
+                        CUSTOMER.NAME,
+                        CUSTOMER.ADDRESS,
+                        CUSTOMER.ZIPCODE,
+                        CUSTOMER.PHONE)
+                .values(
+                        customerId,
+                        name,
+                        address,
+                        zipcode,
+                        phone
+                )
+                .execute();
+    }
+
+    /**
+     * Editing a customer
+     *
+     * @param customerId
+     * @param name
+     * @param address
+     * @param zipcode
+     * @param phone
+     */
+    @Transactional(propagation = Propagation.REQUIRED,
+                   isolation = Isolation.REPEATABLE_READ)
+    public void edit(int customerId, String name, String address,
+                     String zipcode, String phone) {
+
+        if (zipcode != null) {
+            if (zipcode.trim().isEmpty()) {
+                zipcode = null;
+            }
+        }
+
+        this.dsl.update(CUSTOMER)
+                .set(CUSTOMER.NAME, name)
+                .set(CUSTOMER.ADDRESS, address)
+                .set(CUSTOMER.ZIPCODE, zipcode)
+                .set(CUSTOMER.PHONE, phone)
+                .where(CUSTOMER.CUSTOMER_ID.eq(customerId))
+                .execute();
+    }
+
+    /**
+     * Deleting a customer
+     *
+     * @param customerId
+     */
+    @Transactional(propagation = Propagation.REQUIRED,
+                   isolation = Isolation.REPEATABLE_READ)
+    public void delete(int customerId) {
+        this.dsl.deleteFrom(CUSTOMER)
+                .where(CUSTOMER.CUSTOMER_ID.eq(customerId))
+                .execute();
+    }
+}
+        </pre><p>
+                     
+            </p>
+         </div>
+         <div class="section" lang="en">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h3 class="title"><a name="fbdg30-java-jooq-class-custctrlr"></a>Customer Controller Class
+                     </h3>
+                  </div>
+               </div>
+            </div>
+            <div class="toc">
+               <p><b>Table of Contents</b></p>
+               <dl>
+                  <dt><span class="section"><a href="fbdg30-java-jooq-crt-pri-modules.html#fbdg30-java-jooq-custctrlr-getdata">getData Method</a></span></dt>
+                  <dt><span class="section"><a href="fbdg30-java-jooq-crt-pri-modules.html#fbdg30-java-jooq-custctrlr-cust-actions">Customer Action Methods</a></span></dt>
+                  <dt><span class="section"><a href="fbdg30-java-jooq-crt-pri-modules.html#fbdg30-java-jooq-custctrlr-cust-display">Customer Display</a></span></dt>
+               </dl>
+            </div>
+            <p>Controller classes start with the <code class="classname">@Controller</code> annotation.
+                     The <code class="classname">@RequestMapping</code> annotation preceding the method is necessary
+                     for directing the actions of the controller, for specifying the path that will be used
+                     to call the action.
+                       
+            </p>
+            <div class="itemizedlist">
+               <ul type="disc">
+                  <li>The path is specified in the <code class="classname">value</code> attribute
+                  </li>
+                  <li>The <code class="classname">method</code> attribute specifies the HTTP request
+                               method (PUT, GET, POST, DELETE)
+                  </li>
+                  <li>The <code class="classname">index</code> method will be the input point of our
+                               controller. It is responsible for displaying the JSP page (view) that contains the
+                               layout for displaying the grid, the tool bar and the navigation bar.
+                  </li>
+               </ul>
+            </div>
+            <p>
+                     
+            </p>
+            <p>Data for display are loaded asynchronously by the jqGrid component. The path
+                     is <code class="filename">/customer/getdata</code>, to which the <code class="classname">getData</code>
+                     method is connected.
+            </p>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-java-jooq-custctrlr-getdata"></a>getData Method
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>The <code class="classname">getData</code> method contains the additional
+                          <code class="classname">@ResponseBody</code> annotation for indicating that our method
+                          returns the object for serialization into a specific format. The annotation
+                          <code class="classname">@RequestMapping</code> contains the attribute
+                          <code class="classname">produces = MediaType.APPLICATION_JSON</code>, directing that the
+                          returned object be serialized into the JSON format.
+               </p>
+               <p>It is in the <code class="classname">getData</code> method that we work with the
+                          <code class="classname">JqGridCustomer</code> class described earlier. The <code class="classname">@RequestParam</code>
+                          annotation enables the value of the parameter to be retrieved from the HTTP request.
+                          This class method works with GET requests.
+                            
+               </p>
+               <div class="itemizedlist">
+                  <ul type="disc">
+                     <li>The <code class="classname">value</code> attribute in the <code class="classname">@RequestParam</code>
+                                    annotation defines the name of the parameter to be retrieved from the HTTP request.
+                     </li>
+                     <li>The <code class="classname">Required</code> attribute can designate the HTTP request
+                                    parameter as mandatory.
+                     </li>
+                     <li>The <code class="classname">defaultValue</code> attribute supplies the value that is to
+                                    be used if the HTTP parameter is not specified.
+                     </li>
+                  </ul>
+               </div>
+               <p>
+                          
+               </p>
+            </div>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-java-jooq-custctrlr-cust-actions"></a>Customer Action Methods
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>The <code class="classname">addCustomer</code> method is used to add a new customer.
+                          It is connected with the <code class="filename">/customer/create</code> path and, unlike the
+                          previous method, it works with the POST request. The method returns {success: true}
+                          if the customer is added successfully.  If an error occurs, it returns an object
+                          with the error message. The <code class="classname">addCustomer</code> method works with
+                          the <code class="classname">CustomerManager</code> business layer method.
+               </p>
+               <p>The <code class="classname">editCustomer</code> method is connected with the
+                          <code class="filename">/customer/edit</code> path. The <code class="classname">deleteCustomer</code>
+                          method is connected with the <code class="filename">/customer/delete</code> path.
+                          Both methods operate on existing customer records.
+               </p>
+               <p>
+                            
+               </p><pre class="programlisting">
+package ru.ibase.fbjavaex.controllers;
+
+import java.util.HashMap;
+import java.util.Map;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import javax.ws.rs.core.MediaType;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import ru.ibase.fbjavaex.managers.CustomerManager;
+
+import ru.ibase.fbjavaex.jqgrid.JqGridCustomer;
+import ru.ibase.fbjavaex.jqgrid.JqGridData;
+
+
+/**
+ * Customer Controller
+ *
+ * @author Simonov Denis
+ */
+@Controller
+public class CustomerController {
+
+
+    @Autowired(required = true)
+    private JqGridCustomer customerGrid;
+
+    @Autowired(required = true)
+    private CustomerManager customerManager;
+
+
+    /**
+     * Default action
+     * Returns the JSP name of the page (view) to display
+     *
+     * @param map
+     * @return name of JSP template
+     */
+    @RequestMapping(value = "/customer/", method = RequestMethod.GET)
+    public String index(ModelMap map) {
+        return "customer";
+    }
+
+    /**
+     * Returns JSON data for jqGrid
+     *
+     * @param rows number of entries per page
+     * @param page page number
+     * @param sIdx sorting field
+     * @param sOrd sorting order
+     * @param search should the search be performed
+     * @param searchField search field
+     * @param searchString value for searching
+     * @param searchOper search operation
+     * @return JSON data for jqGrid
+     */
+    @RequestMapping(value = "/customer/getdata",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON)
+    @ResponseBody
+    public JqGridData getData(
+            // number of entries per page
+            @RequestParam(value = "rows", required = false,
+                          defaultValue = "20") int rows,
+            // page number
+            @RequestParam(value = "page", required = false,
+                          defaultValue = "1") int page,
+            // sorting field
+            @RequestParam(value = "sidx", required = false,
+                          defaultValue = "") String sIdx,
+            // sorting order
+            @RequestParam(value = "sord", required = false,
+                          defaultValue = "asc") String sOrd,
+            // should the search be performed
+            @RequestParam(value = "_search", required = false,
+                          defaultValue = "false") Boolean search,
+            // search field
+            @RequestParam(value = "searchField", required = false,
+                          defaultValue = "") String searchField,
+            // value for searching
+            @RequestParam(value = "searchString", required = false,
+                          defaultValue = "") String searchString,
+            // search operation
+            @RequestParam(value = "searchOper", required = false,
+                          defaultValue = "") String searchOper,
+            // filters
+            @RequestParam(value="filters", required=false,
+                          defaultValue="") String filters) {
+        customerGrid.setLimit(rows);
+        customerGrid.setPageNo(page);
+        customerGrid.setOrderBy(sIdx, sOrd);
+        if (search) {
+            customerGrid.setSearchCondition(searchField, searchString, searchOper);
+        }
+
+        return customerGrid.getJqGridData();
+    }
+
+    @RequestMapping(value = "/customer/create",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON)
+    @ResponseBody
+    public Map&lt;String, Object&gt; addCustomer(
+            @RequestParam(value = "NAME", required = true,
+                          defaultValue = "") String name,
+            @RequestParam(value = "ADDRESS", required = false,
+                          defaultValue = "") String address,
+            @RequestParam(value = "ZIPCODE", required = false,
+                          defaultValue = "") String zipcode,
+            @RequestParam(value = "PHONE", required = false,
+                          defaultValue = "") String phone) {
+        Map&lt;String, Object&gt; map = new HashMap&lt;&gt;();
+        try {
+            customerManager.create(name, address, zipcode, phone);
+            map.put("success", true);
+        } catch (Exception ex) {
+            map.put("error", ex.getMessage());
+        }
+        return map;
+    }
+
+    @RequestMapping(value = "/customer/edit",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON)
+    @ResponseBody
+    public Map&lt;String, Object&gt; editCustomer(
+            @RequestParam(value = "CUSTOMER_ID", required = true,
+                          defaultValue = "0") int customerId,
+            @RequestParam(value = "NAME", required = true,
+                          defaultValue = "") String name,
+            @RequestParam(value = "ADDRESS", required = false,
+                          defaultValue = "") String address,
+            @RequestParam(value = "ZIPCODE", required = false,
+                          defaultValue = "") String zipcode,
+            @RequestParam(value = "PHONE", required = false,
+                          defaultValue = "") String phone) {
+        Map&lt;String, Object&gt; map = new HashMap&lt;&gt;();
+        try {
+            customerManager.edit(customerId, name, address, zipcode, phone);
+            map.put("success", true);
+        } catch (Exception ex) {
+            map.put("error", ex.getMessage());
+        }
+        return map;
+    }
+
+    @RequestMapping(value = "/customer/delete",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON)
+    @ResponseBody
+    public Map&lt;String, Object&gt; deleteCustomer(
+            @RequestParam(value = "CUSTOMER_ID", required = true,
+                          defaultValue = "0") int customerId) {
+        Map&lt;String, Object&gt; map = new HashMap&lt;&gt;();
+        try {
+            customerManager.delete(customerId);
+            map.put("success", true);
+        } catch (Exception ex) {
+            map.put("error", ex.getMessage());
+        }
+        return map;
+    }
+}
+          </pre><p>
+                          
+               </p>
+            </div>
+            <div class="section" lang="en">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h4 class="title"><a name="fbdg30-java-jooq-custctrlr-cust-display"></a>Customer Display
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+               <p>The JSP page for displaying the customer module contains nothing
+                          special: the layout with the main parts of the page, the table for displaying the
+                          grid and the block for displaying the navigation bar. JSP templates are fairly
+                          unsophisticated. If you wish, you can replace them with other template systems
+                          that support inheritance.
+               </p>
+               <p>The <code class="filename">../jspf/head.jspf</code> file contains common scripts and
+                          styles for all website pages and the <code class="filename">../jspf/menu.jspf</code> file
+                          contains the website's main menu. Their code is not reproduced here: it is quite
+                          simple and you can examine it in the project's source if you are curious.
+                            
+               </p><pre class="programlisting">
+&lt;%@page contentType="text/html" pageEncoding="UTF-8"%&gt;
+&lt;%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %&gt;
+&lt;c:set var="cp" value="${pageContext.request.servletContext.contextPath}"
+       scope="request" /&gt;
+
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+        &lt;title&gt;An example of a Spring MVC application using Firebird
+               and jOOQ&lt;/title&gt;
+
+        &lt;!-- Scripts and styles --&gt;
+        &lt;%@ include file="../jspf/head.jspf" %&gt;
+        &lt;script src="${cp}/resources/js/jqGridCustomer.js"&gt;&lt;/script&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;!-- Navigation menu --&gt;
+        &lt;%@ include file="../jspf/menu.jspf" %&gt;
+
+        &lt;div class="container body-content"&gt;
+
+            &lt;h2&gt;Customers&lt;/h2&gt;
+
+            &lt;table id="jqGridCustomer"&gt;&lt;/table&gt;
+            &lt;div id="jqPagerCustomer"&gt;&lt;/div&gt;
+
+            &lt;hr/&gt;
+            &lt;footer&gt;
+                &lt;p&gt;&copy; 2016 - An example of a Spring MVC application
+                using Firebird and jOOQ&lt;/p&gt;
+            &lt;/footer&gt;
+        &lt;/div&gt;
+
+&lt;script type="text/javascript"&gt;
+    $(document).ready(function () {
+        JqGridCustomer({
+            baseAddress: '${cp}'
+        });
+    });
+&lt;/script&gt;
+
+    &lt;/body&gt;
+&lt;/html&gt;
+            </pre><p>
+                            
+               </p>
+               <p>The basic logic on the client side is concentrated in the
+                            <code class="filename">/resources/js/jqGridCustomer.js</code> JavaScript module.
+                              
+               </p><pre class="programlisting">
+var JqGridCustomer = (function ($) {
+
+  return function (options) {
+      var jqGridCustomer = {
+          dbGrid: null,
+          options: $.extend({
+              baseAddress: null,
+              showEditorPanel: true
+          }, options),
+          // return model description
+          getColModel: function () {
+              return [
+                  {
+                      label: 'Id',
+                      name: 'CUSTOMER_ID', // field name
+                      key: true,
+                      hidden: true
+                  },
+                  {
+                      label: 'Name',
+                      name: 'NAME',
+                      width: 240,
+                      sortable: true,
+                      editable: true,
+                      edittype: "text", // input field type in the editor
+                      search: true,
+                      searchoptions: {
+                          // allowed search operators
+                          sopt: ['eq', 'bw', 'cn']
+                      },
+                      // size and maximum length for the input field
+                      editoptions: {size: 30, maxlength: 60},
+                      editrules: {required: true}
+                  },
+                  {
+                      label: 'Address',
+                      name: 'ADDRESS',
+                      width: 300,
+                      sortable: false, // prohibit sorting
+                      editable: true,
+                      search: false, // prohibit search
+                      edittype: "textarea", // Memo field
+                      editoptions: {maxlength: 250, cols: 30, rows: 4}
+                  },
+                  {
+                      label: 'Zip Code',
+                      name: 'ZIPCODE',
+                      width: 30,
+                      sortable: false,
+                      editable: true,
+                      search: false,
+                      edittype: "text",
+                      editoptions: {size: 30, maxlength: 10}
+                  },
+                  {
+                      label: 'Phone',
+                      name: 'PHONE',
+                      width: 80,
+                      sortable: false,
+                      editable: true,
+                      search: false,
+                      edittype: "text",
+                      editoptions: {size: 30, maxlength: 14}
+                  }
+              ];
+          },
+          // grid initialization
+          initGrid: function () {
+              // url to retrieve data
+              var url = jqGridCustomer.options.baseAddress
+                      + '/customer/getdata';
+              jqGridCustomer.dbGrid = $("#jqGridCustomer").jqGrid({
+                  url: url,
+                  datatype: "json", // data format
+                  mtype: "GET", // request type
+                  colModel: jqGridCustomer.getColModel(),
+                  rowNum: 500, // number of rows displayed
+                  loadonce: false, // load only once
+                  sortname: 'NAME', // Sorting by NAME by default
+                  sortorder: "asc",
+                  width: window.innerWidth - 80,
+                  height: 500,
+                  viewrecords: true, // display the number of records
+                  guiStyle: "bootstrap",
+                  iconSet: "fontAwesome",
+                  caption: "Customers",
+                  // navigation item
+                  pager: 'jqPagerCustomer'
+              });
+          },
+          // editing options
+          getEditOptions: function () {
+            return {
+              url: jqGridCustomer.options.baseAddress + '/customer/edit',
+              reloadAfterSubmit: true,
+              closeOnEscape: true,
+              closeAfterEdit: true,
+              drag: true,
+              width: 400,
+              afterSubmit: jqGridCustomer.afterSubmit,
+              editData: {
+                // In addition to the values from the form, pass the key field
+                CUSTOMER_ID: function () {
+                  // get the current row
+                  var selectedRow = jqGridCustomer.dbGrid.getGridParam("selrow");
+                  // get the value of the field CUSTOMER_ID
+                  var value = jqGridCustomer.dbGrid.getCell(selectedRow,
+                              'CUSTOMER_ID');
+                  return value;
+                }
+              }
+            };
+          },
+          // Add options
+          getAddOptions: function () {
+            return {
+              url: jqGridCustomer.options.baseAddress + '/customer/create',
+              reloadAfterSubmit: true,
+              closeOnEscape: true,
+              closeAfterAdd: true,
+              drag: true,
+              width: 400,
+              afterSubmit: jqGridCustomer.afterSubmit
+            };
+          },
+          // Edit options
+          getDeleteOptions: function () {
+            return {
+              url: jqGridCustomer.options.baseAddress + '/customer/delete',
+              reloadAfterSubmit: true,
+              closeOnEscape: true,
+              closeAfterDelete: true,
+              drag: true,
+              msg: "Delete the selected customer?",
+              afterSubmit: jqGridCustomer.afterSubmit,
+              delData: {
+                // pass the key field
+                CUSTOMER_ID: function () {
+                  var selectedRow = jqGridCustomer.dbGrid.getGridParam("selrow");
+                  var value = jqGridCustomer.dbGrid.getCell(selectedRow,
+                              'CUSTOMER_ID');
+                  return value;
+                }
+              }
+            };
+          },
+          // initializing the navigation bar with editing dialogs
+          initPagerWithEditors: function () {
+              jqGridCustomer.dbGrid.jqGrid('navGrid', '#jqPagerCustomer',
+                  {
+                       // buttons
+                       search: true,
+                       add: true,
+                       edit: true,
+                       del: true,
+                       view: true,
+                       refresh: true,
+                       // button captions
+                       searchtext: "Search",
+                       addtext: "Add",
+                       edittext: "Edit",
+                       deltext: "Delete",
+                       viewtext: "View",
+                       viewtitle: "Selected record",
+                       refreshtext: "Refresh"
+                  },
+                  jqGridCustomer.getEditOptions(),
+                  jqGridCustomer.getAddOptions(),
+                  jqGridCustomer.getDeleteOptions()
+             );
+          },
+          // initialize the navigation bar without editing dialogs
+          initPagerWithoutEditors: function () {
+              jqGridCustomer.dbGrid.jqGrid('navGrid', '#jqPagerCustomer',
+                  {
+                       // buttons
+                       search: true,
+                       add: false,
+                       edit: false,
+                       del: false,
+                       view: false,
+                       refresh: true,
+                       // button captions
+                       searchtext: "Search",
+                       viewtext: "View",
+                       viewtitle: "Selected record",
+                       refreshtext: "Refresh"
+                  }
+              );
+          },
+          // initialize the navigation bar
+          initPager: function () {
+              if (jqGridCustomer.options.showEditorPanel) {
+                  jqGridCustomer.initPagerWithEditors();
+              } else {
+                  jqGridCustomer.initPagerWithoutEditors();
+              }
+          },
+          // initialize
+          init: function () {
+              jqGridCustomer.initGrid();
+              jqGridCustomer.initPager();
+          },
+          // processor of the results of processing forms (operations)
+          afterSubmit: function (response, postdata) {
+              var responseData = response.responseJSON;
+              // check the result for error messages
+              if (responseData.hasOwnProperty("error")) {
+                  if (responseData.error.length) {
+                      return [false, responseData.error];
+                  }
+              } else {
+                  // if an error was not returned, refresh the grid
+                  $(this).jqGrid(
+                          'setGridParam',
+                          {
+                              datatype: 'json'
+                          }
+                  ).trigger('reloadGrid');
+              }
+              return [true, "", 0];
+          }
+      };
+      jqGridCustomer.init();
+      return jqGridCustomer;
+  };
+})(jQuery);
+          </pre><p>
+                          
+               </p>
+               <div class="section" lang="en">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h5 class="title"><a name="fbdg30-java-spring-visual"></a>Visual Elements
+                           </h5>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="variablelist">
+                     <dl>
+                        <dt><span class="term">The jqGrid grid</span></dt>
+                        <dd>
+                           <p>is created in the <code class="classname">initGrid</code> method
+                                              and is bound to the <code class="classname">html</code> element with the
+                                              jqGridCustomer identifier. The grid column desciptions are returned
+                                              by the <code class="classname">getColModel</code> method.
+                           </p>
+                           <p>Each column in jqGrid has a number of properties available. The source
+                                              code contains comments explaining column properties. You can read more details
+                                              about configuring the model of jqGrid columns in the ColModel API section of
+                                              the documentation for the jqGrid project.
+                           </p>
+                        </dd>
+                        <dt><span class="term">The navigation bar</span></dt>
+                        <dd>can be created either with edit buttons or without them, using the
+                                         <code class="classname">initPagerWithEditors</code> and <code class="classname">initPagerWithoutEditors</code>
+                                         methods, respectively. The bar constructor binds it to the element with the
+                                         jqPagerCustomer identifier. The options for creating the navigation bar are
+                                         described in the Navigator section of the jqGrid documentation.
+                                         
+                        </dd>
+                        <dt><span class="term">Functions and Settings for Options</span></dt>
+                        <dd>
+                           <p>The <code class="classname">getEditOptions</code>, <code class="classname">getAddOptions</code>,
+                                              <code class="classname">getDeleteOptions</code> functions return the options for the edit, add
+                                              and delete dialog boxes, respectively.
+                           </p>
+                           <p>The <code class="classname">url</code> property defines the URL to which the data
+                                              will be submitted after the OK button in clicked in the dialog box.
+                           </p>
+                           <p>The <code class="classname">afterSubmit</code> property marks the event that
+                                             occurs after the data have been sent to the server and a response has been
+                                             received back.
+                           </p>
+                           <p>The <code class="classname">afterSubmit</code> method checks whether the
+                                             controller returns an error. The grid is updated if no error is returned;
+                                             otherwise, the error is shown to the user.
+                           </p>
+                           <div class="note">
+                              <h3 class="title">Note</h3>
+                              <p>The editData property allows you to specify the values of additional
+                                                  fields that are not shown in the edit dialog box. Edit dialog boxes do not
+                                                  show the values of hidden fields and it is rather tedious if you want to
+                                                  display automatically generated keys.
+                              </p>
+                           </div>
+                        </dd>
+                     </dl>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="0" cellspacing="0">
+         <tr>
+            <td align="right" height="64" valign="bottom"><a href="fbdg30-java-jooq-app-code.html"><img src="images/prev-or18.png" width="30" height="30" border="0" title="Prev: Writing the Application Code" alt="Prev: Writing the Application Code"></a><a href="http://www.firebirdsql.org/en/documentation/"><img src="images/toc-or18.png" width="30" height="30" border="0" title="Firebird Documentation Index" alt="Firebird Documentation Index"></a><a href="fbdevgd30-java.html"><img src="images/top-or18.png" width="30" height="30" border="0" title="Up: Creating an Application with jOOQ and Spring MVC" alt="Up: Creating an Application with jOOQ and Spring MVC"></a><a href="fbdg30-java-jooq-crt-sec-modules.html"><img src="images/next-or18.png" width="30" height="30" border="0" title="Next: Creating Secondary Modules" alt="Next: Creating Secondary Modules"></a></td>
+         </tr>
+      </table>
+      <table xmlns:exsl="http://exslt.org/common" width="100%" border="0" cellpadding="4" cellspacing="0">
+         <tr height="8">
+            <td></td>
+         </tr>
+         <tr>
+            <td bgcolor="#F0F0F0"><a href="http://www.firebirdsql.org/en/documentation/">Firebird Documentation Index</a> &rarr; <a href="fbdevgd30.html">Firebird 3.0 Developer's Guide PRE-BETA</a> &rarr; <a href="fbdevgd30-java.html">Creating an Application with jOOQ and Spring MVC</a> &rarr; Creating the Primary Modules
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>
