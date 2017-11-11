@@ -49,7 +49,7 @@
       <programlisting>
 xAppPath := ExtractFileDir(Application.ExeName) + PathDelim;
 FDPhysFBDriverLink.VendorLib := xAppPath + 'fbclient' + PathDelim + 'fbclient.dll';
-       </programlisting>
+      </programlisting>
 
       <important>
         <title>Important notes about <quote>bitness</quote></title>

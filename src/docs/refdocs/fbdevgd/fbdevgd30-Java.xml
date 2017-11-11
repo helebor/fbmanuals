@@ -269,6 +269,15 @@
 &lt;/project&gt;
       </literallayout>
     </para>
+    <note>
+      <title>What is a POM?</title>
+        <para>A <firstterm>Project Object Model</firstterm> or POM is the fundamental unit 
+        of work in Maven. It is an XML file that contains information about the project 
+        and configuration details used by Maven to build the project. More details can be 
+        found at 
+<ulink url="http://maven.apache.org/guides/introduction/introduction-to-the-pom">http://maven.apache.org/guides/introduction/introduction-to-the-pom</ulink>.</para>
+      </note>
+
     <para>After all the necessary dependencies have been fulfilled, a restart of the
     POM is recommended, to load all the necessary libraries and avoid errors that might
     otherwise occur while you are working on the project. This is how it is done in
@@ -2310,7 +2319,7 @@ var JqGridCustomer = (function ($) {
 
   <section id="fbdg30-java-jooq-crt-sec-modules">
     <title>Creating Secondary Modules</title>
-    <para>A secondary module typically contain many more records than a primary one and
+    <para>A secondary module typically contains many more records than a primary one and
     new records are added frequently. Most secondary tables contain a field with the record
     creation date. In order to reduce the amount of retrieved data, the notion of a
     <firstterm>work period</firstterm> is often incorporated to limit the range of data sent
@@ -2634,7 +2643,7 @@ public class JqGridInvoiceLine extends JqGrid {
     <section id="fbdg30-java-jooq-class-invmgr">
       <title>InvoiceManager Class</title>
 
-      <para>The <classname>ru.ibase.fbjavaex.managers.InvoiceManager</classname> class that
+      <para>The <classname>ru.ibase.fbjavaex.managers.InvoiceManager</classname> class
       is a kind of business layer that will be used to direct adding, editing and deleting invoices
       and their items, along with invoice payment. All operations in this layer will be
       performed in a SNAPSHOT transaction. We have chosen to have our application perform
@@ -2785,7 +2794,7 @@ public class InvoiceManager {
       the <classname>index</classname> method, that is responsible for displaying the JSP page
       (view). This page contains the layout for displaying the grid and the tool and navigation
       bars.</para>
-      <para>Data for displaying invoice headers is loaded asynchronously by
+      <para>Data for displaying invoice headers are loaded asynchronously by
       the <classname>jqGrid</classname> component (the path is <filename>/invoice/getdata</filename>).
       The <classname>getData</classname> method is connected with this path, similarly to
       the primary modules. Invoice items are returned by the <classname>getDetailData</classname>
@@ -4103,7 +4112,7 @@ var JqGridInvoice = (function ($, jqGridProductFactory, jqGridCustomerFactory) {
         property. The child grid is displayed using the <classname>subGridRowExpanded</classname>
         event connected with the <classname>showChildGrid</classname> method.</para>
         <para>The items are filtered by the primary key of the invoice. Along with
-        the main buttons on the navigation bar, the custom button for paying for the
+        the main buttons on the navigation bar, a custom button for paying for the
         invoice is added to the invoice header using the
         <classname>jqGridInvoice.dbGrid.navButtonAdd</classname> function (see the initPager
         method).</para>
