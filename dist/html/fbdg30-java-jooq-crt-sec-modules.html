@@ -45,7 +45,7 @@
                <dt><span class="section"><a href="fbdg30-java-jooq-crt-sec-modules.html#fbdg30-java-invoice-display">Displaying the Invoices</a></span></dt>
             </dl>
          </div>
-         <p>A secondary module typically contain many more records than a primary one and
+         <p>A secondary module typically contains many more records than a primary one and
                 new records are added frequently. Most secondary tables contain a field with the record
                 creation date. In order to reduce the amount of retrieved data, the notion of a
                 <em class="firstterm">work period</em> is often incorporated to limit the range of data sent
@@ -387,7 +387,7 @@ public class JqGridInvoiceLine extends JqGrid {
                   </div>
                </div>
             </div>
-            <p>The <code class="classname">ru.ibase.fbjavaex.managers.InvoiceManager</code> class that
+            <p>The <code class="classname">ru.ibase.fbjavaex.managers.InvoiceManager</code> class
                      is a kind of business layer that will be used to direct adding, editing and deleting invoices
                      and their items, along with invoice payment. All operations in this layer will be
                      performed in a SNAPSHOT transaction. We have chosen to have our application perform
@@ -553,7 +553,7 @@ public class InvoiceManager {
                      (view). This page contains the layout for displaying the grid and the tool and navigation
                      bars.
             </p>
-            <p>Data for displaying invoice headers is loaded asynchronously by
+            <p>Data for displaying invoice headers are loaded asynchronously by
                      the <code class="classname">jqGrid</code> component (the path is <code class="filename">/invoice/getdata</code>).
                      The <code class="classname">getData</code> method is connected with this path, similarly to
                      the primary modules. Invoice items are returned by the <code class="classname">getDetailData</code>
@@ -1921,7 +1921,7 @@ var JqGridInvoice = (function ($, jqGridProductFactory, jqGridCustomerFactory) {
                           event connected with the <code class="classname">showChildGrid</code> method.
                </p>
                <p>The items are filtered by the primary key of the invoice. Along with
-                          the main buttons on the navigation bar, the custom button for paying for the
+                          the main buttons on the navigation bar, a custom button for paying for the
                           invoice is added to the invoice header using the
                           <code class="classname">jqGridInvoice.dbGrid.navButtonAdd</code> function (see the initPager
                           method).

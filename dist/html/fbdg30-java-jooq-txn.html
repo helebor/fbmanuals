@@ -47,10 +47,10 @@
                 if there are no errors in the execution of the statement. The transaction is
                 rolled back if an error occurs.
          </p>
-         <p>The default transaction has the following parameters: READ_WRITE
-                READ_COMMITTED REC_VERSION WAIT, the same parameters that are used by the
-                JDBC driver. You can change the default isolation mode using the parameters
-                of the connection pool&#8212;see
+         <p>The default transaction has the following parameters: 
+                READ_WRITE | READ_COMMITTED | REC_VERSION | WAIT, the same parameters that are 
+                used by the JDBC driver. You can change the default isolation mode using the 
+                parameters of the connection pool&#8212;see
                 <code class="classname">BasicDataSource.setDefaultTransactionIsolation</code> in the
                 <code class="classname">getDataSource</code> method of the <code class="classname">JooqConfig</code>
                 configuration class.
