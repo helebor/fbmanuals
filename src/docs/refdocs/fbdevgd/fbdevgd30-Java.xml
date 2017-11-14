@@ -35,9 +35,9 @@
         <title>Folder structure for the template-based project</title>
         <mediaobject>
           <imageobject>
-          <!-- actual image size is 288px X 402px -->
-            <imagedata fileref="images/fbdevgd30_java_001_ru_en.png" format="PNG"
-            width="288px" depth="402px"
+          <!-- actual image size is 387px X 445px -->
+            <imagedata fileref="images/fbdevgd30_java_001_en.png" format="PNG"
+            width="387px" depth="445px"
             scalefit="1" align="center" />  <!-- 100% -->
           </imageobject>
         </mediaobject>
@@ -286,9 +286,9 @@
         <title>Restarting the POM from NetBeans</title>
         <mediaobject>
           <imageobject>
-          <!-- actual image size is 466px X 610px -->
-            <imagedata fileref="images/fbdevgd30_java_002_ru.png" format="PNG"
-            width="466px" depth="610px"
+          <!-- actual image size is 399px X 638px -->
+            <imagedata fileref="images/fbdevgd30_java_002_en.png" format="PNG"
+            width="399px" depth="638px"
             scalefit="1" align="center" />  <!-- 100% -->
           </imageobject>
         </mediaobject>
@@ -534,14 +534,14 @@ jaybird-full-3.0.0.jar;. org.jooq.util.GenerationTool example.xml
       <section id="fbdg30-java-di-bean">
         <title>The @Bean Annotation</title>
         <para>The @Bean annotation is used to define a method's activity in 
-        creating, configuring and initiating a new object controlled by the 
+        creating, configuring and initializing a new object controlled by the
         Spring IoC container. Methods so defined can be used the same way as 
         classes with the @Configuration annotation.</para>
         <para>Our IoC container will return
           <itemizedlist spacing="compact">
             <listitem>the connection pool</listitem>
             <listitem>the transaction manager</listitem>
-            <listitem>the exception translator  thattranslates SQLException 
+            <listitem>the exception translator  that translates SQLException 
             exceptions into Spring-specific DataAccessException exceptions</listitem>
             <listitem>the DSL context that is the starting point for building all queries using the Fluent API</listitem>
             <listitem>managers for implementing the business logic</listitem>
@@ -754,8 +754,9 @@ public class JooqConfig {
     <title>Creating SQL Queries Using jOOQ</title>
     <para>Before we move on to the implementation of managers and grids, we will examine briefly 
     how to work with the database via jOOQ. You can find the full documentation on this issue
-    in the SQL-building section of the jOOQ documentation.</para>
-    <para>The <classname>org.jooq.impl.DSL</classname> class is the main one from which jOOQ 
+    in the <ulink url="https://www.jooq.org/doc/3.9/manual-single-page/%23sql-building">SQL-building</ulink>
+    section of the jOOQ documentation.</para>
+    <para>The <classname>org.jooq.impl.DSL</classname> class is the main one from which jOOQ
     objects are created. It acts as a static factory for table expressions, column (or field) 
     expressions, conditional expressions and many other parts of a query.</para>
     <para><classname>DSLContext</classname> references the <classname>org.jooq.Configuration</classname> 
@@ -1069,10 +1070,10 @@ EXECUTE PROCEDURE SP_ADD_INVOICE   (
     It starts a new transaction for each SQL statement and commits the transaction
     if there are no errors in the execution of the statement. The transaction is
     rolled back if an error occurs.</para>
-    <para>The default transaction has the following parameters: READ_WRITE
-    READ_COMMITTED REC_VERSION WAIT, the same parameters that are used by the
-    JDBC driver. You can change the default isolation mode using the parameters
-    of the connection pool&mdash;see
+    <para>The default transaction has the following parameters: 
+    READ_WRITE | READ_COMMITTED | REC_VERSION | WAIT, the same parameters that are 
+    used by the JDBC driver. You can change the default isolation mode using the 
+    parameters of the connection pool&mdash;see
     <classname>BasicDataSource.setDefaultTransactionIsolation</classname> in the
     <classname>getDataSource</classname> method of the <classname>JooqConfig</classname>
     configuration class.</para>
@@ -4160,11 +4161,11 @@ var JqGridInvoice = (function ($, jqGridProductFactory, jqGridCustomerFactory) {
     <para>Some screenshots from the web application we have developed in our 
     project.
       <figure id="java-result-1">
-        <title>Screenshot 1</title>
+        <title>Selecting a customer for invoicing</title>
         <mediaobject>
           <imageobject>
           <!-- actual image size is 1275px X 889px -->
-            <imagedata fileref="images/fbdevgd30_java_003_ru.png" format="PNG"
+            <imagedata fileref="images/fbdevgd30_java_003_en.png" format="PNG"
             width="497px" depth="347px"
             scalefit="1" align="center" />  <!-- 39% -->
           </imageobject>
@@ -4174,11 +4175,11 @@ var JqGridInvoice = (function ($, jqGridProductFactory, jqGridCustomerFactory) {
 
     <para>
       <figure id="java-result-2">
-        <title>Screenshot 2</title>
+        <title>Editing an invoice header</title>
         <mediaobject>
           <imageobject>
           <!-- actual image size is 1274px X 882px -->
-            <imagedata fileref="images/fbdevgd30_java_004_ru.png" format="PNG"
+            <imagedata fileref="images/fbdevgd30_java_004_en.png" format="PNG"
             width="497px" depth="344px"
             scalefit="1" align="center" />  <!-- 39% -->
           </imageobject>
@@ -4188,11 +4189,11 @@ var JqGridInvoice = (function ($, jqGridProductFactory, jqGridCustomerFactory) {
     
     <para>
       <figure id="java-result-3">
-        <title>Screenshot 3</title>
+        <title>Editing an invoice line</title>
         <mediaobject>
           <imageobject>
           <!-- actual image size is 1273px X 882px -->
-            <imagedata fileref="images/fbdevgd30_java_005_ru.png" format="PNG"
+            <imagedata fileref="images/fbdevgd30_java_005_en.png" format="PNG"
             width="496px" depth="304px"
             scalefit="1" align="center" />  <!-- 39% -->
           </imageobject>
@@ -4202,11 +4203,11 @@ var JqGridInvoice = (function ($, jqGridProductFactory, jqGridCustomerFactory) {
 
     <para>
       <figure id="java-result-4">
-        <title>Screenshot 4</title>
+        <title>Selecting a product for an invoice line</title>
         <mediaobject>
           <imageobject>
           <!-- actual image size is 1277px X 912px -->
-            <imagedata fileref="images/fbdevgd30_java_006_ru.png" format="PNG"
+            <imagedata fileref="images/fbdevgd30_java_006_en.png" format="PNG"
             width="498px" depth="356px"
             scalefit="1" align="center" />  <!-- 39% -->
           </imageobject>

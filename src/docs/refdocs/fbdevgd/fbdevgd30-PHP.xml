@@ -7,8 +7,9 @@
   PHP language with Firebird as the back-end.   It is assumed that you have a 
   web server, such as Apache HTTP Server or Nginx with PHP installed and active 
   and a Firebird server available in the stack and running.  A lightweight, 
-  stand-alone package such as QuickPHP would be enough for testing and debugging 
-  your project locally.</para>
+  stand-alone package such as 
+  <ulink url="http://www.zachsaw.com/?pg=quickphp_php_tester_debugger">QuickPHP</ulink> 
+  would be enough for testing and debugging your project locally.</para>
   <para>If your server supports PHP, you just create your .php files, put them
   in your web directory and the server will automatically parse them for you. 
   PHP-enabled files are simply HTML files with a whole language of custom tags 
@@ -718,18 +719,16 @@ $dbh-&gt;setAttribute(\PDO::ATTR_AUTOCOMMIT, true);
     <title>Installing Laravel</title>
     <para>Before installing Laravel, make sure that your system environment
     meets the requirements.
-    <para>MISSING TEXT</para>
-      <programlisting>
-
-php -r &quot;copy('https://getcomposer.org/installer', 'composer-setup.php');&quot;
-php -r &quot;if (hash_file('SHA384', 'composer-setup.php') ===
-'aa96f26c2b67226a324c27919f1eb05f21c248b987e6195cad9690d5c1ff713d53020a02
-ac8c217dbf90a7eacc9d141d') { echo 'Installer verified'; } else { echo
-'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;&quot;
-php composer-setup.php
-php -r &quot;unlink('composer-setup.php');&quot;
-      </programlisting>
+      <itemizedlist>
+        <listitem>PHP &gt;= 5.5.9</listitem>
+        <listitem>PDO extension</listitem>
+        <listitem>MCrypt extension</listitem>
+        <listitem>OpenSSL extension</listitem>
+        <listitem>Mbstring extension</listitem>
+        <listitem>Tokenizer extension</listitem>
+      </itemizedlist>
     </para>
+
     <section id="fbdevgd30-php-composer">
       <title>Installing Composer</title>
       <para>Laravel uses <ulink url="https://getcomposer.org/">Composer</ulink> to
@@ -741,10 +740,17 @@ php -r &quot;unlink('composer-setup.php');&quot;
       you can run Composer from the command line in any directory.</para>
 
       <para>If you need to install Composer manually, run the following script:
-        <literallayout class="monospaced">
-  echo @php &quot;%~dp0composer.phar&quot; %*&gt;composer.bat
-        </literallayout>
-      This script does the following:
+        <programlisting>
+ php -r &quot;copy('https://getcomposer.org/installer', 'composer-setup.php');&quot;
+php -r &quot;if (hash_file('SHA384', 'composer-setup.php') ===
+'aa96f26c2b67226a324c27919f1eb05f21c248b987e6195cad9690d5c1ff713d53020a02
+ac8c217dbf90a7eacc9d141d') { echo 'Installer verified'; } else { echo
+'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;&quot;
+php composer-setup.php
+php -r &quot;unlink('composer-setup.php');&quot;
+        </programlisting>
+      </para>
+      <para>This script does the following:
         <itemizedlist spacing="compact">
             <listitem>Downloads the installation file to the current directory</listitem>
             <listitem>Checks the installation file using SHA-384</listitem>
@@ -762,7 +768,7 @@ php -r &quot;unlink('composer-setup.php');&quot;
         the <filename>composer.bat</filename> file and saving it to PATH. Run the
         following command:
           <literallayout class="monospaced">
-  composer global require &quot;laravel/installer&quot;
+  echo @php &quot;%~dp0composer.phar&quot; %*&gt;composer.bat
           </literallayout>
         </para>
       </note>
@@ -830,15 +836,21 @@ php -r &quot;unlink('composer-setup.php');&quot;
       </para>
       <para>The <filename>sim1984/laravel-firebird</filename> package is the author's fork of the
       <filename>jacquestvanzuydam/laravel-firebird</filename> package. Its installation is a bit
-      different.
-      <!-- the description of how the package differs from the original is available in the article
-      Package for working with the Firebird DBMS in Laravel[H3]). -->
-        <warning>
-          <title>Caution</title>
-          <para>Remember to set the minimum-stability parameter to 'dev' because the package is not
-          stable enough to add links to the repository.</para>
-        </warning>
+      different. A description of how the package differs from the original is available in the 
+      article 
+  <ulink url="https://habrahabr.ru/post/312874/">Package for working with the Firebird DBMS in Laravel</ulink>
+  if you can read Russian.  An English-language description of the packages and the changes from the
+      original can be found in the readme.md document at this URL:
+ <ulink url="https://github.com/sim1984/laravel-firebird">https://github.com/sim1984/laravel-firebird</ulink>.
       </para>
+      <warning>
+        <title>Caution</title>
+        <para>Remember to set the minimum-stability parameter to 'dev' because the package is not
+        stable enough to publish at https://packagist.org.  You will need to modify the
+        composer.json file (see below) to add a reference to the gitHub repository.
+        </para>
+      </warning>
+
       <para>In the file <filename>composer.json</filename>:
         <literallayout class="monospaced">
   &quot;repositories&quot;: [
@@ -2148,27 +2160,27 @@ Route::any('/invoice/editline', 'InvoiceController@editInvoiceLine');
     <title>The Result</title>
     <para>Some screenshots from the web application we developed in this project.
       <figure id="php-screenshot-1">
-        <title>Screenshot 1</title>
+        <title>Invoices display</title>
         <mediaobject>
           <imageobject>
-          <!-- actual image size is 1056px X 765px -->
-            <imagedata fileref="images/fbdevgd30_php_001_ru.png" format="PNG"
-             width="496px" depth="360px"
-             scalefit="1" align="center" />  <!-- 47% -->
+          <!-- actual image size is 1259px X 786px -->
+            <imagedata fileref="images/fbdevgd30_php_001_en.png" format="PNG"
+             width="497px" depth="310px"
+             scalefit="1" align="center" />  <!-- 39.5% -->
           </imageobject>
         </mediaobject>
       </figure>
     </para>
-    
+
     <para>
       <figure id="php-screenshot-2">
-        <title>Screenshot 2</title>
+        <title>Invoice editor</title>
         <mediaobject>
           <imageobject>
-          <!-- actual image size is 1003px X 700px -->
-            <imagedata fileref="images/fbdevgd30_php_001_ru.png" format="PNG"
-             width="491px" depth="343px"
-             scalefit="1" align="center" />  <!-- 49% -->
+          <!-- actual image size is 1275px X 699x -->
+            <imagedata fileref="images/fbdevgd30_php_002_en.png" format="PNG"
+             width="497px" depth="273px"
+             scalefit="1" align="center" />  <!-- 39% -->
           </imageobject>
         </mediaobject>
       </figure>
