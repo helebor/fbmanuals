@@ -78,20 +78,10 @@
                      The installation wizard will install Composer and configure PATH so that
                      you can run Composer from the command line in any directory.
             </p>
-            <p>If you need to install Composer manually, run the following script:
-                       
-            </p><pre class="programlisting">
- php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-php -r "if (hash_file('SHA384', 'composer-setup.php') ===
-'aa96f26c2b67226a324c27919f1eb05f21c248b987e6195cad9690d5c1ff713d53020a02
-ac8c217dbf90a7eacc9d141d') { echo 'Installer verified'; } else { echo
-'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-php composer-setup.php
-php -r "unlink('composer-setup.php');"
-        </pre><p>
-                     
-            </p>
-            <p>This script does the following:
+            <p>If you need to install Composer manually, go to
+                     <a xmlns:xlink="http://www.w3.org/1999/xlink" href="https://getcomposer.org/download/" target="_top">https://getcomposer.org/download/</a>
+                     and pick up a fresh installation script that will do 
+                     as follows:
                        
             </p>
             <div class="itemizedlist">
@@ -107,10 +97,8 @@ php -r "unlink('composer-setup.php');"
             </p>
             <div class="warning">
                <h3 class="title">Caution</h3>
-               <p>Because this script changes with each new version of the installer, it
-                            would be safer not to use it, but to go to
-                            <a xmlns:xlink="http://www.w3.org/1999/xlink" href="https://getcomposer.org/download/" target="_top">https://getcomposer.org/download/</a>
-                            and pick up a fresh installation script.
+               <p>Because this script changes with each new version of the installer, 
+                            you will always need to have the latest version when reinstalling.
                </p>
             </div>
             <p>
