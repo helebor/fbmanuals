@@ -756,7 +756,14 @@ php -r &quot;unlink('composer-setup.php');&quot;
             <listitem>Checks the installation file using SHA-384</listitem>
             <listitem>Runs the installation script</listitem>
             <listitem>Removes the installation script</listitem>
-          </itemizedlist>
+        </itemizedlist>
+        <warning>
+          <title>Caution</title>
+          <para>Because this script changes with each new version of the installer, it
+          would be safer not to use it, but to go to
+          <ulink url="https://getcomposer.org/download/">https://getcomposer.org/download/</ulink>
+          and pick up a fresh installation script.</para>
+        </warning>
       </para>
       <para>After you run the script, the <filename>composer.phar</filename> file will appear.
       The <filename>.phar</filename> extension marks an archive but, actually, it is a PHP script
@@ -764,13 +771,13 @@ php -r &quot;unlink('composer-setup.php');&quot;
       unpack libraries.</para>
       <note>
         <title>Windows</title>
-        <para>If you are working in Windows, you can make the task easier by creating
-        the <filename>composer.bat</filename> file and saving it to PATH. Run the
-        following command:
+        <para>If you are working in Windows, you can make it easier to work with Composer 
+        by creating the <filename>composer.bat</filename> file. Run the following command:
           <literallayout class="monospaced">
   echo @php &quot;%~dp0composer.phar&quot; %*&gt;composer.bat
           </literallayout>
-        </para>
+         Then set up your PATH so that you can just call <code>composer</code> from any 
+         directory in your command shell. </para>
       </note>
       <para>More details about installing Composer are available 
       <ulink url="https://getcomposer.org/doc/00-intro.md">here</ulink>.</para>
