@@ -739,18 +739,10 @@ $dbh-&gt;setAttribute(\PDO::ATTR_AUTOCOMMIT, true);
       The installation wizard will install Composer and configure PATH so that
       you can run Composer from the command line in any directory.</para>
 
-      <para>If you need to install Composer manually, run the following script:
-        <programlisting>
- php -r &quot;copy('https://getcomposer.org/installer', 'composer-setup.php');&quot;
-php -r &quot;if (hash_file('SHA384', 'composer-setup.php') ===
-'aa96f26c2b67226a324c27919f1eb05f21c248b987e6195cad9690d5c1ff713d53020a02
-ac8c217dbf90a7eacc9d141d') { echo 'Installer verified'; } else { echo
-'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;&quot;
-php composer-setup.php
-php -r &quot;unlink('composer-setup.php');&quot;
-        </programlisting>
-      </para>
-      <para>This script does the following:
+      <para>If you need to install Composer manually, go to
+      <ulink url="https://getcomposer.org/download/">https://getcomposer.org/download/</ulink>
+      and pick up a fresh installation script that will do 
+      as follows:
         <itemizedlist spacing="compact">
             <listitem>Downloads the installation file to the current directory</listitem>
             <listitem>Checks the installation file using SHA-384</listitem>
@@ -759,10 +751,8 @@ php -r &quot;unlink('composer-setup.php');&quot;
         </itemizedlist>
         <warning>
           <title>Caution</title>
-          <para>Because this script changes with each new version of the installer, it
-          would be safer not to use it, but to go to
-          <ulink url="https://getcomposer.org/download/">https://getcomposer.org/download/</ulink>
-          and pick up a fresh installation script.</para>
+          <para>Because this script changes with each new version of the installer, 
+          you will always need to have the latest version when reinstalling.</para>
         </warning>
       </para>
       <para>After you run the script, the <filename>composer.phar</filename> file will appear.

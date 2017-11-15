@@ -5,22 +5,50 @@
   <bookinfo>
     <title>Firebird 3.0 Developer's Guide PRE-BETA</title>
     <subtitle>Release 0.1</subtitle>
-    <edition>11 November 2017, document version 0.105</edition>
+    <edition>16 November 2017, document version 0.108</edition>
     <authorgroup>
       <author>
         <firstname>Denis</firstname>
         <surname>Simonov</surname>
       </author>
-      <othercredit class="translator">
-        <firstname>Dimitry</firstname>
-        <surname>Borodin</surname>
-        <contrib>Megatranslations Ltd, translation of text from the
-        original Russian to English</contrib>
+      <!-- dummy author to force whitespace -->
+      <othercredit>
+        <firstname>&nbsp;</firstname>
+        <surname>&nbsp;</surname>
+        <contrib>Author of the written material and creator of the sample
+        project on five development platforms, originally as a series of magazine
+        articles</contrib>
       </othercredit>
-      <othercredit role="editor">
+      
+      <!-- more whitespace -->
+      <othercredit>
+        <firstname>&nbsp;</firstname>
+        <surname>&nbsp;</surname>
+      </othercredit>
+
+      <othercredit>
+        <firstname>Dmitry</firstname>
+        <surname>Borodin</surname>
+        <contrib>Translation of original Russian text to English (MegaTranslations Ltd)</contrib>
+      </othercredit>
+      
+      <!-- more whitespace -->
+      <othercredit>
+        <firstname>&nbsp;</firstname>
+        <surname>&nbsp;</surname>
+      </othercredit>
+
+      <othercredit class="editor">
         <firstname>Helen</firstname>
         <surname>Borrie</surname>
+        <affliation>Firebird Project Documenters Team></affliation>
         <contrib>Editor of the translated text</contrib>
+      </othercredit>
+
+      <!-- more whitespace -->
+      <othercredit>
+        <firstname>&nbsp;</firstname>
+        <surname>&nbsp;</surname>
       </othercredit>
     </authorgroup>
     <publisher>
@@ -35,7 +63,11 @@
       </holder>
     </copyright>
     <abstract>
-      <para>...</para>
+      <para>This volume consists of chapters that walk through the development of a simple
+      application for several language platforms, notably Delphi, Microsoft Entity Framework 
+      and MVC.NET (<quote>Model-View-Controller</quote>) for web applications, PHP and Java 
+      with the Spring framework.  It is hoped that the work will grow in time, with 
+      contributions from authors using other stacks with Firebird.</para>     
     </abstract>
 
   </bookinfo>

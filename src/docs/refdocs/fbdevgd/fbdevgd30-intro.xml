@@ -4,44 +4,40 @@
 <chapter id="fbdevgd30-intro">
   <title>About the Firebird Developer's Guide</title>
   <subtitle>for Firebird 3.0</subtitle>
-  <para>Blurb...</para>
-  <section id="fbdevgd30-intro-subject">
-    <title>Subject Matter</title>
-      <para>This volume consists of chapters that walk through the development of a simple 
-      application for several language platforms, notably Delphi, Microsoft Entity Framework 
-      and MVC.NET (<quote>Model-View-Controller</quote>) for web applications, PHP and Java 
-      with the Spring framework.  It is hoped that the work will grow in time, with 
-      contributions from authors using other stacks with Firebird.</para>
-      
-  </section>
+  <para>This volume consists of chapters that walk through the development of a simple
+  application for several language platforms, notably Delphi, Microsoft Entity Framework
+  and MVC.NET (<quote>Model-View-Controller</quote>) for web applications, PHP and Java
+  with the Spring framework.  It is hoped that the work will grow in time, with
+  contributions from authors using other stacks with Firebird.</para>
+
   <section id="fbdevgd30-intro-author">
     <title>About the Author</title>
     <para>Denis Simonov....</para>
 
-      <section id="fbdevgd30-intro-funding">
-        <title>Translation</title>
-        <para>Development of the original Russian version was sponsored by 
-        IBSurgeon and Moscow Exchange Bank.  A crowd-funding campaign was launched
-        by the Firebird Foundation in 2017 to fund the translation into English 
-        to provide this document as the foundation for translation by Firebird Project
-        document writers into other languages.</para>
-        <para>The campaign suceeded in raising enough to get the process under way.  </para>
-      </section>
-
-      <section id="fbdevgd30-intro-translation">
-        <title>. . . and More Translation</title>
-        <para>Once the DocBook source appears in GitHub, we hope the trusty translators will start making versions in
-        German, Japanese, Italian, French, Portuguese, Spanish, Czech.  Certainly, we never have enough translators 
-        so please, you Firebirders who have English as a second language, do consider translating some chapters
-        into your first language.</para>
-      </section>
+    <section id="fbdevgd30-intro-funding">
+      <title>Translation</title>
+      <para>Development of the original Russian version was sponsored by
+      IBSurgeon and Moscow Exchange Bank.  A crowd-funding campaign was launched
+      by the Firebird Foundation in 2017 to fund the translation into English
+      to provide this document as the foundation for translation by Firebird Project
+      document writers into other languages.</para>
+      <para>The campaign suceeded in raising enough to get the process under way.  </para>
     </section>
+
+    <section id="fbdevgd30-intro-translation">
+      <title>. . . and More Translation</title>
+      <para>Once the DocBook source appears in GitHub, we hope the trusty translators will start making versions in
+      German, Japanese, Italian, French, Portuguese, Spanish, Czech.  Certainly, we never have enough translators
+      so please, you Firebirders who have English as a second language, do consider translating some chapters
+      into your first language.</para>
+    </section>
+  </section>
 
 
   <!-- ACKNOWLEDGMENTS -->
   <section id="fbdevgd30-acknowledgements">
         <title>Acknowledgments</title>
-        <para>We acknowledge these contributions of sponsors and donors with gratitude and 
+        <para>We acknowledge these contributions of sponsors and donors with gratitude and
         thank you all for stepping up.</para>
         <bridgehead id="sponsors-donors" renderas="sect3">Sponsors and Other Donors</bridgehead>
           <bridgehead id="sponsors01_native" renderas="sect4">Sponsors of the Russian Language
